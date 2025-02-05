@@ -1,0 +1,87 @@
+version: "3.8"
+services:
+  # Service front-end Svelte
+  front:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/src/public
+    restart: always
+    networks:
+      - app-pile_oh_poil
+
+  # Service back-end Express  
+  back:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    networks:
+      - app-pile_oh_poil
+    restart: always
+    
+
+  # Service base de données MySQL pour ton site
+  db:
+    image: mysql:8.0
+    
+    env_file:
+      - .env.development
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-pile_oh_poil
+    restart: always
+    
+
+  # Service PHPMyAdmin pour la gestion de la base de données
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    env_file:
+      - .env.development
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - app-pile_oh_poil
+    restart: always
+
+  # Service base de données PostgreSQL pour Umami
+  umami_db:
+    image: postgres:13
+    env_file:
+      - .env.development
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    networks:
+      - app-pile_oh_poil
+    restart: always
+
+  # Service Umami
+  umami:
+    image: docker.umami.is/umami-software/umami:postgresql-latest
+    env_file:
+      - .env.development
+    ports:
+      - "3001:3000"  # Expose Umami sur le port 3001
+    depends_on:
+      - umami_db
+    networks:
+      - app-pile_oh_poil
+    restart: always
+
+volumes:
+  db_data:
+  umami_db_data:
+
+networks:
+  app-pile_oh_poil:
+    driver: bridge
