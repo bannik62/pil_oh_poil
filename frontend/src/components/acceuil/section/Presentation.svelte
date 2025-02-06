@@ -13,6 +13,9 @@
             <p>l’élégance au bout des doigts, la détente au creux des mains!<br><br>
                 Massage, onglerie, soins du visage…<br>
                  Offrez-vous un moment de bien-être sur-mesure.</p>
+               
+                 <div class="icone-spa">
+                 </div>
         </div>  
     </div>
   </div>
@@ -22,18 +25,21 @@
   .container {
     margin-right: 100px;
     width: 100%;
-    height: 100vh;
+    height: auto;
     display: flex;
     flex-direction: row;
     justify-content:center;
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: 70px;
+    border-radius: 30px;
+    box-shadow: -5px 20px 20px rgba(55, 54, 54, 0.441);
+
 }
 
 .left-section {
     width: 50%;
-    height: 99%;
+    height: 102vh;
     background-color: var(--color-primary);
     background-size: cover;
     background-position: center;
@@ -44,10 +50,11 @@
 }
 
   .right-section {
+    position: relative;
     width: 45%;
-    height: 93%;
+    height: auto;
+    max-height: 93%;
     padding: 20px;
-    background-color: var(--color-tertiary);
     border-radius: 0 10px 10px 0;
     box-shadow: 10px -2px 0 rgba(55, 54, 54, 0.441) inset;
     background-image: url(../../../assets/img/parquet.jpg);
@@ -55,9 +62,19 @@
     background-repeat: repeat;
 }
 
+.icone-spa {
+    width: 100%;
+    margin: auto 35%;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    background-image: url(../../../assets/img/spa_accessories.png);
+    background-size: cover;
+    background-position: center;
+}
 .right-section-content {
     background-color: var(--color-secondary);
-    height: 97%;
+    height: auto;
     color: #fff;
     padding:10px;
     border-radius: 10px;
