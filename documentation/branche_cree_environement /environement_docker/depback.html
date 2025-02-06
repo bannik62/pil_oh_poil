@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilité des dépendances dans package.json (Backend)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2,
+        h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+
+        strong {
+            color: #0073e6;
+        }
+
+        h3 {
+            color: #00e6a1;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="docInitialisation.html">Documentation Initialisation</a>
+        <a href="depFront.html">Dépendances Frontend</a>
+        <a href="depBack.html">Dépendances Backend</a>
+        <a href="inputdockerfile.html">Guide des instructions Dockerfile</a>
+        <a href="varDocker.html">Variables Docker</a>
+    </nav>
+    <section>
+        <h1>Comprendre les dépendances dans le fichier <code>package.json</code> (Backend)</h1>
+        <p>Le fichier <code>package.json</code> contient les informations sur les paquets nécessaires à un projet
+            backend. Voici un aperçu des principales dépendances utilisées dans un projet Node.js avec
+            <strong>Express</strong>, <strong>Sequelize</strong>, <strong>JWT</strong>, et d'autres bibliothèques
+            essentielles.
+        </p>
+
+        <h2>Dépendances</h2>
+        <p>Les dépendances sont des paquets nécessaires au fonctionnement de l'application en production. Elles sont
+            installées avec la commande <code>npm install</code>.</p>
+
+        <h3><code>bcrypt</code> (^5.1.1)</h3>
+        <p>La bibliothèque <strong>bcrypt</strong> est utilisée pour hacher les mots de passe de manière sécurisée. Elle
+            permet de protéger les mots de passe des utilisateurs avant de les stocker dans la base de données, rendant
+            les attaques par force brute plus difficiles.</p>
+
+        <h3><code>bcryptjs</code> (^2.4.3)</h3>
+        <p><strong>bcryptjs</strong> est une alternative à <strong>bcrypt</strong>, en JavaScript pur. Elle est utilisée
+            dans des environnements où l'installation de dépendances natives comme <code>bcrypt</code> peut poser
+            problème. Elle offre des fonctionnalités similaires pour le hachage et la vérification des mots de passe.
+        </p>
+
+        <h3><code>cookie-parser</code> (^1.4.7)</h3>
+        <p><strong>cookie-parser</strong> permet de parser les cookies HTTP dans les requêtes entrantes. Cela est
+            particulièrement utile pour gérer les sessions ou pour envoyer des informations comme les tokens JWT via les
+            cookies.</p>
+
+        <h3><code>cors</code> (^2.8.5)</h3>
+        <p><strong>CORS</strong> (Cross-Origin Resource Sharing) est une bibliothèque qui permet de définir les règles
+            de partage de ressources entre différents domaines. Elle est utilisée pour autoriser ou restreindre les
+            requêtes HTTP provenant de différents domaines ou ports.</p>
+
+        <h3><code>dotenv</code> (^16.4.7)</h3>
+        <p><strong>dotenv</strong> permet de charger des variables d'environnement à partir d'un fichier `.env`. Cela
+            permet de garder des informations sensibles (comme des clés API ou des identifiants de base de données) en
+            dehors du code source et d'avoir des configurations spécifiques par environnement.</p>
+
+        <h3><code>express</code> (^4.21.2)</h3>
+        <p><strong>Express</strong> est un framework web minimaliste pour Node.js. Il facilite la création de serveurs
+            et la gestion des routes HTTP, des middlewares et des réponses. Express est l'une des bibliothèques les plus
+            populaires pour créer des applications backend en Node.js.</p>
+
+        <h3><code>joi</code> (^17.13.3)</h3>
+        <p><strong>Joi</strong> est une bibliothèque de validation de données qui permet de définir des schémas de
+            validation pour les entrées utilisateur. Elle permet de s'assurer que les données reçues via des requêtes
+            HTTP respectent un format attendu (par exemple, validation des emails, des chaînes de caractères, etc.).</p>
+
+        <h3><code>jsonwebtoken</code> (^9.0.2)</h3>
+        <p><strong>jsonwebtoken</strong> est une bibliothèque permettant de générer et de vérifier des tokens JWT (JSON
+            Web Tokens). Les JWT sont couramment utilisés pour gérer l'authentification et l'autorisation dans les
+            applications web modernes, notamment pour les sessions utilisateur sécurisées.</p>
+
+        <h3><code>mysql2</code> (^3.12.0)</h3>
+        <p><strong>mysql2</strong> est un client MySQL pour Node.js. Il permet d'interagir avec une base de données
+            MySQL, en envoyant des requêtes SQL et en récupérant les résultats. Il est plus rapide et plus sécurisé que
+            le paquet <code>mysql</code> standard.</p>
+
+        <h3><code>sequelize</code> (^6.37.5)</h3>
+        <p><strong>Sequelize</strong> est un ORM (Object-Relational Mapping) pour Node.js qui facilite la gestion des
+            bases de données relationnelles comme MySQL, PostgreSQL, et SQLite. Il permet de définir des modèles de
+            données, de créer des migrations, et d'interagir avec la base de données en utilisant JavaScript plutôt que
+            des requêtes SQL brutes.</p>
+
+        <h3><code>sequelize-cli</code> (^6.6.2)</h3>
+        <p><strong>sequelize-cli</strong> est un outil en ligne de commande pour gérer les migrations, la création de
+            modèles, et l'interaction avec la base de données à l'aide de Sequelize. Il permet de faciliter la gestion
+            des bases de données en ligne de commande et de gérer les <strong></strong>migrations</strong></p>

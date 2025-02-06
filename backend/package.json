@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "pil_oh_poil_backend",
   "version": "1.0.0",
   "main": "servYou.js",
   "type": "commonjs",

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilité des dépendances dans package.json</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 10px;
+        }
+
+        h1,
+        h2 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2,
+        h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            color: #0d1114;
+            height: 10vh
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="docInitialisation.html">Documentation Initialisation</a>
+        <a href="depFront.html">Dépendances Frontend</a>
+        <a href="depBack.html">Dépendances Backend</a>
+        <a href="inputdockerfile.html">Guide des instructions Dockerfile</a>
+        <a href="varDocker.html">Variables Docker</a>
+    </nav>
+    <section>
+        <h1>Comprendre les dépendances et devDependencies dans le fichier <code>package.json</code></h1>
+        <p>Le fichier <code>package.json</code> contient les informations et les paquets nécessaires à un projet. Voici
+            un aperçu des principales dépendances dans un projet utilisant <strong>Svelte</strong>,
+            <strong>Vite</strong>, <strong>TailwindCSS</strong>, et des outils de développement comme
+            <strong>Babel</strong>, <strong>ESLint</strong>, et <strong>Prettier</strong>.
+        </p>
+
+        <h2>Dépendances</h2>
+        <p>Les dépendances sont les paquets essentiels nécessaires pour que l'application fonctionne en production.
+            Elles sont installées avec la commande <code>npm install</code>.</p>
+
+        <h3><code>svelte</code> (^5.1.3)</h3>
+        <p>Svelte est un framework JavaScript moderne qui compiles les composants en JavaScript natif. Il permet une
+            meilleure performance en réduisant la taille du code généré et en éliminant le besoin d'un runtime. Cette
+            version spécifique est la version 5.1.3.</p>
+
+        <h3><code>@sveltejs/vite-plugin-svelte</code> (^4.0.4)</h3>
+        <p>Ce plugin permet d'intégrer Svelte avec <strong>Vite</strong>, un bundler moderne et rapide. Il optimise les
+            temps de démarrage et le hot-reloading durant le développement, rendant l'expérience de développement plus
+            fluide.</p>
+
+        <h3><code>autoprefixer</code> (^10.4.20)</h3>
+        <p>Autoprefixer est un outil qui ajoute des préfixes spécifiques aux navigateurs pour les propriétés CSS, afin
+            de garantir une compatibilité maximale avec tous les navigateurs. Il est souvent utilisé avec des outils
+            comme PostCSS pour automatiser cette tâche.</p>
+
+        <h3><code>tailwindcss</code> (^3.4.17)</h3>
+        <p>TailwindCSS est un framework CSS utilitaire qui permet de créer des designs personnalisés rapidement en
+            combinant des classes utilitaires. Il est très flexible et s'adapte à divers besoins, réduisant ainsi la
+            nécessité d'écrire des CSS personnalisés.</p>
+
+        <h2>DevDependencies</h2>
+        <p>Les <strong>devDependencies</strong> sont des dépendances qui ne sont nécessaires que durant le développement
+            et non en production. Elles sont installées avec <code>npm install --save-dev</code>.</p>
+
+        <h3><code>@babel/core</code> (^7.26.0)</h3>
+        <p>Babel est un compilateur JavaScript qui permet de transformer du code moderne en une version compatible avec
+            des navigateurs plus anciens ou des environnements qui ne supportent pas encore les dernières
+            fonctionnalités d'ECMAScript. Le paquet <code>@babel/core</code> est le cœur de Babel.</p>
+
+        <h3><code>@babel/eslint-parser</code> (^7.26.5)</h3>
+        <p>Ce paquet permet à ESLint de comprendre du code JavaScript moderne (comme le JSX, ou les fonctionnalités
+            d'ES6 et plus). Il est utilisé pour analyser le code source dans le but d'y détecter des erreurs ou des
+            problèmes de style.</p>
+
+        <h3><code>@eslint/js</code> (^9.18.0)</h3>
+        <p>Ce paquet est une version d'ESLint qui inclut les règles et la configuration par défaut pour l'analyse de
+            code JavaScript.</p>
+
+        <h3><code>eslint</code> (^9.18.0)</h3>
+        <p>ESLint est un linter pour JavaScript qui aide à identifier et à corriger les problèmes dans le code en
+            fonction d'un ensemble de règles prédéfinies ou personnalisées. Il est essentiel pour maintenir un code de
+            qualité.</p>
+
+        <h3><code>eslint-config-prettier</code> (^9.1.0)</h3>
+        <p>Ce paquet désactive les règles de formatage d'ESLint qui pourraient entrer en conflit avec Prettier. Il
+            permet d'intégrer les deux outils sans conflits de configuration.</p>
+
+        <h3><code>eslint-plugin-svelte</code> (^2.46.1)</h3>
+        <p>Ce plugin ajoute des règles spécifiques à Svelte pour ESLint. Cela permet de valider la qualité du code dans
+            les fichiers Svelte en plus des fichiers JavaScript.</p>
+
+        <h3><code>espree</code> (^10.3.0)</h3>
+        <p>Espree est un parseur JavaScript qui transforme le code source en un arbre de syntaxe abstraite (AST),
+            permettant ainsi à ESLint et d'autres outils de l'analyser.</p>
+
+        <h3><code>globals</code> (^15.14.0)</h3>
+        <p>Ce paquet fournit une liste de variables globales définies pour différents environnements JavaScript. Il aide
+            ESLint à savoir quelles variables sont disponibles globalement sans générer d'erreurs.</p>
+
+        <h3><code>postcss</code> (^8.4.49)</h3>
+        <p>PostCSS est un outil qui permet de transformer les CSS avec des plugins, comme Autoprefixer. Il est souvent
+            utilisé pour ajouter des préfixes ou optimiser le code CSS.</p>
+
+        <h3><code>prettier</code> (^3.4.2)</h3>
+        <p>Prettier est un formateur de code qui permet d'uniformiser le style de code en le formatant selon des règles
+            définies. Il est particulièrement utile pour maintenir un code lisible et cohérent.</p>
+
+        <h3><code>prettier-plugin-svelte</code> (^3.3.3)</h3>
+        <p>Ce plugin permet à Prettier de formater les fichiers Svelte. Cela garantit que les fichiers Svelte respectent
+            le même style de formatage que les autres fichiers JavaScript et CSS dans le projet.</p>
+
+        <h3><code>svelte-eslint-parser</code> (^0.43.0)</h3>
+        <p>Ce parseur permet à ESLint de comprendre et d'analyser le code dans les fichiers Svelte. Il est nécessaire
+            pour l'intégration de Svelte avec ESLint.</p>
+
+        <h3><code>vite</code> (^5.1.4)</h3>
+        <p>Vite est un bundler et un serveur de développement ultra-rapide pour les applications modernes. Il optimise
+            la vitesse de compilation en utilisant le système de modules natifs du navigateur et le hot-reloading.</p>
+
+        <h2>Résumé</h2>
+        <p>Les dépendances et les devDependencies listées dans ce fichier <code>package.json</code> couvrent un large
+            éventail d'outils et de technologies qui améliorent l'expérience de développement et la qualité du code. En
+            utilisant Svelte, Vite, TailwindCSS, Babel, ESLint et Prettier, tu bénéficies d'une plateforme moderne,
+            rapide et prête pour une production efficace avec un code bien maintenu.</p>
+    </section>
+</body>
+
+</html>
