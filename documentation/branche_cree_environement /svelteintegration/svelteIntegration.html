@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation du Projet Svelte</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.17/dist/tailwind.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2,
+        h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+
+        strong {
+            color: #0073e6;
+        }
+
+        h3 {
+            color: #00e6a1;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+    </style>
+
+<body class="bg-gray-50 text-gray-900">
+
+    <header class="p-6 text-white text-center">
+        <h1 class="text-4xl font-bold">Documentation du Projet Svelte avec Vite et Docker</h1>
+    </header>
+
+    <div class="container mx-auto p-6">
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">1. Structure des Fichiers</h2>
+            </div>
+            <p>
+                Ce projet est constitué de plusieurs fichiers clés qui interagissent pour construire l'application
+                frontend avec Svelte et Vite, tout en utilisant Docker pour l'environnement de développement. Voici une
+                explication de l'interaction entre les fichiers principaux.
+            </p>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-file-code"></i></div>
+                <h2 class="text-2xl font-semibold">2. Dockerfile</h2>
+            </div>
+            <p>
+                Le fichier <code>Dockerfile</code> est utilisé pour construire une image Docker spécifique au projet. Il
+                effectue plusieurs actions clés :
+            </p>
+            <ul class="list-disc pl-5">
+                <li>Utilise une image de base légère <code>node:18-alpine</code> pour minimiser l'empreinte de l'image.
+                </li>
+                <li>Copie les fichiers de configuration nécessaires (comme <code>package.json</code>) pour installer les
+                    dépendances.</li>
+                <li>Installe les dépendances nécessaires avec la commande <code>npm install</code>, y compris le plugin
+                    Svelte et d'autres outils comme <code>jwt-decode</code>.</li>
+                <li>Expose le port <code>5173</code> pour permettre l'accès au serveur de développement.</li>
+                <li>Démarre le serveur Vite avec la commande <code>npm run dev</code>.</li>
+            </ul>
+            <div class="code-block">
+                <pre><code>FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./app
+
+RUN npm install @sveltejs/vite-plugin-svelte@3.0.1 jwt-decode
+
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev"]</code></pre>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">3. vite.config.js</h2>
+            </div>
+            <p>
+                Le fichier <code>vite.config.js</code> est la configuration principale pour Vite. Il gère les options
+                suivantes :
+            </p>
+            <ul class="list-disc pl-5">
+                <li>Utilisation du plugin <code>@sveltejs/vite-plugin-svelte</code> pour intégrer Svelte avec Vite.</li>
+                <li>Configuration du serveur de développement pour accepter les connexions depuis toutes les interfaces
+                    réseau (<code>host: '0.0.0.0'</code>) et spécification du port <code>5173</code>.</li>
+                <li>Activation de la surveillance des fichiers pour un rechargement automatique dans les environnements
+                    Docker avec <code>watch.usePolling</code>.</li>
+            </ul>
+            <div class="code-block">
+                <pre><code>import { defineConfig } from 'vite'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+
+export default defineConfig({
+  plugins: [svelte()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    watch: {
+      usePolling: true
+    }
+  }
+})</code></pre>
+            </div>
+            <h2>Options de la Configuration</h2>
+            <p>Voici un détail des options utilisées dans le fichier <code>vite.config.js</code> pour configurer un serveur de développement avec Vite et Svelte.</p>
+    
+            <h3>1. Plugins</h3>
+            <p>L'option <code>plugins</code> permet d'intégrer des plugins dans la configuration Vite. Dans cet exemple, nous utilisons le plugin <code>@sveltejs/vite-plugin-svelte</code> pour permettre à Vite de comprendre et compiler les fichiers <code>.svelte</code>.</p>
+    
+            <pre><code>plugins: [svelte()]</code></pre>
+    
+            <h3>2. Configuration du Serveur</h3>
+            <p>L'option <code>server</code> permet de configurer le serveur de développement. Voici les sous-options principales :</p>
+            
+            <ul>
+                <li><strong>host</strong>: Définie à <code>'0.0.0.0'</code>, ce paramètre permet au serveur d'être accessible depuis toutes les interfaces réseau, ce qui est utile dans un environnement Docker ou pour accéder au serveur depuis d'autres appareils.</li>
+                <li><strong>port</strong>: Définie à <code>5173</code>, cette option définit le port du serveur de développement. Tu peux personnaliser ce port selon tes préférences.</li>
+                <li><strong>watch.usePolling</strong>: En définissant cette option à <code>true</code>, on active le polling des fichiers pour surveiller les modifications. Cela est particulièrement utile dans des environnements comme Docker où le système de fichiers n'est pas directement accessible.</li>
+            </ul>
+    
+            <pre><code>
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        watch: {
+            usePolling: true
+        }
+    }
+            </code></pre>
+    
+            <h3>3. Autres Options Serveur</h3>
+            <p>Voici quelques autres options utiles que tu peux configurer dans la section <code>server</code> :</p>
+            
+            <ul>
+                <li><strong>open</strong>: <code>true</code> pour ouvrir automatiquement le navigateur lors du démarrage du serveur.</li>
+                <pre><code>open: true</code></pre>
+    
+                <li><strong>cors</strong>: Permet d'activer ou configurer les en-têtes CORS (Cross-Origin Resource Sharing) pour autoriser les requêtes provenant de domaines différents.</li>
+                <pre><code>cors: true</code></pre>
+    
+                <li><strong>https</strong>: Si <code>true</code>, cela active le serveur en HTTPS pour tester dans un environnement sécurisé.</li>
+                <pre><code>https: true</code></pre>
+    
+                <li><strong>proxy</strong>: Permet de rediriger certaines requêtes vers un autre serveur (utile pour interagir avec un backend). Exemple de proxy pour les appels API.</li>
+                <pre><code>
+    proxy: {
+        '/api': 'http://localhost:3000'
+    }
+                </code></pre>
+            </ul>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">4. svelte.config.js</h2>
+            </div>
+            <p>
+                Le fichier <code>svelte.config.js</code> configure le comportement de Svelte en utilisant les options
+                suivantes :
+            </p>
+            <ul class="list-disc pl-5">
+                <li>Utilisation de <code>vitePreprocess()</code> pour effectuer des prétraitements sur les fichiers
+                    Svelte avant la compilation.</li>
+            </ul>
+            <div class="code-block">
+                <pre><code>import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+const config = {
+  preprocess: vitePreprocess()
+};
+
+export default config;</code></pre>
+            </div>
+
+            
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">5. package.json</h2>
+            </div>
+            <p>
+                Le fichier <code>package.json</code> définit les dépendances du projet ainsi que les scripts
+                d'exécution. Il contient notamment :
+            </p>
+            <ul class="list-disc pl-5">
+                <li>Les dépendances nécessaires au bon fonctionnement de l'application, telles que <code>svelte</code>,
+                    <code>vite</code>, <code>tailwindcss</code>, etc.</li>
+                <li>Les scripts de développement tels que <code>npm run dev</code> pour lancer Vite et
+                    <code>npm run build</code> pour construire l'application pour la production.</li>
+            </ul>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">6. jsconfig.json</h2>
+            </div>
+            <p>
+                Le fichier <code>jsconfig.json</code> configure TypeScript pour le projet JavaScript. Il active
+                plusieurs options importantes :
+            </p>
+            <ul class="list-disc pl-5">
+                <li>Configuration de la résolution des modules et des options de compilation pour que le projet
+                    fonctionne bien avec Vite.</li>
+                <li>Activation de la vérification des types dans les fichiers <code>.js</code> et <code>.svelte</code>,
+                    ce qui permet d'assurer que le code est correctement typé.</li>
+            </ul>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-sync-alt"></i></div>
+                <h2 class="text-2xl font-semibold">7. Interaction entre les Fichiers</h2>
+            </div>
+            <p>
+                Ces fichiers travaillent ensemble pour assurer une expérience de développement fluide :
+            </p>
+            <ul class="list-disc pl-5">
+                <li>Le <code>Dockerfile</code> construit l'environnement dans lequel le serveur Vite fonctionne.</li>
+                <li>Le fichier <code>vite.config.js</code> configure le serveur de développement pour compiler les
+                    fichiers Svelte et activer la surveillance des fichiers.</li>
+                <li>Le fichier <code>svelte.config.js</code> est responsable du prétraitement des fichiers avant
+                    compilation.</li>
+                <li>Le <code>package.json</code> et <code>jsconfig.json</code> gèrent les dépendances, les scripts
+                    d'exécution, et la vérification des types pour garantir la cohérence du projet.</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <footer class="p-4 text-center text-white">
+        <p>&copy; 2025 Projet pile_oh_poil avec Svelte et Docker - Documentation</p>
+    </footer>
+
+</body>
+
+</html>

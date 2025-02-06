@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide des Variables Docker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="docInitialisation.html">Documentation Initialisation</a>
+        <a href="depFront.html">Dépendances Frontend</a>
+        <a href="depBack.html">Dépendances Backend</a>
+        <a href="inputdockerfile.html">Guide des instructions Dockerfile</a>
+        <a href="varDocker.html">Variables Docker</a>
+    </nav>
+    <h1>Guide des Variables d'Environnement Docker</h1>
+    <p>Ce guide vous aide à comprendre l'utilisation des variables dans un fichier <code>docker-compose.yml</code>.</p>
+
+    <h2>📌 Variables Docker Générales</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Utilité</th>
+        </tr>
+        <tr>
+            <td>PATH</td>
+            <td>Définit les chemins des exécutables dans le conteneur.</td>
+        </tr>
+        <tr>
+            <td>WORKDIR</td>
+            <td>Définit le répertoire de travail.</td>
+        </tr>
+        <tr>
+            <td>USER</td>
+            <td>Définit l'utilisateur sous lequel le conteneur s'exécute.</td>
+        </tr>
+        <tr>
+            <td>EXPOSE</td>
+            <td>Indique les ports écoutés par le conteneur.</td>
+        </tr>
+        <tr>
+            <td>VOLUME</td>
+            <td>Monte un volume pour persister les données.</td>
+        </tr>
+    </table>
+
+    <h2>💽 Variables pour les Bases de Données</h2>
+    <h3>MySQL / MariaDB</h3>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Utilité</th>
+        </tr>
+        <tr>
+            <td>MYSQL_ROOT_PASSWORD</td>
+            <td>Mot de passe du super-administrateur (root).</td>
+        </tr>
+        <tr>
+            <td>MYSQL_DATABASE</td>
+            <td>Nom de la base créée automatiquement.</td>
+        </tr>
+        <tr>
+            <td>MYSQL_USER</td>
+            <td>Crée un utilisateur MySQL autre que root.</td>
+        </tr>
+        <tr>
+            <td>MYSQL_PASSWORD</td>
+            <td>Mot de passe de MYSQL_USER.</td>
+        </tr>
+    </table>
+
+    <h3>PostgreSQL</h3>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Utilité</th>
+        </tr>
+        <tr>
+            <td>POSTGRES_USER</td>
+            <td>Nom d’utilisateur principal.</td>
+        </tr>
+        <tr>
+            <td>POSTGRES_PASSWORD</td>
+            <td>Mot de passe de POSTGRES_USER.</td>
+        </tr>
+        <tr>
+            <td>POSTGRES_DB</td>
+            <td>Nom de la base créée au démarrage.</td>
+        </tr>
+    </table>
+
+    <h2>🔄 Variables pour phpMyAdmin</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Utilité</th>
+        </tr>
+        <tr>
+            <td>PMA_HOST</td>
+            <td>Hôte de la base de données pour phpMyAdmin.</td>
+        </tr>
+        <tr>
+            <td>PMA_PORT</td>
+            <td>Port du serveur MySQL (par défaut 3306).</td>
+        </tr>
+        <tr>
+            <td>PMA_USER</td>
+            <td>Utilisateur MySQL pour phpMyAdmin.</td>
+        </tr>
+        <tr>
+            <td>PMA_PASSWORD</td>
+            <td>Mot de passe de PMA_USER.</td>
+        </tr>
+    </table>
+
+    <h2>🛡️ Variables pour la Sécurité et l'Authentification</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Utilité</th>
+        </tr>
+        <tr>
+            <td>JWT_SECRET</td>
+            <td>Clé secrète pour signer les tokens JWT.</td>
+        </tr>
+        <tr>
+            <td>SESSION_SECRET</td>
+            <td>Clé pour la gestion des sessions Express.</td>
+        </tr>
+        <tr>
+            <td>API_URL</td>
+            <td>URL du backend pour le frontend.</td>
+        </tr>
+        <tr>
+            <td>APP_URL</td>
+            <td>URL du frontend pour le CORS et les redirections.</td>
+        </tr>
+    </table>
+
+    <h2>🏢 Variables pour Nginx</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Utilité</th>
+        </tr>
+        <tr>
+            <td>NGINX_HOST</td>
+            <td>Hôte cible du reverse proxy.</td>
+        </tr>
+        <tr>
+            <td>NGINX_PORT</td>
+            <td>Port sur lequel Nginx écoute (80 ou 443).</td>
+        </tr>
+        <tr>
+            <td>NGINX_WORKER_PROCESSES</td>
+            <td>Nombre de processus worker Nginx.</td>
+        </tr>
+    </table>
+
+    <h2>✨ Partagez votre Expérience</h2>
+    <p>Quelle est la variable la plus obscure que vous avez rencontrée en configurant un projet Docker ? 🤔</p>
+    <p><strong>Partagez vos découvertes en commentaire et aidons-nous à démystifier Docker ensemble ! 🚀</strong></p>
+</body>
+
+</html>

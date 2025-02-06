@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide des instructions Dockerfile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        pre {
+            background: #222;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: #f8d775;
+        }
+
+        ul {
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="docInitialisation.html">Documentation Initialisation</a>
+        <a href="depFront.html">Dépendances Frontend</a>
+        <a href="depBack.html">Dépendances Backend</a>
+        <a href="inputdockerfile.html">Guide des instructions Dockerfile</a>
+        <a href="varDocker.html">Variables Docker</a>
+    </nav>
+    <h1>📦 Guide des instructions Dockerfile</h1>
+
+    <p>Un <code>Dockerfile</code> est un fichier contenant une liste d'instructions permettant de construire une image
+        Docker.</p>
+
+    <h2>1️⃣ FROM - Définir l’image de base</h2>
+    <p>Spécifie l’image à partir de laquelle l’image Docker sera construite.</p>
+    <pre><code>FROM node:18-alpine</code></pre>
+    <p>Utilise l'image <code>node:18-alpine</code> comme base.</p>
+
+    <h2>2️⃣ WORKDIR - Définir le répertoire de travail</h2>
+    <p>Change le répertoire courant dans le conteneur.</p>
+    <pre><code>WORKDIR /app</code></pre>
+    <p>Place tous les fichiers et commandes dans <code>/app</code>.</p>
+
+    <h2>3️⃣ COPY - Copier des fichiers locaux dans l’image</h2>
+    <pre><code>COPY . .</code></pre>
+    <p>Copie tous les fichiers du répertoire local dans le conteneur.</p>
+
+    <h2>4️⃣ RUN - Exécuter des commandes lors de la construction</h2>
+    <pre><code>RUN npm install</code></pre>
+    <p>Installe les dépendances à la construction de l’image.</p>
+
+    <h2>5️⃣ CMD vs ENTRYPOINT - Définir la commande de démarrage</h2>
+    <p><strong>CMD</strong> définit une commande par défaut :</p>
+    <pre><code>CMD ["node", "server.js"]</code></pre>
+    <p><strong>ENTRYPOINT</strong> rend une commande obligatoire :</p>
+    <pre><code>ENTRYPOINT ["node", "server.js"]</code></pre>
+
+    <h2>6️⃣ ENV - Définir des variables d’environnement</h2>
+    <pre><code>ENV PORT=3000</code></pre>
+    <p>Définit la variable <code>PORT</code> à <code>3000</code>.</p>
+
+    <h2>7️⃣ EXPOSE - Exposer un port</h2>
+    <pre><code>EXPOSE 3000</code></pre>
+    <p>Indique que le conteneur écoute sur le port 3000.</p>
+
+    <h2>8️⃣ VOLUME - Gérer la persistance des données</h2>
+    <pre><code>VOLUME [ "/app/data" ]</code></pre>
+    <p>Crée un volume Docker pour stocker les données persistantes.</p>
+
+    <h2>9️⃣ LABEL - Ajouter des métadonnées</h2>
+    <pre><code>LABEL maintainer="Ton Nom"</code></pre>
+    <p>Ajoute une information sur l’auteur de l’image.</p>
+
+    <h2>🔟 HEALTHCHECK - Vérifier l’état du conteneur</h2>
+    <pre><code>HEALTHCHECK --interval=30s CMD curl -f http://localhost:3000 || exit 1</code></pre>
+    <p>Vérifie si l’application répond.</p>
+
+    <h2>📌 Exemple complet d’un Dockerfile</h2>
+    <pre><code>
+FROM node:18-alpine
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3000
+CMD ["node", "server.js"]
+    </code></pre>
+
+    <h2>✅ Bonnes pratiques</h2>
+    <ul>
+        <li>Utiliser une image <strong>minimale</strong> (ex: <code>node:18-alpine</code> au lieu de
+            <code>node:18</code>).
+        </li>
+        <li>Éviter <strong>les RUN en plusieurs étapes</strong> pour réduire la taille de l’image.</li>
+        <li>Utiliser un fichier <code>.dockerignore</code> pour exclure les fichiers inutiles.</li>
+    </ul>
+
+    <h2>🚀 Commandes utiles</h2>
+    <pre><code># Construire une image
+docker build -t mon-image .
+
+# Lister les images Docker
+docker images
+
+# Supprimer une image Docker
+docker rmi mon-image
+    </code></pre>
+
+    <p><strong>👉 Avec ces bases, tu peux créer tes propres images Docker optimisées ! 🔥</strong></p>
+
+</body>
+
+</html>

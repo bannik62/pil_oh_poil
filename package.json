@@ -1,0 +1,16 @@
+{
+    "name": "pil_oh_poil_docker",
+    "version": "1.0.0",
+    "type": "module",
+   
+    "scripts": {
+      "docker:upd": "docker-compose up -d",
+      "docker:up": "docker-compose up",
+      "docker:up:build":"docker-compose up --build",
+      "docker:down": "docker-compose down",
+      "docker:build": "docker-compose build",
+      "docker:logs": "docker-compose logs -f",
+      "docker:restart": "npm run docker:down && npm run docker:up"
+    }
+  }
+  
