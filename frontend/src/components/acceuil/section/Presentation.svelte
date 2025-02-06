@@ -50,6 +50,9 @@
     background-color: var(--color-tertiary);
     border-radius: 0 10px 10px 0;
     box-shadow: 10px -2px 0 rgba(55, 54, 54, 0.441) inset;
+    background-image: url(../../../assets/img/parquet.jpg);
+    background-size: contain;
+    background-repeat: repeat;
 }
 
 .right-section-content {
@@ -58,8 +61,7 @@
     color: #fff;
     padding:10px;
     border-radius: 10px;
-    box-shadow: 10px -2px 0 rgba(55, 54, 54, 0.441) ;
-
+    box-shadow: 10px -2px 0 rgba(55, 54, 54, 0.441) 
   }
   .right-section-content h2 {
     font-size: 2rem;
