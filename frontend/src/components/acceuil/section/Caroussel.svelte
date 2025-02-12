@@ -1,25 +1,31 @@
 <script>
-  import { onMount } from 'svelte';
-  import image1 from '../../../assets/img/massage2.png';
-  import image2 from '../../../assets/img/shop.jpg';
-  import image3 from '../../../assets/img/tablemassage.jpg';
+  import { onMount } from "svelte";
+  import image1 from "../../../assets/img/massage2.png";
+  import image2 from "../../../assets/img/shop.jpg";
+  import image3 from "../../../assets/img/tablemassage.jpg";
+  import pilo from "../../../assets/img/pilo.png";
   let currentSlide = 0;
   let slides = [
     {
       image: image1,
-      title: 'Massage',
-      description: 'Détendez-vous avec nos massages relaxants'
+      title: "Massage",
+      description: "Détendez-vous avec nos massages relaxants",
     },
     {
-      image: image2, 
-      title: 'Notre Institut',
-      description: 'Un espace dédié à votre bien-être'
+      image: image2,
+      title: "Notre Institut",
+      description: "Un espace dédié à votre bien-être",
     },
     {
       image: image3,
-      title: 'Équipements',
-      description: 'Du matériel professionnel pour votre confort'
-    }
+      title: "Équipements",
+      description: "Du matériel professionnel pour votre confort",
+    },
+    {
+      image: pilo,
+      title: "Pilo",
+      description: "Un espace dédié à votre bien-être",
+    },
   ];
 
   function nextSlide() {
@@ -38,35 +44,40 @@
 </script>
 
 <div class="carousel-container">
+  <h2>Pil Oh Poil en image</h2>
   <div class="carousel">
     <button class="nav-button prev" on:click={prevSlide}>&#10094;</button>
-    
-    <div class="slide" style="background-image: url({slides[currentSlide].image})">
+
+    <div
+      class="slide"
+      style="background-image: url({slides[currentSlide].image})"
+    >
       <div class="slide-content">
-        <h2>{slides[currentSlide].title}</h2>
+        <h3>{slides[currentSlide].title}</h3>
         <p>{slides[currentSlide].description}</p>
       </div>
     </div>
-    
+
     <button class="nav-button next" on:click={nextSlide}>&#10095;</button>
   </div>
-  
+
   <div class="dots">
     {#each slides as _, i}
-      <span 
-        class="dot" 
-        class:active={currentSlide === i} 
-        on:click={() => currentSlide = i}
-        role="button" 
+      <span
+        class="dot"
+        class:active={currentSlide === i}
+        on:click={() => (currentSlide = i)}
+        role="button"
         tabindex="0"
-        on:keydown={(e) => e.key === 'Enter' && (currentSlide = i)}
-      ></span>
+        on:keydown={(e) => e.key === "Enter" && (currentSlide = i)}
+      />
     {/each}
   </div>
 </div>
 
 <style>
   .carousel-container {
+    position: relative;
     align-items: center;
     justify-content: center;
     justify-items: center;
@@ -82,8 +93,23 @@
     margin-bottom: 20px;
     border-radius: 10px;
   }
+  .carousel-container h2 {
+    position: absolute;
+    top: -300px;
+    left: 59%;
+    width: 100%;
+    translate: calc(-50%);
+    margin-bottom: 1rem;
+    color: var(--color-secondary);
+    font-family: Lavishly Yours;
+    color: #fff;
+    font-size: clamp(3rem, 14vw, 10rem);
+    filter: drop-shadow(10px -8px 2px rgba(0, 0, 0, 0.5));
+    z-index: 3;
+  }
 
   .carousel {
+    position: relative;
     border: 1px solid var(--color-secondary);
     position: relative;
     width: 80%;
@@ -169,20 +195,19 @@
     background: #717171;
   }
 
-
-    @media (max-width: 600px) {
+  @media (max-width: 600px) {
     .carousel-container {
       height: 60vh;
       width: 85%;
       border-radius: 10px;
-    margin: 0 auto;
-    }    
+      margin: 0 auto;
+    }
     .carousel {
       height: 100%;
       width: 100%;
     }
   }
-  
+
   @media (max-width: 768px) {
     .carousel {
       height: 300px;
@@ -196,6 +221,4 @@
       font-size: 1rem;
     }
   }
-
-
 </style>

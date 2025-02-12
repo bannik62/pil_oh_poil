@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import h1title from "../../../assets/img/h1title.png";
+  import Navbar from "../../module/Navbar.svelte";
   let cordonElement;
   let navbarElement;
   let h1Title;
@@ -64,26 +65,7 @@
 <main>
   <div>
     <header>
-      <div class="content-system-nav">
-        <div class="navbar">
-          <a href="#"
-            >Epilation
-            <div class="epilation icone" /></a
-          >
-          <a href="#"
-            >Soins
-            <div class="soins icone" /></a
-          >
-          <a href="#"
-            >Sourcils
-            <div class="sourcil icone" /></a
-          >
-          <a href="#"
-            >Massages
-            <div class="massage icone" /></a
-          >
-        </div>
-      </div>
+      <Navbar />
       <div class="cordon" />
       <link
         href="https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap"
@@ -155,12 +137,12 @@
     object-fit: cover;
     opacity: 0;
   }
-  .content-system-nav {
+  /* .content-system-nav {
     position: relative;
     width: 50%;
     height: 10vh;
-  }
-  .navbar {
+  } */
+  /* .navbar {
     position: absolute;
     top: 10px;
     left: 0;
@@ -181,7 +163,7 @@
       248,
       255,
       0.374
-    ); /* aliceblue with 0.8 opacity */
+    ); 
     backdrop-filter: blur(5px);
   }
   .navbar a {
@@ -234,7 +216,7 @@
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 50%;
-  }
+  } */
 
   .cordon {
     position: absolute;
@@ -255,6 +237,8 @@
     z-index: 3;
     filter: drop-shadow(5px 5px 3px rgba(230, 225, 104, 0.5));
   }
+
+  
 
   /* 📟 Tablettes */
   @media  (max-width: 600px) {

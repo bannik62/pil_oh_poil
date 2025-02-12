@@ -6,6 +6,7 @@
     import Caroussel from '../section/Caroussel.svelte';
     import Thesaloon from '../section/thesaloon.svelte';
     import Footer from '../section/Footeur.svelte';
+    import SectionMap from '../section/SectionMap.svelte';
 </script>
 
 <main>
@@ -14,6 +15,7 @@
   <Thesaloon />
   <Galerie />
   <Caroussel />
+  <SectionMap />
   <Footer />
 </main>
 

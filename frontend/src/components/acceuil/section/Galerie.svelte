@@ -82,7 +82,7 @@
     object-fit: cover;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3);  
   }
-  @media (min-width: 376px) and (max-width: 400px) {
+  @media (min-width: 377px) and (max-width: 400px) {
     .galerie {
       height: 200vh;
     }
@@ -90,7 +90,7 @@
       top: -6%;
     }
     }
-  @media (min-width: 375px) and (max-width: 375px) {
+  @media (min-width: 375px) and (max-width: 376px) {
     
     .galerie {
       height: 200vh;
@@ -101,11 +101,16 @@
     .h2-galerie {
       top: -6%;
     }
-    .h2-galerie {
+  }
+  @media (min-width: 414px) and (max-width: 415px) {
+    .galerie {
+      height: 185vh;
+    }
+    h2 {
       top: -6%;
     }
   }
-  @media (min-width: 414px) and (max-width: 415px) {
+  @media (min-width: 430px) and (max-width: 431px) {
     .galerie {
       height: 185vh;
     }
