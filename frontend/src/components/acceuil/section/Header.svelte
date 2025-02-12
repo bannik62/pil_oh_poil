@@ -41,15 +41,22 @@
   if (window.scrollY < 500) {
     h1Title.style.background = "rgba( 240,248,255,0.374)";
     h1Title.style.filter = "drop-shadow(12px -12px 2px rgba(0, 0, 0, 0.5))";
+    h1titlepng1.style.opacity = "0";
+    h1titlepng2.style.opacity = "0";
     h1titlepng1.style.display = "none";
     h1titlepng2.style.display = "none";
   } else {
     h1Title.style.backdropFilter = "blur(3px)";
     h1Title.style.background = "linear-gradient(to bottom, rgba(240, 248, 255, 0.874), #8A52B3)";
-    h1titlepng1.style.display = "block";
-    h1titlepng2.style.display = "block";
+
     h1titlepng1.style.opacity = "1";
     h1titlepng2.style.opacity = "1";
+    h1titlepng1.style.transition = "all 2s ease";  
+    h1titlepng2.style.transition = "all 2s ease";
+  }
+  if (window.scrollY > 490) {
+    h1titlepng1.style.display = "block";
+    h1titlepng2.style.display = "block";
   }
 });
 </script>
