@@ -141,7 +141,46 @@
         }
 
     }
-    @media (min-width: 375px) and (max-width: 400px) {
+    @media (min-width: 390px) and (max-width: 391px) {
+        .salon {    
+            height: 280vh;
+        }
+        .salon-content {
+            height: 70%;
+        }
+        h2 {
+            font-size: clamp(2.9rem, 10vw, 11rem);
+            top: -6%;
+        }
+        .right {
+            height: 100%;
+        }
+        .left {
+            height: 35%;
+        }
+    }   
+     @media (min-width: 375px) and (max-width: 389px) {
+
+        h2 {
+            top: -7%;
+        }
+        .right {
+            width: 100%;
+            height: auto; 
+            margin: 0 auto;
+        }
+        .left {
+            width: 100%;
+            height: auto; 
+            margin: 0 auto;
+        }
+        .salon-img {
+            width: 100%;
+            height: auto; 
+            margin: 0 auto;
+        }
+    }
+    @media (min-width: 376px) and (max-width: 377px) {
         .salon {
             height: 285vh;
             margin-bottom: 10%;
@@ -194,27 +233,7 @@
             margin: 0 auto;
         }
     }
-    @media (min-width: 375px) and (max-width: 400px) {
 
-        h2 {
-            top: -7%;
-        }
-        .right {
-            width: 100%;
-            height: auto; 
-            margin: 0 auto;
-        }
-        .left {
-            width: 100%;
-            height: auto; 
-            margin: 0 auto;
-        }
-        .salon-img {
-            width: 100%;
-            height: auto; 
-            margin: 0 auto;
-        }
-    }
     @media (min-width: 416px) and (max-width: 431px) {
         .salon {
             height: 170vh;
