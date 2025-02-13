@@ -7,6 +7,7 @@
     import Thesaloon from '../section/thesaloon.svelte';
     import Footer from '../section/Footeur.svelte';
     import SectionMap from '../section/SectionMap.svelte';
+    import Gobackup from '../../module/Gobackup.svelte';
 </script>
 
 <main>
@@ -17,6 +18,7 @@
   <Caroussel />
   <SectionMap />
   <Footer />
+  <Gobackup />
 </main>
 
 <style>
