@@ -32,6 +32,12 @@ a:hover {
 
 html {
   scroll-behavior: smooth; /* Active le défilement fluide */
+  scroll-padding-top: 100px;
+  scroll-padding-bottom: 100px;
+
+  scroll-snap-type: y mandatory;
+ 
+ 
 }
 
 

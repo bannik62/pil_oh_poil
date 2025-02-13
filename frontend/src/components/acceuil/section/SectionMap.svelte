@@ -98,10 +98,11 @@
     <h2>Où nous trouver</h2>
     <div class="text-section">
         <div class="content">
-            <p>93 Bd la Fayette<br /></p>
-            <p>
-                93 Bd la Fayette<br />
-                62100 Calais<br /><br />
+            <p>à Calais<br />
+                62100
+            </p>
+            <p>93 Bd la Fayette
+                <br /><br />
                 Téléphone: 03 21 99 00 00<br />
                 Email: contact@pilohpoil.fr
             </p>
@@ -139,7 +140,7 @@
     }
     h2 {
         position: absolute;
-        top: 0;
+        top: -50%;
         left: 0;
         width: 100%;
         text-align: center;
@@ -204,7 +205,7 @@
    
 
     h3 {
-        font-family: "Lavishly Yours", cursive;
+        font-family: "Playfair Display", serif;
         font-size: 2rem;
         margin: 20px 0;
     }
