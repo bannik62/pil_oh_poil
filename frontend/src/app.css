@@ -6,8 +6,9 @@
   --color-primary: #237A85;
   --color-secondary: #0E495B;
   --color-tertiary: #C78049;
-
-
+  --gradient-module:linear-gradient(to top, #8A52B3 30%, #438b88 100%);
+  --gradient-navbar:linear-gradient(to top, #8b52b363 30%, #438b89b6 100%);
+  --font-title: 'Lavishly Yours', sans-serif;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -17,10 +18,50 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/* 
-*{
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(70px);
+    scroll-offsets: entry 50% exit 100%;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1; 
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+@scroll-timeline --view-timeline {
+  source: auto;
+  orientation: block;
+  /* scroll-offsets: entry 25% exit 50%; */
+  /* scroll-offsets-block: 25% 50%; */
+}
+
+p {
+  opacity: 0;
+  transform: translateY(-70px);
+  animation: fadeInUp 1s ease-out forwards;
+  animation-timeline: --view-timeline;
+  animation-range: entry 25% cover 20%;
+  view-timeline-name: --view-timeline;
+  view-timeline-axis: block;
+  transition: all 0.5s ease-out;
+  
+}
+
+.visible {
+  animation: fadeInUp 0.9s ease-out forwards;
+}
+
+ /* Add IntersectionObserver in your JS: */
+
+
+
+/* *{
   outline: 1px solid red;
-} */
+}  */
 a {
   font-weight: 500;
   color: #646cff;
@@ -34,10 +75,6 @@ html {
   scroll-behavior: smooth; /* Active le défilement fluide */
   scroll-padding-top: 100px;
   scroll-padding-bottom: 100px;
-
-  scroll-snap-type: y mandatory;
- 
- 
 }
 
 
@@ -68,24 +105,7 @@ h1 {
   box-sizing: border-box;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -95,7 +115,5 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  button {
-    background-color: #f9f9f9;
-  }
+
 }

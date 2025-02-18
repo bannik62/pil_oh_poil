@@ -42,6 +42,7 @@
                     }
 
                     // Créer et ajouter le contrôle de routage
+                    // @ts-ignore
                     window.routingControl = L.Routing.control({
                         waypoints: [
                             L.latLng(userLat, userLng),
@@ -78,10 +79,12 @@
 
     // Fonction pour charger un itinéraire avec des coordonnées fictives
     function loadFakeRoute(fakeLat, fakeLng) {
+        
         if (window.routingControl) {
             map.removeControl(window.routingControl);
         }
 
+        // @ts-ignore
         window.routingControl = L.Routing.control({
             waypoints: [
                 L.latLng(fakeLat, fakeLng),
@@ -93,7 +96,7 @@
         }).addTo(map);
     }
 </script>
-
+<section id="geo" >
 <div class="container">
     <h2>Où nous trouver</h2>
     <div class="text-section">
@@ -117,12 +120,12 @@
         <img src={shopstreet} alt="shopstreet" class="shopstreet" />
     </div>
     <div class="map-section">
-        <div id="map" />
+        <div id="map"></div>
         <!-- Bouton pour activer l'itinéraire -->
         <button on:click={getItinerary}>Obtenir l'itinéraire</button>
     </div>
 </div>
-
+</section>
 <style>
     .container {
         position: relative;

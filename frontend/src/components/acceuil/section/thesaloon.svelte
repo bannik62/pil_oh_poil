@@ -2,13 +2,13 @@
     import salon from "../../../assets/img/table.png";
 </script>
 
-<section class="salon">
+<section class="salon" id="salon">
     <h2>Les Salons</h2>
     <div class="salon-content">
         <div class="left">
             <div class="text">
                 <p class="text-salon">
-                    ✨ Offrez-vous une parenthèse de bien-être chez Pile Oh Poil
+                    ✨ Offrez-vous une parenthèse de bien-être chez Pil Oh Poil
                     ✨
                 </p>
                 <p>
@@ -19,11 +19,8 @@
                 </p>
                 <p>
                     Massage apaisant, soins du visage revitalisants, gommages
-                    envoûtants… <br> Tout est pensé pour éveiller vos sens et vous
-                    offrir un moment hors du temps.
-                </p>
-                <p>
-                    Fermez les yeux, respirez… <br><br>
+                    envoûtants… <br> 
+                    
                     ✨🌿 Vous êtes entre de bonnes mains.
                     🌿✨
                 </p>

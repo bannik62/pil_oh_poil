@@ -3,7 +3,7 @@
   import boudah from '../../../assets/img/boudah.jpg';
   import tablemassage from '../../../assets/img/tablemassage.jpg';
 </script>
-
+<section id="prestations">
 <main>
   <h2 class="h2-galerie">Prestations</h2>
   <section class="galerie">
@@ -14,7 +14,7 @@
         <!-- Images will be added here -->
   </section>
 </main>
-
+</section>
 <style>
   main {
     position: relative;
