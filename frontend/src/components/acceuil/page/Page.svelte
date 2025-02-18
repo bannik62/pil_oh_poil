@@ -26,7 +26,7 @@
     width: 100vw;
     height: auto;
     display: flex;
-    flex-direction: column;
+   flex-direction: column;
     
   }
 

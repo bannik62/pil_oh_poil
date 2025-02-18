@@ -1,8 +1,7 @@
 <script>
   // Logic goes here
 </script>
-
-
+<section id="presentation">
   <div class="container">
     <div class="left-section">
     </div>
@@ -19,10 +18,11 @@
         </div>  
     </div>
   </div>
-
+</section>
 
 <style>
   .container {
+    position: relative;
     padding: 10px;
     margin-right: 100px;
     width: 99%;
@@ -34,7 +34,7 @@
     margin-bottom: 60px;
     border-radius: 16px;
     box-shadow: 0 0px 30px 0 rgba(0, 0, 0, 0.5);
-
+    z-index: 1;
 }
 
 .left-section {

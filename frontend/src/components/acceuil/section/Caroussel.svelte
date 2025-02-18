@@ -42,7 +42,7 @@
     return () => clearInterval(interval);
   });
 </script>
-
+<section id="caroussel">
 <div class="carousel-container">
   <h2>Pil Oh Poil en image</h2>
   <div class="carousel">
@@ -61,10 +61,11 @@
     <button class="nav-button next" on:click={nextSlide}>&#10095;</button>
   </div>
 
-  <div class="dots">
+  <div class="dots" title="dots">
     {#each slides as _, i}
       <span
-        class="dot"
+        class="dot" 
+        title="dot"
         class:active={currentSlide === i}
         on:click={() => (currentSlide = i)}
         role="button"
@@ -74,7 +75,7 @@
     {/each}
   </div>
 </div>
-
+</section>
 <style>
   .carousel-container {
     position: relative;
