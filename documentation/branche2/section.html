@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Svelte - One Page avec Modules</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #0073e6;
+        }
+
+        strong {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2, h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #fff;
+            height: 10vh;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#introduction">Introduction</a>
+        <a href="#structure">Structure des Modules</a>
+        <a href="#header">Header</a>
+        <a href="#presentation">Présentation</a>
+        <a href="#prestation">Prestation</a>
+        <a href="#caroussel">Caroussel</a>
+        <a href="#geo">Section Géographique</a>
+        <a href="#footer">Footer</a>
+        <a href="#conclusion">Conclusion</a>
+    </nav>
+
+    <h1 id="introduction">Introduction</h1>
+    <p>Ce projet utilise <strong>Svelte</strong> pour créer une One Page composée de 7 sections modulaires :</p>
+    <ul>
+        <li><strong>Header</strong> : Utilisé comme page principale pour le One Page.</li>
+        <li><strong>Présentation</strong> : Petite présentation de l'entreprise.</li>
+        <li><strong>Prestation</strong> : Affiche les tarifs et prestations.</li>
+        <li><strong>Caroussel</strong> : Affichage du magasin en photo.</li>
+        <li><strong>Section Géographique</strong> : Adresse avec une carte géographique.</li>
+        <li><strong>Footer</strong> : Informations générales.</li>
+    </ul>
+
+    <h2 id="structure">Structure des Modules</h2>
+    <p>La structure du projet est organisée de manière modulaire :</p>
+    <pre><code>src/
+│
+├── App.svelte
+└── components/
+    ├── Header.svelte
+    ├── Presentation.svelte
+    ├── Prestation.svelte
+    ├── Caroussel.svelte
+    ├── SectionGeo.svelte
+    └── Footer.svelte</code></pre>
+
+    <h2 id="header">Header</h2>
+    <p>Le <strong>Header</strong> sert de page principale pour le One Page :</p>
+    <pre><code>// src/components/Header.svelte
+&lt;script&gt;
+    export let title = "Bienvenue sur Pile Oh Poil";
+&lt;/script&gt;
+
+&lt;header&gt;
+    &lt;h1&gt;{title}&lt;/h1&gt;
+    &lt;nav&gt;
+        &lt;a href="#presentation"&gt;Présentation&lt;/a&gt;
+        &lt;a href="#prestation"&gt;Prestation&lt;/a&gt;
+        &lt;a href="#caroussel"&gt;Photos&lt;/a&gt;
+        &lt;a href="#geo"&gt;Contact&lt;/a&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;</code></pre>
+
+    <h2 id="presentation">Présentation</h2>
+    <p>La section <strong>Présentation</strong> donne un aperçu de l'entreprise :</p>
+    <pre><code>// src/components/Presentation.svelte
+&lt;section id="presentation"&gt;
+    &lt;h2&gt;Présentation&lt;/h2&gt;
+    &lt;p&gt;Bienvenue chez Pile Oh Poil, votre spécialiste beauté...&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+
+    <h2 id="prestation">Prestation</h2>
+    <p>La section <strong>Prestation</strong> affiche les tarifs et prestations :</p>
+    <pre><code>// src/components/Prestation.svelte
+&lt;section id="prestation"&gt;
+    &lt;h2&gt;Nos Prestations&lt;/h2&gt;
+    &lt;ul&gt;
+        &lt;li&gt;Massage - 50€&lt;/li&gt;
+        &lt;li&gt;Onglerie - 30€&lt;/li&gt;
+        &lt;li&gt;Soins du visage - 40€&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/section&gt;</code></pre>
+
+    <h2 id="caroussel">Caroussel</h2>
+    <p>Le <strong>Caroussel</strong> affiche un diaporama des photos du magasin :</p>
+    <pre><code>// src/components/Caroussel.svelte
+&lt;section id="caroussel"&gt;
+    &lt;h2&gt;Notre Magasin&lt;/h2&gt;
+    &lt;!-- Intégration d'un caroussel ici --&gt;
+&lt;/section&gt;</code></pre>
+  
+    <a href="leafleft.html">integration leaftleft</a>
+    <h2 id="geo">Section Géographique</h2>
+    <p>La <strong>Section Géographique</strong> inclut l'adresse et une carte :</p>
+    <pre><code>// src/components/SectionGeo.svelte
+&lt;section id="geo"&gt;
+    &lt;h2&gt;Où nous trouver ?&lt;/h2&gt;
+    &lt;p&gt;Adresse : 123 Rue de la Beauté, Paris&lt;/p&gt;
+    &lt;!-- Intégration de Google Maps ou Leaflet --&gt;
+&lt;/section&gt;</code></pre>
+
+    <h2 id="footer">Footer</h2>
+    <p>Le <strong>Footer</strong> contient les informations générales :</p>
+    <pre><code>// src/components/Footer.svelte
+&lt;footer&gt;
+    &lt;p&gt;© 2025 Pile Oh Poil - Tous droits réservés&lt;/p&gt;
+&lt;/footer&gt;</code></pre>
+
+    <h2 id="conclusion">Conclusion</h2>
+    <p>Cette structure modulaire avec Svelte permet une maintenance et une évolution aisées du site. Chaque section étant encapsulée dans un module, le développement reste organisé et cohérent.</p>
+
+    <footer>
+        <p>Documentation pour la One Page de Pile Oh Poil utilisant Svelte, JavaScript (ES6) et CSS.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Svelte - One Page avec Cube Rotatif</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #0073e6;
+        }
+
+        h3 {
+            color: #00e6a1;
+        }
+
+        strong {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2,
+        h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#introduction">Introduction</a>
+        <a href="#technologies">Technologies</a>
+        <a href="#store">Store Persistant</a>
+        <a href="#js">JavaScript</a>
+        <a href="#animations">Animations CSS</a>
+        <a href="#navigation">Navigation One Page</a>
+        <a href="#conclusion">Conclusion</a>
+        <a href="section.html">les differentes sections</a>
+        <a href="module.html">les differents modules</a>
+    </nav>
+
+    <h1 id="introduction">Introduction</h1>
+    <p>Ce projet utilise <strong>Svelte</strong> pour créer un site One Page avec une navigation basée sur un effet de cube rotatif. L'état de la page actuelle est stocké de manière persistante à l'aide de <code>localStorage</code>.</p>
+
+    <h2 id="technologies">Technologies Utilisées :</h2>
+    <table>
+        <tr>
+            <th>Technologie</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><strong>Svelte</strong></td>
+            <td>Framework JavaScript pour construire l'interface utilisateur.</td>
+        </tr>
+        <tr>
+            <td><strong>JavaScript (ES6)</strong></td>
+            <td>Gestion de la logique applicative et des interactions utilisateur.</td>
+        </tr>
+        <tr>
+            <td><strong>CSS</strong></td>
+            <td>Animations fluides pour les transitions entre les fenêtres.</td>
+        </tr>
+        <tr>
+            <td><strong>LocalStorage</strong></td>
+            <td>Persistance de l'état de la page actuelle même après un rafraîchissement.</td>
+        </tr>
+    </table>
+
+    <h2 id="store">Store Persistant</h2>
+    <p>Nous utilisons <code>writable</code> de Svelte pour gérer l'état de la page :</p>
+    <pre><code>// Importation du writable depuis Svelte
+import { writable } from 'svelte/store';
+
+// Fonction personnalisée pour créer un store persistant
+function createPersistedStore(key, initial) {
+  const stored = localStorage.getItem(key);
+  const data = stored ? JSON.parse(stored) : initial;
+  const store = writable(data);
+
+  // Sauvegarde automatique dans localStorage à chaque changement de valeur
+  store.subscribe((value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  });
+
+  return store;
+}
+
+// Création d'un store persistant pour la page actuelle du cube
+export const faceActuelle = createPersistedStore('faceActuelle', 'front');</code></pre>
+
+    <h2 id="js">JavaScript (ES6)</h2>
+    <p>JavaScript est utilisé pour gérer la logique de navigation du cube rotatif. Voici la fonction principale :</p>
+    <pre><code>function rotateCube() {
+  faceActuelle.update((face) => {
+    switch (face) {
+      case "front":
+        return "right";
+      case "right":
+        return "left";
+      case "left":
+        return "bottom";
+      case "bottom":
+        return "top";
+      case "top":
+        return "front";
+      default:
+        return "front";
+    }
+  });
+}</code></pre>
+    <p>Cette fonction :</p>
+    <ul>
+        <li>Utilise le store <code>faceActuelle</code> pour récupérer la face actuelle du cube.</li>
+        <li>Met à jour la face du cube en fonction de la face active actuelle, créant ainsi une rotation continue.</li>
+    </ul>
+
+    <h2 id="animations">Animations CSS</h2>
+    <p>Les transitions entre les différentes faces du cube sont gérées par des animations en CSS :</p>
+    <pre><code>/* Exemple de rotation CSS */
+.cube {
+    transition: transform 0.8s ease-in-out;
+    transform-style: preserve-3d;
+}
+
+.cube.front {
+    transform: rotateY(0deg);
+}
+
+.cube.right {
+    transform: rotateY(-90deg);
+}
+
+.cube.left {
+    transform: rotateY(90deg);
+}
+
+.cube.top {
+    transform: rotateX(-90deg);
+}
+
+.cube.bottom {
+    transform: rotateX(90deg);
+}</code></pre>
+
+    <h2 id="navigation">Navigation One Page</h2>
+    <p>Le site fonctionne en One Page grâce à l'animation qui change les fenêtres. À chaque changement de face, le store <code>faceActuelle</code> est mis à jour, ce qui déclenche automatiquement l'animation CSS correspondante.</p>
+
+    <h2 id="conclusion">Conclusion</h2>
+    <p>Ce projet montre comment utiliser Svelte avec des animations CSS et un store persistant pour créer une expérience de navigation fluide et interactive. JavaScript (ES6) est utilisé pour gérer la logique de rotation du cube, tandis que CSS anime les transitions.</p>
+
+    <footer>
+        <p>Documentation créée pour expliquer l'utilisation de <strong>Svelte</strong>, <strong>JavaScript (ES6)</strong> et <strong>CSS</strong> avec <strong>localStorage</strong>.</p>
+    </footer>
+</body>
+</html>

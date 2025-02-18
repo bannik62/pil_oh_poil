@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation d'Intégration de Leaflet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+
+        h1, h2 {
+            color: #0073e6;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh;
+        }
+
+        .content {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        h3 {
+            color: #00e6a1;
+        }
+
+        .code-block {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Documentation de l'Intégration Leaflet avec Svelte</h1>
+
+    <h2>Vue d'Ensemble</h2>
+    <p>
+        Cette section décrit l'intégration de <strong>Leaflet</strong> pour afficher une carte interactive dans une page web avec <strong>Svelte</strong>. 
+        La carte permet à l'utilisateur de localiser le magasin et de créer un itinéraire vers celui-ci depuis sa position actuelle.
+    </p>
+
+    <h2>Structure du Code</h2>
+    <p>
+        Le code ci-dessous montre l'utilisation de Leaflet avec Svelte. L'élément central est la carte, qui est initialisée lors du montage du composant.
+        Un bouton permet de calculer l'itinéraire en fonction de la géolocalisation de l'utilisateur.
+    </p>
+
+    <h3>Code du Composant Svelte</h3>
+    <pre>
+        <code>
+&lt;script&gt;
+    import { onMount } from "svelte";
+    import * as L from "leaflet";
+    let map;
+    import "leaflet/dist/leaflet.css";
+    import "leaflet-routing-machine";
+    import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+    import shopstreet from "../../../assets/img/shopstreet.png";
+
+    const storeLat = 50.9464832;
+    const storeLng = 1.8589124;
+
+    onMount(() => {
+        map = L.map("map").setView([storeLat, storeLng], 13);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "© OpenStreetMap contributors",
+        }).addTo(map);
+
+        L.marker([storeLat, storeLng])
+            .addTo(map)
+            .bindPopup("Pil Oh Poil")
+            .openPopup();
+    });
+
+    function getItinerary() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    if (window.routingControl) {
+                        map.removeControl(window.routingControl);
+                    }
+
+                    window.routingControl = L.Routing.control({
+                        waypoints: [
+                            L.latLng(userLat, userLng),
+                            L.latLng(storeLat, storeLng),
+                        ],
+                        routeWhileDragging: false,
+                        showAlternatives: false,
+                        language: "fr",
+                    }).addTo(map);
+                },
+                (error) => {
+                    alert("Impossible de récupérer votre position. Utilisation des coordonnées fictives.");
+                    loadFakeRoute(50.95293, 1.8510254);
+                }
+            );
+        } else {
+            alert("La géolocalisation n'est pas supportée. Utilisation des coordonnées fictives.");
+            loadFakeRoute(50.95293, 1.8510254);
+        }
+    }
+
+    function loadFakeRoute(fakeLat, fakeLng) {
+        if (window.routingControl) {
+            map.removeControl(window.routingControl);
+        }
+
+        window.routingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(fakeLat, fakeLng),
+                L.latLng(storeLat, storeLng),
+            ],
+            routeWhileDragging: false,
+            showAlternatives: false,
+            language: "fr",
+        }).addTo(map);
+    }
+&lt;/script&gt;
+        </code>
+    </pre>
+
+    <h2>Description des Fonctionnalités</h2>
+    <p>
+        Ce code utilise Leaflet pour afficher une carte avec un marqueur représentant le magasin. Le bouton permet de calculer l'itinéraire depuis la position
+        de l'utilisateur jusqu'au magasin, en utilisant la géolocalisation native du navigateur. Si la géolocalisation échoue, une route fictive est tracée.
+    </p>
+
+    <h3>Comportement des Fonctionnalités</h3>
+    <ul>
+        <li><strong>Initialisation de la Carte</strong> : La carte est centrée sur les coordonnées du magasin et utilise OpenStreetMap pour les tuiles.</li>
+        <li><strong>Affichage du Marqueur</strong> : Un marqueur est placé sur la carte à l'emplacement du magasin avec une info-bulle.</li>
+        <li><strong>Calcul de l'Itinéraire</strong> : Lorsqu'un utilisateur clique sur le bouton, un itinéraire est tracé depuis sa position actuelle (si disponible) jusqu'au magasin. Si la géolocalisation échoue, un itinéraire fictif est utilisé.</li>
+    </ul>
+
+    <h3>Structure HTML du Composant</h3>
+    <pre>
+        <code>
+&lt;section id="geo"&gt;
+    &lt;div class="container"&gt;
+        &lt;h2&gt;Où nous trouver&lt;/h2&gt;
+        &lt;div class="text-section"&gt;
+            &lt;div class="content"&gt;
+                &lt;p&gt;à Calais&lt;br /&gt;62100&lt;/p&gt;
+                &lt;p&gt;93 Bd la Fayette&lt;br /&gt;Téléphone: 03 21 99 00 00&lt;br /&gt;Email: contact@pilohpoil.fr&lt;/p&gt;
+                &lt;h3&gt;Horaires d'ouverture&lt;/h3&gt;
+                &lt;p&gt;Lundi - Vendredi: 9h - 19h&lt;br /&gt;Samedi: 10h - 18h&lt;br /&gt;Dimanche: Fermé&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;img src={shopstreet} alt="shopstreet" class="shopstreet" /&gt;
+        &lt;/div&gt;
+        &lt;div class="map-section"&gt;
+            &lt;div id="map"&gt;&lt;/div&gt;
+            &lt;button on:click={getItinerary}&gt;Obtenir l'itinéraire&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+        </code>
+    </pre>
+
+    <h2>Style CSS</h2>
+    <p>
+        Le style de cette section inclut une disposition flexible de la carte et des informations, ainsi que des effets visuels pour rendre l'interface attrayante.
+    </p>
+
+    <h3>Extraits de CSS</h3>
+    <pre>
+        <code>
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 99%;
+    margin-top: 20px;
+    height: 100%;
+    border: 1px solid var(--color-secondary);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    margin-top: 50px;
+}
+
+#map {
+    width: 440px;
+    height: 450px;
+    border-radius: 10px;
+}
+
+button {
+    position: absolute;
+    bottom: 15px;
+    left: 25px;
+    background-color: white;
+    color: var(--color-primary);
+    padding: 10px 20px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    z-index: 1000;
+}
+        </code>
+    </pre>
+
+    <h2>Conclusion</h2>
+    <p>
+        Cette intégration de Leaflet avec Svelte permet de créer facilement une carte interactive avec un itinéraire vers un magasin, tout en offrant une expérience utilisateur fluide. Il est aussi possible d'ajouter des fonctionnalités supplémentaires selon les besoins.
+    </p>
+
+</body>
+</html>
