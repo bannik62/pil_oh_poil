@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation du projet Svelte</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2, h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh;
+        }
+
+        strong {
+            color: #0073e6;
+        }
+
+        h3 {
+            color: #00e6a1;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Documentation du projet Svelte avec les Modules</h1>
+
+    <h2>Vue d'Ensemble</h2>
+    <p>
+        Ce projet utilise <strong>Svelte</strong> pour gérer la structure de l'interface avec des composants séparés.
+        Les modules sont utilisés pour la gestion de la navigation, de l'authentification, et d'autres éléments interactifs
+        tels que le cube d'affichage et le bouton de retour en haut. La structure principale de l'interface est une page unique
+        qui affiche différentes sections, et ces sections peuvent être naviguées via une <strong>navbar</strong>.
+    </p>
+
+    <h2>Structure des Modules</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Module</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Navbar</td>
+                <td>Ce module permet de naviguer entre les différentes sections de la page. Il est caché par défaut et devient visible
+                    lorsqu'un utilisateur clique sur un bouton spécifique (cordon). Il interagit également avec le cube d'affichage.</td>
+            </tr>
+            <tr>
+                <td>Login</td>
+                <td>Le module de login permet à l'utilisateur de se connecter via un formulaire d'authentification avec un email et un mot de passe.</td>
+            </tr>
+            <tr>
+                <td>Bouton "Retour en Haut"</td>
+                <td>Le bouton permet à l'utilisateur de revenir facilement en haut de la page lorsqu'il défile vers le bas.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Intégration de la Navbar</h2>
+    <p>
+        La <strong>navbar</strong> est un module qui permet à l'utilisateur de naviguer entre les différentes sections du site.
+        Elle est cachée par défaut et s'affiche lorsqu'un utilisateur clique sur le bouton "cordon". Ce comportement est géré
+        par un store de visibilité, qui met à jour l'état de la navbar dans l'application.
+    </p>
+    
+    <h3>Comportement de la Navbar</h3>
+    <p>
+        <ul>
+            <li><strong>Affichage et Masquage</strong> : Par défaut, la navbar est cachée. Elle devient visible lorsqu'un utilisateur clique sur le bouton "cordon" (ou une icône spécifique). Ce comportement est contrôlé via un store de visibilité.</li>
+            <li><strong>Navigation via le Cube d'Affichage</strong> : La navbar est liée à un mécanisme de navigation qui permet de faire défiler les sections de la page dans un cube d'affichage. Cela entraîne un changement de "faces" du cube à chaque interaction.</li>
+        </ul>
+    </p>
+
+    <h3>Code d'Intégration de la Navbar</h3>
+    <pre>
+        <code>
+&lt;!-- Navbar.svelte --&gt;
+&lt;script&gt;
+  import { faceActuelle } from '../stores/cube.js'; // Store pour la gestion de l'affichage du cube
+  let navbarVisible = false; // Store pour la visibilité de la navbar
+  
+  // Fonction pour afficher ou masquer la navbar
+  function toggleNavbar() {
+    navbarVisible = !navbarVisible;
+  }
+&lt;/script&gt;
+
+&lt;button on:click={toggleNavbar}&gt;
+  Afficher / Masquer Navbar
+&lt;/button&gt;
+
+{#if navbarVisible}
+  &lt;nav&gt;
+    &lt;a href="#accueil" on:click={() => faceActuelle.set('accueil')}&gt;Accueil&lt;/a&gt;
+    &lt;a href="#services" on:click={() => faceActuelle.set('services')}&gt;Services&lt;/a&gt;
+    &lt;a href="#contact" on:click={() => faceActuelle.set('contact')}&gt;Contact&lt;/a&gt;
+  &lt;/nav&gt;
+{/if}
+
+&lt;style&gt;
+  nav {
+    background-color: #0073e6;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  nav a {
+    margin-right: 20px;
+    color: white;
+    text-decoration: none;
+  }
+
+  nav a:hover {
+    color: #00e6a1;
+  }
+&lt;/style&gt;
+        </code>
+    </pre>
+
+    <h2>Intégration du Cube d'Affichage des Fenêtres</h2>
+    <p>
+        Le cube d'affichage est responsable de la gestion de la navigation entre les différentes fenêtres. Chaque section de la page
+        correspond à une "face" du cube. Lorsque l'utilisateur clique sur un lien dans la navbar, la "face" du cube change pour afficher
+        la nouvelle section.
+    </p>
+
+    <h3>Comportement du Cube</h3>
+    <p>
+        <ul>
+            <li><strong>Affichage des Fenêtres</strong> : Chaque section est représentée par une "face" du cube. En fonction de la face actuelle
+                du cube, le contenu de la page change.</li>
+            <li><strong>Gestion via le Store `faceActuelle`</strong> : Le store `faceActuelle` détermine quelle "face" est affichée.
+                Il est mis à jour à chaque interaction utilisateur.</li>
+        </ul>
+    </p>
+
+    <h3>Code d'Intégration du Cube d'Affichage</h3>
+    <pre>
+        <code>
+&lt;!-- Page.svelte --&gt;
+&lt;script&gt;
+  import { faceActuelle } from '../stores/cube.js'; // Import du store pour la gestion de la face actuelle
+&lt;/script&gt;
+
+&lt;div class="cube"&gt;
+  {#if $faceActuelle === 'accueil'}
+    &lt;section id="accueil"&gt;Bienvenue sur notre site!&lt;/section&gt;
+  {:else if $faceActuelle === 'services'}
+    &lt;section id="services"&gt;Nos services&lt;/section&gt;
+  {:else if $faceActuelle === 'contact'}
+    &lt;section id="contact"&gt;Contactez-nous&lt;/section&gt;
+  {/if}
+&lt;/div&gt;
+
+&lt;style&gt;
+  .cube {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+&lt;/style&gt;
+        </code>
+    </pre>
+
+    <h2>Intégration du Bouton "Retour en Haut"</h2>
+    <p>
+        Le bouton "Retour en haut" est utilisé pour permettre à l'utilisateur de revenir en haut de la page de manière fluide.
+        Il est visible uniquement lorsque l'utilisateur défile vers le bas de la page.
+    </p>
+
+    <h3>Code d'Intégration du Bouton</h
