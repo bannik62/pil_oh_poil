@@ -45,8 +45,11 @@ services:
   phpmyadmin:
     container_name: phpmyadmin_pile_oh_poil
     image: phpmyadmin/phpmyadmin
-    env_file:
-      - .env.development
+    # env_file:
+    #   - .env.development
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password
     ports:
       - "8080:80"
     depends_on:

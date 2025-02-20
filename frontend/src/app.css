@@ -9,6 +9,7 @@
   --gradient-module:linear-gradient(to top, #8A52B3 30%, #438b88 100%);
   --gradient-navbar:linear-gradient(to top, #8b52b363 30%, #438b89b6 100%);
   --font-title: 'Lavishly Yours', sans-serif;
+  --font-playfair: 'Playfair Display', sans-serif;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
