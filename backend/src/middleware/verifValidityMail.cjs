@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { MailtrapTransport } = require('mailtrap');
 
-const TOKEN = "642213db4010e161c41b08a5559041ab";
+const TOKEN = "";
 
 const verifyEmailMiddleware = async (req, res, next) => {
     try {
