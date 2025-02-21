@@ -1,8 +1,10 @@
 <script>
+  import { onMount } from "svelte";
   import { faceActuelle } from "../../stores/cube";
   import loginImage from "../../assets/img/logging.png";
   import Utilisateur from "../../class/UserClass";
-
+  let email = "";
+  let password = "";
   let emailRegister = "";
   let passwordRegister = "";
   let registerSuccess = false;
@@ -48,28 +50,29 @@
     registerError = true;
   }
 };
-// onMount(async () => {
-//     const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
-//     const data = await res.json();
-//     csrfToken = data.csrfToken;
-//   });
+onMount(async () => {
+    const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
+    const data = await res.json();
+    csrfToken = data.csrfToken;
+    console.log("TOKEN BIEN RECU",csrfToken);
+  });
 
-//   async function login(event) {
-//     event.preventDefault(); // Empêcher le rechargement de la page
+  async function login(event) {
+    event.preventDefault(); // Empêcher le rechargement de la page
 
-//     const res = await fetch('http://localhost:3000/users/api/login', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'CSRF-Token': csrfToken
-//       },
-//       body: JSON.stringify({ email, password }),
-//       credentials: 'include'
-//     });
+    const res = await fetch('http://localhost:3000/users/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'CSRF-Token': csrfToken
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include'
+    });
 
-//     const data = await res.json();
-//     console.log(data);
-//   }
+    const data = await res.json();
+    console.log(data);
+  }
 
   // Fonction pour basculer entre Login et Register
   function toggleActive() {
@@ -91,10 +94,10 @@
       <div class="content-form">
         <form>
           <label for="email">Email</label>
-          <input type="text" placeholder="Email" />
+          <input type="text" placeholder="Email" bind:value={email} />
           <label for="password">Password</label>
-          <input type="password" placeholder="Password" />
-          <button type="submit">Login</button>
+          <input type="password" placeholder="Password" bind:value={password} />
+          <button type="submit" on:click={login}>Login</button>
         </form>
       </div>
       <div class="login-presentation">

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../../models/user.cjs');
+// const { User } = require('../../../models/user.cjs');
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
@@ -9,3 +9,5 @@ router.post('/login', (req, res) => {
     // Ici, ajoute ta logique de connexion (vérification en base de données, bcrypt, etc.)
     res.json({ message: 'Connexion réussie !' });
 });
+
+module.exports = router;
