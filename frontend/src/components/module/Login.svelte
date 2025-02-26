@@ -1,9 +1,11 @@
 <script>
+  import axios from 'axios';
   import { onMount } from "svelte";
   import { faceActuelle } from "../../stores/cube";
   import loginImage from "../../assets/img/logging.png";
   import Utilisateur from "../../class/UserClassRegister";
   import UtilisateurLogin from "../../class/UserClassLogin";
+  import { utilisateurConnecte, estAuthentifie } from "../../stores/sessionStore.js";
   let email = "";
   let password = "";
   let loginSuccess = false;
@@ -22,10 +24,11 @@
       const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
       const data = await res.json();
       csrfToken = data.csrfToken;
-      console.log("TOKEN BIEN RECU",csrfToken);
+      console.log("csrfToken",csrfToken);
+      console.info("Formulaire de login sécurisé avec token csrfToken");
     });
 
-  const envoyerDonneesEnregistrement = async (event) => {
+  async function envoyerDonneesEnregistrement(event) {
   message = "";
   messageClass = "";
   registerSuccess = false; // Réinitialiser l'état
@@ -34,7 +37,7 @@
   event.preventDefault();
 
   try {
-    const user = new Utilisateur(emailRegister, passwordRegister);
+    const user = new Utilisateur(emailRegister, passwordRegister, csrfToken);
     const result = await user.envoyer();
 
     if (result.message) {
@@ -73,6 +76,45 @@
       message = 'Connexion réussie !';
       messageClass = "success";
       loginSuccess = true;
+      setTimeout(() => {
+        message = "";
+        messageClass = "";
+        loginSuccess = false;
+        loginError = false;
+      }, 3000);
+      console.log("result",result);
+
+      function decoderTokenManuellement(token) {
+                try {
+                    // Séparer le token en trois parties
+                    const base64Url = token.split('.')[1];
+            
+                    // Ajouter des caractères manquants à la fin pour que ce soit un multiple de 4
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            
+                    // Décoder la base64 en chaîne de caractères
+                    const decodedPayload = JSON.parse(atob(base64));
+                    console.log("Données décodées:", decodedPayload);
+                    return decodedPayload;
+                } catch (error) {
+                    console.error("Erreur lors du décodage manuel du token:", error);
+                    return null; // Retourne null en cas d'erreur
+                }
+            }
+
+            const decodedPayload = decoderTokenManuellement(result.token);
+            console.log("decodedPayload",decodedPayload);
+            utilisateurConnecte.set(decodedPayload);
+            estAuthentifie.set(true);
+
+            if(decodedPayload.role === "admin") {
+              console.log("direction admin");
+              faceActuelle.set("bottom");
+            }if(decodedPayload.role === "user") {
+              console.log("direction user");
+              faceActuelle.set("left");
+            }
+            return faceActuelle;
     } else {
       message = result.error;
       messageClass = "error";
@@ -270,6 +312,14 @@
     padding: 10px;
     border-radius: 5px;
     border: none;
+    padding: 10px;
+    background: var(--gradient-navbar);
+  }
+  .login form button:hover {
+    transform: scale(1.2);
+    transition: all 0.3s ease;
+    padding-inline: 20px;
+    background: var(--gradient-module);
   }
   .login-presentation {
     display: flex;

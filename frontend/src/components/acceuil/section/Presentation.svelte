@@ -10,8 +10,8 @@
         <div class="right-section-content">
             <h1>Bienvenue chez Pil Oh Poil !</h1>
             <p>l’élégance au bout des doigts, la détente au creux des mains!<br><br>
-                Massage, onglerie, soins du visage…<br>
-                 Offrez-vous un moment de bien-être sur-mesure.</p>
+                Massage, onglerie, soins du visage…</p><br>
+                 <p>Offrez-vous un moment de bien-être sur-mesure.</p>
                
                  <div class="icone-spa">
                  </div>

@@ -2,17 +2,19 @@ import axios from 'axios';
 class Utilisateur {
   #email;
   #password;
+  #csrfToken;
 
-  constructor(email, password) {
+  constructor(email, password, csrfToken) {
     this.#email = email;
     this.#password = password;
+    this.#csrfToken = csrfToken;
  
   }
 
   // Getters
   get email() { return this.#email; }
   get password() { return this.#password; }
-
+  get csrfToken() { return this.#csrfToken; }
   // Setters
   set email(newEmail) {
     if (!newEmail || typeof newEmail !== 'string') {
@@ -32,11 +34,23 @@ class Utilisateur {
     this.#password = newPassword;
   }
 
+  set csrfToken(newCsrfToken) {
+    if (!newCsrfToken || typeof newCsrfToken !== 'string') {
+      throw new Error('Token CSRF invalide');
+    }
+    this.#csrfToken = newCsrfToken;
+  }
   async envoyer() {
     try {
       const response = await axios.post('http://localhost:3000/users/api/register', {
         email: this.email,
         password: this.password
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': this.csrfToken
+        },
+        withCredentials: true
       });
       
       return response.data; // On retourne les données de la réponse

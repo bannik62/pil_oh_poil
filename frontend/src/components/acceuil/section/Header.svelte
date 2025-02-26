@@ -1,35 +1,26 @@
 <script>
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
   import { navbarState } from "../../../stores/navigation";
   import h1title from "../../../assets/img/h1title.png";
   import Navbar from "../../module/Navbar.svelte";
   import Login from "../../module/Login.svelte";
   import { faceActuelle } from "../../../stores/cube";
-  import { faArrowRight, faUser } from "@fortawesome/free-solid-svg-icons";
-
+  import { estAuthentifie, utilisateurConnecte } from "../../../stores/sessionStore";
+  import Userboard from "../../module/Userboard.svelte";
+  import CookieHautentifier from "../../../utils/CookieHautentifier.svelte";
   let cordonElement;
+  let btnNavUserBoard;
   let navbarElement;
   let h1Title;
   let h1titlepng1;
   let h1titlepng2;
-  const pageActuelle = faceActuelle;
-
-  function handleClick() {
-    if (!cordonElement || !navbarElement) return; // Vérifie que les éléments existent
-
-    cordonElement.style.transform = "translateY(0px)";
-
-    if (navbarElement.style.transform === "translateX(0%)") {
-      navbarElement.style.transform = "translateX(-100%)";
-      navbarState.update({ navbarIsOpen: true });
-    } else {
-      cordonElement.style.transform = "translateY(20px)";
-      navbarElement.style.transform = "translateX(0%)";
-      navbarElement.style.position = "absolute";
-      navbarState.update({ navbarIsOpen: false });
-      cordonElement.style.zIndex = "3";
-    }
-  }
+  let pageActuelle = faceActuelle;
+  
+  // Utiliser directement le store avec $ pour la réactivité
+  $: currentPage = $faceActuelle;
+  $: estConnecte = $estAuthentifie;
+  $: utilisateur = $utilisateurConnecte;
 
   onMount(() => {
     h1Title = document.getElementById("h1Title");
@@ -37,9 +28,10 @@
     h1titlepng2 = document.getElementById("h1titlepng2");
     cordonElement = document.querySelector(".cordon");
     navbarElement = document.querySelector(".navbar");
+    btnNavUserBoard = document.querySelector(".btnNavUserBoard");
     window.addEventListener("scroll", handleScroll);
 
-    const unsubscribe = pageActuelle.subscribe((face) => {
+  const unsubscribe = pageActuelle.subscribe((face) => {
       const cube = document.querySelector("#cube");
       if (cube) {
         switch (face) {
@@ -63,11 +55,11 @@
             break;
         }
       }
-    });
+  });
 
-    return () => unsubscribe(), window.addEventListener("scroll", handleScroll); // Nettoie l'abonnement lors du démontage
+  return () => unsubscribe(), window.addEventListener("scroll", handleScroll); // Nettoie l'abonnement lors du démontage
 
-    function handleScroll() {
+  function handleScroll() {
       if (window.scrollY > 490) {
         h1titlepng1.style.display = "block";
         h1titlepng2.style.display = "block";
@@ -90,33 +82,113 @@
         h1titlepng1.style.transition = "all 2s ease-in-out";
         h1titlepng2.style.transition = "all 2s ease-in-out";
       }
-    }
+  }
 
   });
+
+  function handleClick(buttonType = 'cordon') {
+    if (!navbarElement) return;
+
+    const isNavbarOpen = navbarElement.style.transform === "translateX(0%)";
+
+    if (isNavbarOpen) {
+      // Fermer la navbar
+      navbarElement.style.transform = "translateX(-100%)";
+      navbarState.update({ navbarIsOpen: true });
+      
+      if (buttonType === 'cordon' && cordonElement) {
+        cordonElement.style.transform = "translateY(0px)";
+      }
+    } else {
+      // Ouvrir la navbar
+      navbarElement.style.transform = "translateX(0%)";
+      navbarElement.style.position = "absolute";
+      navbarElement.style.transition = "all 1.5s ease-in-out";
+      navbarState.update({ navbarIsOpen: false });
+      
+      if (buttonType === 'cordon' && cordonElement) {
+        cordonElement.style.transform = "translateY(20px)";
+        cordonElement.style.zIndex = "3";
+      }
+    }
+  }
 
   function rotateCube() {
     pageActuelle.update((face) => {
       switch (face) {
         case "front":
-          return "right";
-        case "right":
-          return "left";
-        case "left":
-          return "bottom";
-        case "bottom":
-          return "top";
-        case "top":
+          pageActuelle.set('front');
           return "front";
-        default:
+       
+          case "right":
+          pageActuelle.set('right');
+          return "right";
+       
+          case "left":
+          pageActuelle.set('left');
+          return "left";
+       
+          case "top":
+          pageActuelle.set('top');
+          return "top";
+      
+          default:
           return "front";
       }
     });
   }
+
+  let timerRedirect = 5;
+    
+  function redirectToHome() {
+        const countdown = setInterval(() => {
+            timerRedirect--;
+            if (timerRedirect <= 0) {
+                clearInterval(countdown);
+                pageActuelle.set('front');
+              }
+        }, 1000);
+    }
 </script>
 
+<CookieHautentifier />
 <header>
+
   <Navbar on:rotateCube={rotateCube} />
-  <button class="cordon" on:click={handleClick} type="button" title="cordon" />
+  {console.log("nav", get(pageActuelle))}
+  {#if currentPage === 'front'}
+  <button class="cordon" on:click={() => handleClick('cordon')} type="button" title="cordon" />
+  {:else if currentPage === 'left'}
+  <button class="btnNavUserBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
+    Navbar
+  </button>
+  <style>
+    .btnNavUserBoard {
+      outline: 1px solid red;
+      position: absolute;
+      top: 30px;
+      right:100px;
+      width: 100px;
+      height: 100px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: white;
+      border: none;
+      cursor: pointer;
+      z-index: 3;
+      color: black;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+    }
+  </style>
+  {/if}
+  
+  
   <div class="cube" id="cube">
     <div class="cube-face cube-front">
       <div class="content-h1">
@@ -128,14 +200,59 @@
       </div>
     </div>
 
-    <div class="cube-face cube-right login-container">
+    <div class="cube-face cube-right login-container side">
       <Login />
     </div>
 
-    <div class="cube-face cube-left adminboard-face">
-      <div class="adminboard" id="adminboard">
-        <h2>Admin Board</h2>
-        <p>Welcome to the admin dashboard</p>
+    <div class="cube-face cube-left userboard-container side">
+      <div class="userboard" id="userboard">
+        {#if estConnecte && utilisateur}
+            <h2>Bienvenue {utilisateur.email}</h2>
+            <Userboard title="Compte utilisateur" />
+        {:else}          
+            <h2>Accès non autorisé</h2>
+            <p>Veuillez vous connecter pour accéder à cette section</p>
+            <div class="error-404">
+                <div class="sad-face">:(</div>
+                <h3>Erreur 404</h3>
+                <p>La page que vous recherchez semble introuvable...</p>
+                {redirectToHome()}
+            </div>
+
+            <style>
+                .error-404 {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
+                    text-align: center;
+                    background-color: white;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+
+                }
+
+                .sad-face {
+                    font-size: 5rem;
+                    margin-bottom: 1rem;
+                    transform: rotate(90deg);
+                    color: #666;
+                    background-color: white;
+                }
+
+                .error-404 h3 {
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                    color: #333;
+                }
+
+                .error-404 p {
+                    font-size: 1.2rem;
+                    color: #666;
+                }
+            </style>
+        {/if}
       </div>
     </div>  
 
@@ -145,10 +262,10 @@
       </div>
     </div>
 
-    <div class="cube-face cube-bottom userboard-face">
+    <div class="cube-face cube-bottom adminboard-container">
       <div class="bottom" id="bottom">
         <h2>Bottom</h2>
-        <p>Welcome to the user dashboard</p>
+        <p>Welcome to the admin dashboard</p>
       </div>
     </div>
   </div>
@@ -158,15 +275,17 @@
   .cube {
     position: relative;
     width: 100%;
-    height: 100%;
-    top: -73px;
-    right: 10px;
+    height: 104%;
+    top: -75px;
+    left: -20px;
     transform-style: preserve-3d;
     transition: transform 1.5s ease;
     z-index: 2;
     perspective: 50000px;
     perspective-origin: center;
+    /* outline: 3px solid red; */
   }
+ 
 
   .cube-face {
     position: absolute;
@@ -230,13 +349,26 @@
     height: 100%;
     background-color: #333;
   }
-  .userboard-face {
+  .userboard-container {
+    box-sizing: border-box;
+    margin : 0 auto;
     box-sizing: border-box;
     width: 100%;
-    height: 110%;
-    background-color: #333;
+    height: 100%;
+    background-color: rgba(128, 128, 128, 0.151);
+    backdrop-filter: blur(2px);
+    border-radius: 10px;
+    padding: 50px
   }
-
+  .userboard {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background-color: #33333325;
+    backdrop-filter: blur(25px);
+    border-radius:50px;
+    padding: 20px;
+  }
   header {
     position: relative;
     width: 100vw;
