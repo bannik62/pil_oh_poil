@@ -1,14 +1,40 @@
 <script>
+    import axios from 'axios';
     import { onMount } from "svelte";
+    import { get } from "svelte/store";
     import { faceActuelle } from "../../stores/cube";
-
+    import {utilisateurConnecte, estAuthentifie} from '../../stores/sessionStore.js';
     let navbarElement;
     let isOpen = false;
+
+    //transformation dee la valeur cube en page
     const pageActuelle = faceActuelle;
+    console.log("pageActuelle", get(pageActuelle));
 
     onMount(() => {
         navbarElement = document.querySelector(".navbar");
     });
+
+export function logout() {
+    pageActuelle.set("front");
+    utilisateurConnecte.set(null);
+    estAuthentifie.set(false);
+    // localStorage.removeItem('token');
+    // Supprimer le cookie de session
+    axios.post('http://localhost:3000/api/user/auth/logout', {}, {
+        withCredentials: true // Configuration correcte pour axios
+    })
+    .then(() => {
+        estAuthentifie.set(false);
+        console.log('Déconnexion réussie, cookie supprimé');
+        pageActuelle.set("front");
+        utilisateurConnecte.set(null);
+        estAuthentifie.set(false);
+    })
+    .catch(error => {
+        console.error('Erreur lors de la déconnexion:', error);
+    });
+}
 
 
 </script>
@@ -39,27 +65,50 @@
                 <div class="massage icone"></div>
             </a>
         </button>
-        <button class="menu-button" title="accueil" on:click={() => pageActuelle.set('front')}>
-            accueil
-            <div class="accueil icone accueil"></div>
-        </button>
-        <button class="menu-button" title="login" on:click={() => pageActuelle.set('right')}>
-           login
-            <div class="login icone"></div>
-        </button>
+        {#if pageActuelle === 'front'}
+            <button class="menu-button" style="display: none;" title="accueil" on:click={() => pageActuelle.set('front')}>
+                accueil
+                <div class="accueil icone accueil"></div>
+            </button>   
+        {:else}
+            <button class="menu-button" title="accueil" on:click={() => pageActuelle.set('front')}>
+                accueil
+                <div class="accueil icone accueil"></div>
+            </button>   
+        {/if}
+        
+        {#if !$estAuthentifie}
+            <button class="menu-button" title="login" on:click={() => pageActuelle.set('right')}>
+                login
+                <div class="login icone"></div>
+            </button>
+        {/if}
+<!-- mettre dans l ordre le cube !!!! -->
+        {#if $estAuthentifie && $utilisateurConnecte.role === 'admin'}
+            <button class="menu-button" title="adminboard" on:click={() => pageActuelle.set('bottom')}>
+                admin
+                <div class="menu icone adminboard"></div>
+            </button>
+        {/if}
 
-        <button class="menu-button" title="adminboard" on:click={() => pageActuelle.set('bottom')}>
-            admin
-            <div class="menu icone adminboard"></div>
-        </button>
+        {#if $estAuthentifie && $utilisateurConnecte.role === 'user'}
         <button class="menu-button" title="userboard" on:click={() => pageActuelle.set('left')}>
             Mon compte
             <div class="bottom userboard icone"></div>
-        </button>
-        <button class="menu-button" title="top" on:click={() => pageActuelle.set('top')}>
-            top
-            <div class="top icone"></div>
-        </button>
+        </button> 
+        {/if}
+          
+           <!-- <button class="menu-button" title="top" on:click={() => pageActuelle.set('top')}>
+                top
+                <div class="top icone"></div>
+            </button> -->
+       
+        {#if $estAuthentifie}
+            <button class="menu-button" title="logout" on:click={() => logout()}>
+                logout !!
+                <div class="logout icone"></div>
+            </button>
+        {/if}
 
     </div>
     <div class="icone-map" >
@@ -82,7 +131,7 @@
         transform: translateX(-100%);
         width: auto;
         max-width: 100%;
-        height: 15vh;
+        height: auto;
         display: flex;
         justify-content: space-around;
         align-items: center;

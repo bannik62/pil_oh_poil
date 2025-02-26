@@ -5,7 +5,9 @@
     "password": "password",
     "database": "Pile_oh_poil_bdd",
     "port": "3306",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "JWT_SECRET": "monSuperSecretKey62"
+
   },
   "test": {
     "username": "root",
