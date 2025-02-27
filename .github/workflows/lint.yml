@@ -1,0 +1,52 @@
+name: Lint Frontend & Backend
+
+on:
+  push:
+    branches:
+      - main  # Change si besoin (ex: master, develop)
+  pull_request:
+
+jobs:
+  lint:
+    name: Run ESLint on Frontend & Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Mets la version que tu utilises
+
+      - name: Install dependencies (Backend)
+        run: |
+          cd backend
+          npm install
+
+      - name: Run ESLint (Backend)
+        run: |
+          cd backend
+          npx eslint .
+
+      - name: Run Prettier (Backend)
+        run: |
+          cd backend
+          npx prettier --write .
+
+      - name: Install dependencies (Frontend)
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run ESLint (Frontend)
+        run: |
+          cd frontend
+          npx eslint .
+
+      - name: Run Prettier (Frontend)
+        run: |
+          cd frontend
+          npx prettier --write .
+            

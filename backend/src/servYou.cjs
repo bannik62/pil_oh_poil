@@ -1,11 +1,11 @@
 const express = require('express');
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const dotenv = require("dotenv");
-const userRouteRegister = require("./routes/users/userRouteRegister.cjs");
-const userRouteLogin = require("./routes/users/userRouteLogin.cjs");
-const { csrfProtection, csrfErrorHandler } = require("./middleware/csrfMiddleware.cjs");
-const  verifyCookieToken  = require("./middleware/verifyCookieToken.cjs");
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
+const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
+const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
+const { csrfProtection, csrfErrorHandler } = require('./middleware/csrfMiddleware.cjs');
+const  verifyCookieToken  = require('./middleware/verifyCookieToken.cjs');
 
 dotenv.config();
 
@@ -14,62 +14,62 @@ console.log('🚀 Démarrage du serveur...');
 
 // ✅ Middlewares globaux
 app.use(express.json());
-app.use(cors({ credentials: true, 
-  origin: "http://localhost:5173",
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token']
+app.use(cors({ credentials: true,
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token']
 }));
 app.use(cookieParser());
 
 // ✅ Route pour récupérer le token CSRF (protégée)
 app.get('/csrf-token', csrfProtection, (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
-}); 
+});
 
 // ✅ Route pour vérifier la session
 app.get('/api/verifySession', verifyCookieToken, (req, res) => {
-  console.log('Verifying session...', req.cookies);
+    console.log('Verifying session...', req.cookies);
 
-  res.status(200).json({
-      message: 'Session valide',
-      data: req.user  // Renvoie les données utilisateur issues du token
-  });
+    res.status(200).json({
+        message: 'Session valide',
+        data: req.user  // Renvoie les données utilisateur issues du token
+    });
 });
 
 // ✅ Routes protection CSRF
-app.use("/users/api/",csrfProtection, userRouteRegister);
+app.use('/users/api/',csrfProtection, userRouteRegister);
 
-// ✅ Appliquer CSRF uniquement à "/users/api/login"
-app.use("/users/api/", csrfProtection, userRouteLogin);
+// ✅ Routes protection CSRF 
+app.use('/users/api/', csrfProtection, userRouteLogin);
 
 // ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
 app.use(csrfErrorHandler);
 
 // ✅ Gestion des erreurs globales
-app.use((err, req, res, next) => {
-  console.error('Erreur serveur:', err);
-  res.status(500).json({ message: 'Erreur interne du serveur ❌' });
+app.use((err, req, res) => {
+    console.error('Erreur serveur:', err);
+    res.status(500).json({ message: 'Erreur interne du serveur ❌' });
 });
 
 app.post('/api/user/auth/logout', (req, res) => {
-  try {
-      // Supprimer le cookie de session
-      res.clearCookie('SessionCookiePilOhPoil', {
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax'
-      });
+    try {
+        // Supprimer le cookie de session
+        res.clearCookie('SessionCookiePilOhPoil', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
 
-      res.status(200).json({ message: 'Déconnexion réussie' });
-  } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-      res.status(500).json({ error: 'Erreur lors de la déconnexion' });
-  }
+        res.status(200).json({ message: 'Déconnexion réussie' });
+    } catch (error) {
+        console.error('Erreur lors de la déconnexion:', error);
+        res.status(500).json({ error: 'Erreur lors de la déconnexion' });
+    }
 });
 
 // ✅ Route de test
-app.get("/", (req, res) => {
-  res.send("Bienvenue sur mon serveur Express ! ✅");
+app.get('/', (req, res) => {
+    res.send('Bienvenue sur mon serveur Express ! ✅');
 });
 
 const PORT = process.env.PORT_EXPRESS || 3000;
