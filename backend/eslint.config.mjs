@@ -2,13 +2,25 @@ import globals from 'globals';
 
 export default [
     {
+        files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+        ignores: ['**/__tests__/**', '**/*.test.js', '**/*.spec.js'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
             globals: {
                 ...globals.browser,
                 ...globals.node,
-                myCustomGlobal: 'readonly'
+                ...globals.jest,
+                myCustomGlobal: 'readonly',
+                jest: 'readonly',
+                expect: 'readonly',
+                describe: 'readonly',
+                test: 'readonly',
+                it: 'readonly',
+                beforeAll: 'readonly',
+                afterAll: 'readonly',
+                beforeEach: 'readonly',
+                afterEach: 'readonly'
             }
         },
         rules: {
