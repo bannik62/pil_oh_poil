@@ -39,7 +39,7 @@ app.get('/api/verifySession', verifyCookieToken, (req, res) => {
 // ✅ Routes protection CSRF
 app.use('/users/api/',csrfProtection, userRouteRegister);
 
-// ✅ Routes protection CSRF 
+// ✅ Routes protection CSRF
 app.use('/users/api/', csrfProtection, userRouteLogin);
 
 // ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
