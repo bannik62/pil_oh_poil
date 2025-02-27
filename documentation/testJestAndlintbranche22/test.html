@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Jest et ESLint</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.17/dist/tailwind.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        h2,
+        h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        nav {
+            background-color: #0073e6;
+            padding: 3px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0d1114;
+            height: 10vh
+        }
+
+        strong {
+            color: #0073e6;
+        }
+
+        h3 {
+            color: #00e6a1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+
+    <header class="p-6 text-white text-center">
+        <h1 class="text-4xl font-bold">Documentation Jest et ESLint</h1>
+    </header>
+    <section class="mb-12">
+        <div class="section-title">
+            <div class="icon-container"><i class="fas fa-info-circle"></i></div>
+            <h2 class="text-2xl font-semibold">Pourquoi utiliser Jest et ESLint ?</h2>
+        </div>
+        <p>
+            <strong>Jest</strong> est un framework de test JavaScript développé par Facebook, principalement utilisé pour tester les applications React, mais il est également adapté pour tester n'importe quel projet JavaScript. Il permet d'écrire des tests unitaires et d'intégration de manière simple et efficace. Jest offre des fonctionnalités avancées telles que les tests asynchrones, les mocks automatiques, et une interface de ligne de commande interactive pour exécuter et surveiller les tests.
+        </p>
+        <p>
+            <strong>ESLint</strong> est un outil d'analyse statique de code qui aide à identifier et corriger les problèmes dans votre code JavaScript. Il est hautement configurable et permet d'appliquer des règles de style de code, de détecter les erreurs potentielles, et d'assurer la cohérence du code à travers un projet. En utilisant ESLint, les développeurs peuvent maintenir un code propre et lisible, réduire les bugs, et améliorer la qualité globale du code.
+        </p>
+    </section>
+
+    <div class="container mx-auto p-6">
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">1. Introduction</h2>
+            </div>
+            <p>
+                Cette documentation explique comment configurer et utiliser Jest pour les tests unitaires et d'intégration, ainsi qu'ESLint pour l'analyse statique du code dans votre projet. Nous utiliserons votre configuration existante comme base.
+            </p>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-download"></i></div>
+                <h2 class="text-2xl font-semibold">2. Installation</h2>
+            </div>
+            <h3>Jest</h3>
+            <ul class="list-disc pl-5">
+                <li>Jest est un framework de test JavaScript conçu pour assurer la fiabilité des tests unitaires.
+                    <pre><code>npm install --save-dev jest</code></pre>
+                </li>
+                <li>Supertest est utilisé pour tester les routes HTTP dans vos applications Express.
+                    <pre><code>npm install --save-dev supertest</code></pre>
+                </li>
+                <li>Si vous utilisez Babel pour transpiler votre code, installez Babel-Jest pour permettre à Jest de comprendre les fichiers ES6+.
+                    <pre><code>npm install --save-dev babel-jest @babel/preset-env</code></pre>
+                </li>
+            </ul>
+
+            <h3>ESLint</h3>
+            <ul class="list-disc pl-5">
+                <li>ESLint est un outil d'analyse statique pour identifier et corriger les problèmes dans votre code JavaScript.
+                    <pre><code>npm install --save-dev eslint</code></pre>
+                </li>
+                <li>Le plugin Jest pour ESLint permet de gérer les globals spécifiques à Jest dans vos fichiers de test.
+                    <pre><code>npm install --save-dev eslint-plugin-jest</code></pre>
+                </li>
+                <li>Globals est utilisé pour définir les variables globales disponibles dans différents environnements (navigateur, Node.js, Jest).
+                    <pre><code>npm install --save-dev globals</code></pre>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-cogs"></i></div>
+                <h2 class="text-2xl font-semibold">3. Configuration</h2>
+            </div>
+            <h3>Jest</h3>
+            <p>Créez un fichier <code>jest.config.js</code> pour configurer Jest :</p>
+            <pre><code>module.exports = {
+    testEnvironment: 'node',  // Utilisation d'un environnement Node.js pour les tests
+    transform: {
+        '^.+\\.mjs$': 'babel-jest',  // Utilisation de Babel pour transpiler les fichiers .mjs
+    },
+    testTimeout: 10000,  // Temps maximum pour l'exécution d'un test
+};</code></pre>
+
+            <h3>ESLint</h3>
+            <p>Créez un fichier <code>eslint.config.mjs</code> pour configurer ESLint :</p>
+            <pre><code>import globals from 'globals';
+
+export default [
+    {
+        files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+        ignores: ['**/__tests__/**', '**/*.test.js', '**/*.spec.js'],  // Ignorer les fichiers de test
+        languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'module',
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...globals.jest,  // Inclure les globals de Jest
+                myCustomGlobal: 'readonly'
+            }
+        },
+        rules: {
+            'no-unused-vars': 'off',
+            'no-console': 'off',
+            'no-undef': 'error',
+            'semi': ['error', 'always'],
+            'quotes': ['error', 'single'],
+            'indent': ['error', 4],
+            'no-multiple-empty-lines': ['error', { 'max': 1 }],
+            'no-trailing-spaces': 'error',
+            'eqeqeq': 'error',
+            'camelcase': 'warn'
+        }
+    }
+];</code></pre>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-file-code"></i></div>
+                <h2 class="text-2xl font-semibold">4. Écriture des Tests</h2>
+            </div>
+            <p>Organisez vos tests dans un dossier <code>__tests__</code> et utilisez Jest pour écrire des tests unitaires et d'intégration. Voici un exemple de test pour une route d'enregistrement d'utilisateur :</p>
+            <pre><code>// Mock de Sequelize - nécessaire car le modèle User utilise Sequelize
+jest.mock('sequelize', () => ({
+    DataTypes: {
+        STRING: 'STRING',
+        INTEGER: 'INTEGER',
+        DATE: 'DATE',
+        BOOLEAN: 'BOOLEAN'
+    }
+}));
+
+// Mock du modèle User avec ses méthodes principales
+jest.mock('../models/user.cjs', () => ({
+    User: {
+        findOne: jest.fn(),
+        create: jest.fn(),
+        findAll: jest.fn()
+    }
+}));
+
+// Imports nécessaires pour les tests
+const request = require('supertest');
+const { User } = require('../models/user.cjs');
+const { hash } = require('bcryptjs');
+const express = require('express');
+
+// Configuration de l'application Express pour les tests
+const app = express();
+app.use(express.json());
+
+// Configuration de la route de register pour les tests
+app.post('/api/auth/register', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: { email } });
+
+        if (user) {
+            return res.status(401).json({ error: 'Utilisateur déjà existant' });
+        }
+
+        const hashedPassword = await hash(password, 10);
+        const newUser = await User.create({
+            email,
+            password: hashedPassword,
+            role: 'user'
+        });
+
+        res.status(200).json({ message: 'Enregistrement réussi!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Suite de tests pour la route register
+describe('POST /register', () => {
+    // Test du cas de succès
+    it('doit créer un nouvel utilisateur avec succès', async () => {
+        // Configure le mock pour simuler un utilisateur non existant
+        User.findOne.mockResolvedValue(null);
+
+        // Configure le mock pour simuler la création réussie
+        User.create.mockResolvedValue({
+            id: 1,
+            email: 'test@example.com',
+            role: 'user'
+        });
+
+        // Exécute la requête de test
+        const response = await request(app)
+            .post('/api/auth/register')
+            .send({
+                email: 'test@example.com',
+                password: 'password123'
+            });
+
+        // Vérifie les résultats
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('message', 'Enregistrement réussi!');
+    });
+
+    // Test du cas utilisateur déjà existant
+    it('doit renvoyer une erreur si l\'utilisateur existe déjà', async () => {
+        // Configure le mock pour simuler un utilisateur existant
+        User.findOne.mockResolvedValue({
+            id: 1,
+            email: 'test@example.com'
+        });
+
+        const response = await request(app)
+            .post('/api/auth/register')
+            .send({
+                email: 'test@example.com',
+                password: 'password123'
+            });
+
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty('error', 'Utilisateur déjà existant');
+    });
+
+    // Test du cas erreur serveur
+    it('doit gérer les erreurs serveur', async () => {
+        // Configure le mock pour simuler une erreur
+        User.findOne.mockRejectedValue(new Error('Erreur de base de données'));
+
+        const response = await request(app)
+            .post('/api/auth/register')
+            .send({
+                email: 'test@example.com',
+                password: 'password123'
+            });
+
+        expect(response.status).toBe(500);
+        expect(response.body).toHaveProperty('error', 'Erreur de base de données');
+    });
+});</code></pre>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-play"></i></div>
+                <h2 class="text-2xl font-semibold">5. Exécution des Tests et Linting</h2>
+            </div>
+            <p>Ajoutez des scripts dans <code>package.json</code> pour exécuter Jest et ESLint :</p>
+            <pre><code>{
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  }
+}</code></pre>
+            <p>Exécutez les tests avec <code>npm test</code> et lancez ESLint avec <code>npm run lint</code>.</p>
+        </section>
+
+        <section class="mb-12">
+            <div class="section-title">
+                <div class="icon-container"><i class="fas fa-sync-alt"></i></div>
+                <h2 class="text-2xl font-semibold">6. Intégration Continue</h2>
+            </div>
+            <p>Intégrez Jest et ESLint dans votre pipeline CI/CD pour garantir la qualité du code et la fiabilité des tests.</p>
+            <ul class="list-disc pl-5">
+                <li>Configurez votre pipeline pour exécuter les tests et le linting à chaque commit.</li>
+                <li>Assurez-vous que les builds échouent si les tests ou le linting échouent.</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <footer class="p-4 text-center text-white">
+        <p>&copy; 2025 Documentation Jest et ESLint</p>
+    </footer>
+
+</body>
+
+</html>
