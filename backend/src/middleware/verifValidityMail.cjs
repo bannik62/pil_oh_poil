@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { MailtrapTransport } = require('mailtrap');
+const dotenv = require('dotenv');
 
-const TOKEN = "";
+const TOKEN = '';
 
 const verifyEmailMiddleware = async (req, res, next) => {
     try {
@@ -23,20 +24,20 @@ const verifyEmailMiddleware = async (req, res, next) => {
 
         // Email content
         const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${emailToken}`;
-        
+
         const mailOptions = {
             from: {
-                address: "hello@example.com",
-                name: "Pil'oh Poil"
+                address: 'hello@example.com',
+                name: 'Pil\'oh Poil'
             },
             to: req.body.email,
-            subject: "Vérification de votre email",
+            subject: 'Vérification de votre email',
             html: `
                 <h1>Vérification de votre compte</h1>
                 <p>Cliquez sur le lien ci-dessous pour vérifier votre email. Le lien est valide pendant 10 minutes.</p>
                 <a href="${verificationLink}">Vérifier mon email</a>
             `,
-            category: "Email Verification",
+            category: 'Email Verification',
             sandbox: true
         };
 
@@ -45,7 +46,7 @@ const verifyEmailMiddleware = async (req, res, next) => {
 
         // Store token in request for later use
         req.emailToken = emailToken;
-        
+
         next();
     } catch (error) {
         console.error('Erreur lors de l\'envoi de l\'email:', error);

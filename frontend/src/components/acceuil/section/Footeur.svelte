@@ -28,7 +28,7 @@
             <h3>Mentions Légales</h3>
             <p><a href="/mentions-legales">Conditions générales</a></p>
             <p><a href="/confidentialite">Politique de confidentialité</a></p>
-            <p><a href="/cookies">Gestion des cookies</a></p>
+            <p><a href="#">Gestion des cookies</a></p>
         </div>
     </div>
 

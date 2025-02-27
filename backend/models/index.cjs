@@ -1,5 +1,8 @@
 const { Sequelize } = require('sequelize');
 const config = require('../config/config.json'); // Chemin vers le nouveau fichier de configuration
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const env = process.env.NODE_ENV || 'development'; // Utiliser l'environnement
 const dbConfig = config[env];

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs'); 
+const bcrypt = require('bcryptjs');
 const { User } = require('../../../models/user.cjs');
 // const { verifyEmailMiddleware, verifyEmailToken } = require('../../middleware/verifValidityMail.cjs');
 
-console.log("user chargé !!! ", User);
+console.log('user chargé !!! ', User);
 
 const { validationRegister } = require('../../validations/validationRegister.cjs');
 
@@ -14,8 +14,8 @@ router.post('/register',  async (req, res) => {
     console.log('début validation des données');
     const { error, value } = validationRegister(req.body);
     if (error) {
-      console.log('Erreur de validation :', error.details[0].message);
-      return res.status(400).json({ error: error.details[0].message });
+        console.log('Erreur de validation :', error.details[0].message);
+        return res.status(400).json({ error: error.details[0].message });
     }
     console.log('fin validation des données');
 
@@ -43,7 +43,7 @@ router.post('/register',  async (req, res) => {
         });
 
         console.log('Nouvel utilisateur créé :', newUser);
-        res.json({ message: "Enregistrement réussi!" });
+        res.json({ message: 'Enregistrement réussi!' });
     } catch (err) {
         console.error('Erreur interne :', err);
         res.status(500).json({ error: 'Erreur interne du serveur' });
