@@ -3,9 +3,10 @@ const nodemailer = require('nodemailer');
 const { MailtrapTransport } = require('mailtrap');
 const dotenv = require('dotenv');
 
+dotenv.config();
 const TOKEN = '';
 
-const verifyEmailMiddleware = async (req, res, next) => {
+function verifyEmailMiddleware(req, res, next) {
     try {
         // Generate JWT token valid for 10 minutes
         const emailToken = jwt.sign(
@@ -42,7 +43,7 @@ const verifyEmailMiddleware = async (req, res, next) => {
         };
 
         // Send email
-        await transport.sendMail(mailOptions);
+         transport.sendMail(mailOptions);
 
         // Store token in request for later use
         req.emailToken = emailToken;

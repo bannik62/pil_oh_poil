@@ -6,20 +6,25 @@ const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
 const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
 const { csrfProtection, csrfErrorHandler } = require('./middleware/csrfMiddleware.cjs');
 const  verifyCookieToken  = require('./middleware/verifyCookieToken.cjs');
+const  {verifyEmailMiddleware}  = require('./middleware/verifValidityMail.cjs');
 
 dotenv.config();
 
 const app = express();
 console.log('🚀 Démarrage du serveur...');
-
-// ✅ Middlewares globaux
-app.use(express.json());
 app.use(cors({ credentials: true,
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token']
 }));
+// ✅ Middlewares globaux
+app.use(express.json());
 app.use(cookieParser());
+
+// ✅ Route de test
+app.get('/', (req, res) => {
+  res.send('Bienvenue sur mon serveur Express ! ✅');
+});
 
 // ✅ Route pour récupérer le token CSRF (protégée)
 app.get('/csrf-token', csrfProtection, (req, res) => {
@@ -45,12 +50,6 @@ app.use('/users/api/', csrfProtection, userRouteLogin);
 // ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
 app.use(csrfErrorHandler);
 
-// ✅ Gestion des erreurs globales
-app.use((err, req, res) => {
-    console.error('Erreur serveur:', err);
-    res.status(500).json({ message: 'Erreur interne du serveur ❌' });
-});
-
 app.post('/api/user/auth/logout', (req, res) => {
     try {
         // Supprimer le cookie de session
@@ -67,9 +66,16 @@ app.post('/api/user/auth/logout', (req, res) => {
     }
 });
 
-// ✅ Route de test
-app.get('/', (req, res) => {
-    res.send('Bienvenue sur mon serveur Express ! ✅');
+// ✅ Gestion des erreurs globales
+app.use((err, req, res) => {
+    console.error('Erreur serveur:', err);
+    res.status(500).json({ message: 'Erreur interne du serveur ❌' });
+});
+
+// ✅ Route pour vérifier l'email
+app.use('/api/verify/mail', verifyEmailMiddleware, (req, res) => {
+    // Si le middleware réussit, vous pouvez envoyer une réponse de succès
+    res.status(200).json({ message: 'Email de vérification envoyé avec succès', token: req.emailToken });
 });
 
 const PORT = process.env.PORT_EXPRESS || 3000;

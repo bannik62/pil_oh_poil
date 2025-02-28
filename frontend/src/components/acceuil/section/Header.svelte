@@ -10,7 +10,7 @@
   import Userboard from "../../module/Userboard.svelte";
   import CookieHautentifier from "../../../utils/CookieHautentifier.svelte";
   let cordonElement;
-  let btnNavUserBoard;
+  // let btnNavUserBoard;
   let navbarElement;
   let h1Title;
   let h1titlepng1;
@@ -23,6 +23,7 @@
   $: utilisateur = $utilisateurConnecte;
 
   onMount(() => {
+
     h1Title = document.getElementById("h1Title");
     h1titlepng1 = document.getElementById("h1titlepng1");
     h1titlepng2 = document.getElementById("h1titlepng2");
@@ -184,6 +185,16 @@
       justify-content: center;
       align-items: center;
       border-radius: 10px;
+    animation: scaleUp 1s ease-out forwards;
+    }
+
+    @keyframes scaleUp {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
     }
   </style>
   {/if}
@@ -206,8 +217,8 @@
 
     <div class="cube-face cube-left userboard-container side">
       <div class="userboard" id="userboard">
-        {#if estConnecte && utilisateur}
-            <h2>Bienvenue {utilisateur.email}</h2>
+        {#if estConnecte && utilisateur }
+            <h2>Bienvenue {get(utilisateurConnecte).email}</h2>
             <Userboard title="Compte utilisateur" />
         {:else}          
             <h2>Accès non autorisé</h2>

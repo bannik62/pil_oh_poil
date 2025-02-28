@@ -1,5 +1,4 @@
 <script>
-  import axios from 'axios';
   import { onMount } from "svelte";
   import { faceActuelle } from "../../stores/cube";
   import loginImage from "../../assets/img/logging.png";
@@ -24,11 +23,10 @@
       const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
       const data = await res.json();
       csrfToken = data.csrfToken;
-      console.log("csrfToken",csrfToken);
       console.info("Formulaire de login sécurisé avec token csrfToken");
     });
 
-  async function envoyerDonneesEnregistrement(event) {
+  const envoyerDonneesEnregistrement = async (event) => {
   message = "";
   messageClass = "";
   registerSuccess = false; // Réinitialiser l'état
@@ -37,7 +35,7 @@
   event.preventDefault();
 
   try {
-    const user = new Utilisateur(emailRegister, passwordRegister, csrfToken);
+    const user = new Utilisateur(emailRegister, passwordRegister);
     const result = await user.envoyer();
 
     if (result.message) {
@@ -101,7 +99,6 @@
                     return null; // Retourne null en cas d'erreur
                 }
             }
-
             const decodedPayload = decoderTokenManuellement(result.token);
             console.log("decodedPayload",decodedPayload);
             utilisateurConnecte.set(decodedPayload);

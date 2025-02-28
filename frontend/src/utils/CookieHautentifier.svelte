@@ -8,9 +8,8 @@
               method: 'GET',
               credentials: 'include'
           });
-
-          if (response.message === 'Utilisateur connecté') {
-              console.log('Utilisateur connecté', response.message);
+          console.log("response", response);
+          if (response.status === 200) {
               const data = await response.json();
               utilisateurConnecte.set(data.data); // Mettre à jour le store avec les données utilisateur
               estAuthentifie.set(true); // Met à jour l'état d'authentification
