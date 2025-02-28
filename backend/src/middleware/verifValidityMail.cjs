@@ -43,7 +43,7 @@ function verifyEmailMiddleware(req, res, next) {
         };
 
         // Send email
-         transport.sendMail(mailOptions);
+        transport.sendMail(mailOptions);
 
         // Store token in request for later use
         req.emailToken = emailToken;
