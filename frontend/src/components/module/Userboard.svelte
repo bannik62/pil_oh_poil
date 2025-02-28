@@ -2,6 +2,7 @@
   // Imports
   import { onMount } from 'svelte';
 
+  // Props
   export let title = "Espaces utilisateur";
 
   // Variables
@@ -10,8 +11,6 @@
   // Lifecycle
   onMount(() => {
     mounted = true;
-    // Vérifier si le cookie de session SessionCookiePilOhPoil est présent
-
   });
 </script>
 
@@ -21,7 +20,9 @@
     <div class="content-left">
         <div class="column-top">
             <div class="photo-profil">
+
             </div>
+           
             <div class="div-info-mail">
               <p>hello</p>
             </div>
@@ -51,12 +52,11 @@
 
 <style>
   .userboard-module {
-    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    height: 80%;
+    height: 75%;
     width: 100%;
     padding: 1rem;
   }
@@ -67,7 +67,6 @@
     height: 100%;
     width: 50%;
     padding: 1rem;
-    
   }
 
   h1 {
@@ -77,42 +76,28 @@
   .column-top{
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    height: 90%;
+    width: 90%;
+    height: 40%;
     background-color: aliceblue;
     color: black;
-    box-sizing: border-box;
-    border-radius: 10px 0px 0px 0px;
-    border-bottom: 2px solid var(--color-primary);
   }
   .photo-profil{
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    border: 15px solid var(--color-primary);
-  }
-  .div-info-mail{
-    width: 50%;
+    width: 100%;
     height: 100%;
     background-color: aliceblue;
     color: black;
-    border-radius: 0px 0px 0px 10px;
-    padding: 1rem;
-    box-sizing: border-box;
+    border-radius: 50%;
   }
   .column-bottom{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    width: 100%;
-    height: 60%;
+    width: 90%;
+    height: 50%;
     background-color: aliceblue;
     color: black;
-    border-radius: 0px 0px 0px 10px;
-    padding: 1rem;
-    box-sizing: border-box;
   }
   p{
     all: unset;
@@ -131,23 +116,23 @@
   .onglet{
     position: absolute;
     width: auto;
-    height: 10vh;
+    height: 10%;
     background-color: aliceblue;
     color: black;
     padding:  1rem;
     border-radius: 10px 10px 0 0;
   }
   .onglet:hover{    
-    top: -18%;
+    top: -19%;
     scale: 1.1;
     background-color: red;
   }
   .onglet1{
-    top: -17%;
+    top: -18%;
     background-color: blue;
   }
   .onglet2{
-    top: -17%;
+    top: -18%;
     left: 27%;
     background-color: blue;
   }
