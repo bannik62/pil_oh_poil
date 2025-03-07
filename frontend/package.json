@@ -9,7 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lintFix": "eslint . --fix"
+    "lintFix": "eslint . --fix",
+    "lint": "eslint .",
+    "lint:verbose": "eslint . --verbose"
   },
   "keywords": [],
   "author": "",
