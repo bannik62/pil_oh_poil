@@ -65,13 +65,13 @@ export function logout() {
                 <div class="massage icone"></div>
             </a>
         </button>
-        {#if pageActuelle === 'front'}
-            <button class="menu-button" style="display: none;" title="accueil" on:click={() => pageActuelle.set('front')}>
+        {#if $pageActuelle !== 'front'}
+            <button class="menu-button"  title="accueil" on:click={() => pageActuelle.set('front')}>
                 accueil
                 <div class="accueil icone accueil"></div>
             </button>   
         {:else}
-            <button class="menu-button" title="accueil" on:click={() => pageActuelle.set('front')}>
+            <button class="menu-button" style="display:none;" title="accueil" on:click={() => pageActuelle.set('front')}>
                 accueil
                 <div class="accueil icone accueil"></div>
             </button>   
@@ -91,7 +91,7 @@ export function logout() {
             </button>
         {/if}
 
-        {#if $estAuthentifie && $utilisateurConnecte.role === 'user'}
+        {#if $estAuthentifie && $utilisateurConnecte.role === 'user' && $pageActuelle !== 'left'}
         <button class="menu-button" title="userboard" on:click={() => pageActuelle.set('left')}>
             Mon compte
             <div class="bottom userboard icone"></div>

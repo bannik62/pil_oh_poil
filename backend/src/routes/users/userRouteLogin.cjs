@@ -25,9 +25,8 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Mot de passe incorrect' });
         }
         // Générer un token JWT
-        console.log('Clé secrète JWT :', config.development.JWT_SECRET);
 
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, config.development.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role, isvalid: user.isvalid }, config.development.JWT_SECRET, { expiresIn: '1h' });
         console.log('Token crée :', token);
 
         // Envoyer le token avec un cookie HttpOnly (ou dans le corps de la réponse)

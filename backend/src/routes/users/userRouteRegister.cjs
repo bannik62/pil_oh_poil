@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { User } = require('../../../models/user.cjs');
-// const { verifyEmailMiddleware, verifyEmailToken } = require('../../middleware/verifValidityMail.cjs');
 
 console.log('user chargé !!! ', User);
 

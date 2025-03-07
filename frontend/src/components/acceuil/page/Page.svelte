@@ -8,10 +8,18 @@
     import Footer from '../section/Footeur.svelte';
     import SectionMap from '../section/SectionMap.svelte';
     import Gobackup from '../../module/Gobackup.svelte';
+    import { utilisateurConnecte, estAuthentifie } from '../../../stores/sessionStore'
+    import { faceActuelle } from '../../../stores/cube';
+   
+    $: utilisateur = $utilisateurConnecte;
+    $: estConnecte = $estAuthentifie;
+    $: face = $faceActuelle;
 </script>
 
 <main>
   <Header />
+  <!-- {#if  face === 'front' || face === 'right'} -->
+
   <Presentation />
   <Thesaloon />
   <Galerie />
@@ -19,6 +27,7 @@
   <SectionMap />
   <Footer />
   <Gobackup />
+  <!-- {/if} -->
 </main>
 
 <style>

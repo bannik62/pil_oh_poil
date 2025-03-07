@@ -21,4 +21,4 @@ function verifyCookieToken(req, res, next) {
     }
 }
 
-module.exports = verifyCookieToken;
+module.exports = {verifyCookieToken};

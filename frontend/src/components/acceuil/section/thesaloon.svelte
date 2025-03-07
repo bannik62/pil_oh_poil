@@ -19,8 +19,9 @@
                 </p>
                 <p>
                     Massage apaisant, soins du visage revitalisants, gommages
-                    envoûtants… <br> 
-                    
+                    envoûtants… 
+                    <br>
+                    <br>
                     ✨🌿 Vous êtes entre de bonnes mains.
                     🌿✨
                 </p>

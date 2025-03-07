@@ -10,7 +10,7 @@
   import Userboard from "../../module/Userboard.svelte";
   import CookieHautentifier from "../../../utils/CookieHautentifier.svelte";
   let cordonElement;
-  // let btnNavUserBoard;
+  let btnNavUserBoard;
   let navbarElement;
   let h1Title;
   let h1titlepng1;
@@ -185,7 +185,7 @@
       justify-content: center;
       align-items: center;
       border-radius: 10px;
-    animation: scaleUp 1s ease-out forwards;
+      animation: scaleUp 1s ease-out forwards;
     }
 
     @keyframes scaleUp {
@@ -288,7 +288,7 @@
     width: 100%;
     height: 104%;
     top: -75px;
-    left: -20px;
+   
     transform-style: preserve-3d;
     transition: transform 1.5s ease;
     z-index: 2;
@@ -360,7 +360,11 @@
     height: 100%;
     background-color: #333;
   }
+  .userboard{
+    margin-top: 150px;
+  }
   .userboard-container {
+    margin-top: 150px;
     box-sizing: border-box;
     margin : 0 auto;
     box-sizing: border-box;
