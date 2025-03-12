@@ -6,11 +6,12 @@ const dotenv = require('dotenv');
 // routes user connexion
 const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
 const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
-const userRouteInfos = require('./routes/users/userRouteInfos.cjs');
+const userRouteInfos = require('./routes/users/userRoutePostInfos.cjs');
 const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
+const userRouteEmailIsValid = require('./routes/users/userRouteEmailIsValid.cjs');
 // session
 const {verifyCookieToken} = require('./middleware/verifyCookieToken.cjs');
 // csrf
@@ -51,6 +52,9 @@ app.get('/csrf-token', csrfProtection, (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
 });
 
+// ✅ Route pour vérifier si l'email de l'utilisateur est validé
+app.use('/users/checkisvalid/', userRouteEmailIsValid);
+
 // ✅ Route pour vérifier la session
 app.get('/api/verifySession', verifyCookieToken, (req, res) => {
     console.log('Verifying session...', req.cookies);
@@ -67,7 +71,7 @@ app.get('/api/verifySession', verifyCookieToken, (req, res) => {
 //                                      *        login       *
 // ____________________________________ **********************______________________________________________/
 
-// ✅ Routes enregistrementprotection CSRF
+// ✅ Routes enregistrement protection CSRF
 app.use('/users/api/', csrfProtection, userRouteRegister);
 
 // ✅ Routes connexion protection CSRF

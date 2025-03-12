@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { get } from "svelte/store";
     import { faceActuelle } from "../../stores/cube";
-    import {utilisateurConnecte, estAuthentifie, infosUser} from '../../stores/sessionStore.js';
+    import {utilisateurConnecte, estAuthentifie, infosUser, isValid} from '../../stores/sessionStore.js';
     let navbarElement;
     let isOpen = false;
 
@@ -31,6 +31,7 @@ export function logout() {
         utilisateurConnecte.set(null);
         infosUser.set(null);
         estAuthentifie.set(false);
+        isValid.set(false);
     })
     .catch(error => {
         console.error('Erreur lors de la déconnexion:', error);

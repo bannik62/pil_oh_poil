@@ -3,29 +3,58 @@
   import axios from 'axios';
   import { get } from "svelte/store";
   import { onMount } from 'svelte';
-  import { utilisateurConnecte, estAuthentifie , infosUser} from '../../stores/sessionStore';
+  import { utilisateurConnecte, estAuthentifie , infosUser, isValid} from '../../stores/sessionStore';
   import { faceActuelle } from '../../stores/cube';
   import UserInfo from '../../class/userClassInfo';
-  onMount(async () => {    
-    mounted = true;
-    const userId = $utilisateurConnecte.id;
+
+  let csrfToken;
+  let mounted = false;
+
+
+  const fetchIsValide = async (userId) => {
+    try {
+        const response = await axios.get(`http://localhost:3000/users/checkisvalid/${userId}`, { withCredentials: true });
+
+        console.log("response.data", response.data.isValid); 
+        isValid.set(response.data.isValid); 
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
+    }
+  };
+
+  const fetchUserInfo = async (userId) => {
     try {
       const response = await axios.get(`http://localhost:3000/users/api/infos/get/${userId}`, { withCredentials: true });
-      console.log("response.data", response.data.userProfile.firstName);
+      console.log("response.data", response.data.userProfile.telephone);
       infosUser.set(response.data.userProfile);
-      console.log("getinfosUser", get(infosUser));
     } catch (error) {
       console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
     }
-   
-    const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
-    const data = await res.json();
-    csrfToken = data.csrfToken;
-    console.info("Formulaire de login sécurisé avec token csrfToken pour infos user")
+  };
+
+  const fetchCsrfToken = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
+      const data = await res.json();
+      csrfToken = data.csrfToken;
+      console.info("Formulaire de login sécurisé avec token csrfToken pour infos user");
+    } catch (error) {
+      console.error('Erreur lors de la récupération du token CSRF:', error);
+    }
+  };
+
+  onMount(async () => {
+    mounted = true;
+    const userId = $utilisateurConnecte.id;
+    await fetchCsrfToken();
+    await fetchIsValide(userId);
+    await fetchUserInfo(userId);
   });
   
   export let title = "Espaces utilisateur";
   let utilisateur;
+  let utilisateurMailIsValid;
   let buttonValiderEmail;
   let masqueInfoUser; 
   let divInfoMail;
@@ -36,24 +65,29 @@
   let inputAdresse;
   let inputDateDeNaissance;
   let buttonEnregistrerInfos;
-  let csrfToken;
-  let mounted = false;
-
   let getinfosUser;
+  let userInfo;
   
    
-  $: getinfosUser = $infosUser; // Cela met à jour getinfosUser automatiquement
+   utilisateur = $utilisateurConnecte // Cela met à jour getinfosUser automatiquement
+  $: getinfosUser = $infosUser
+  console.log('getinfosUser:', get(getinfosUser));
   $: estConnecte = $estAuthentifie;
   $: face = $faceActuelle;
   $: {
-    utilisateur = $utilisateurConnecte;
-    // console.log('Utilisateur:', utilisateur);
-    if (utilisateur.isvalid) {
+  utilisateurMailIsValid = $isValid;
+    console.log('UtilisateurmailisValid:', utilisateurMailIsValid);
+    if (utilisateurMailIsValid) {
       
       if(masqueInfoUser){
         masqueInfoUser.style.display = 'none';
         buttonValiderEmail.style.display = 'none';
-        divInfoMail.innerHTML = 'Votre email est validé';
+        divInfoMail.innerHTML = `
+        <p>Votre email
+         ${utilisateur.email} </p>
+        <p> est validé ✅</p>
+        <p>Vous pouvez maintenant accéder à nos services</p>
+        `;
       }
     } else {
       // console.log('Utilisateur non valide:', utilisateur);
@@ -71,6 +105,9 @@
     console.log("Enregistrement des informations:", userInfo);
 
     userInfo.saveInfosUser();
+    setTimeout(() => {
+      fetchUserInfo(utilisateur.id);
+    }, 2000);
 
   }
   
@@ -99,6 +136,17 @@
     })
     .then(response => {
         console.log('✅ Réponse du serveur:', response.data);
+        
+        // Stockez l'identifiant de l'intervalle
+        const intervalId = setInterval(() => {
+            fetchIsValide(utilisateur.id);
+            console.log("isValid before:", isValid);
+            // Vérifiez la valeur de isValid
+            if (utilisateurMailIsValid === true) { // Utilisez $ pour accéder à la valeur du store mis a jour 
+                console.log("isValid in if:", $isValid);
+                clearInterval(intervalId); // Arrêtez l'intervalle si isValid est vrai
+            }
+        }, 5000);
     })
     .catch(error => {
         console.error('❌ Erreur lors de l\'envoi de la requête:', error);
@@ -118,12 +166,9 @@
             </div>
            
             <div bind:this={divInfoMail} class="div-info-mail">
-              {#if utilisateur.firstName}
-                <p>{utilisateur.email}</p>
-              {:else}
+
                 <p>Pour accéder à nos services, veuillez valider votre adresse email.</p>
                 <button id="button-valider-email" bind:this={buttonValiderEmail} on:click={validerEmail}>Valider mon email</button>
-              {/if}
             </div>
         </div>
 
@@ -133,11 +178,15 @@
           <div bind:this={masqueInfoUser} class="masque-info-user">
 
             </div>
-            {#if getinfosUser}
+            {#if getinfosUser !== null}
+            <div class="infos-user">
             <p>Nom: {getinfosUser.firstName}</p>
             <p>Prénom: {getinfosUser.lastName}</p>
             <p>Adresse: {getinfosUser.address}</p>
             <p>Date de Naissance: {getinfosUser.dateOfBirth}</p>
+            <p>Téléphone: {getinfosUser.telephone}</p>
+            <button >Mettre à jour</button>
+            </div>
           {:else}
             
           
@@ -237,10 +286,9 @@
     justify-content: space-evenly;
     flex-wrap: wrap;
     width: 50%;
-    height: 100%;
+    height: auto;
     background-color: aliceblue;
     color: black;
-    padding: 0.5rem;
     border-radius: 10px;
   }
   .div-info-mail button{
@@ -261,6 +309,17 @@
     height: 55%;
     background-color: aliceblue;
     color: black;
+  }
+  .infos-user{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
+    background-color: aliceblue;
+    color: black;
+    padding: 0.5rem;
+    border-radius: 10px;
   }
   .masque-info-user{
     position: absolute;

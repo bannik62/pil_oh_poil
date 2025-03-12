@@ -137,6 +137,30 @@ class UserInfo {
             throw error;
         }
     }
+    async updateInfosUser() {
+        try {
+            const response = await axios.put('http://localhost:3000/users/api/info', {
+                userId: this.#userId,
+                firstName: this.#firstName,
+                lastName: this.#lastName,
+                telephone: this.#telephone,
+                address: this.#address,
+                dateOfBirth: this.#dateOfBirth,
+                csrfToken: this.#csrfToken
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'CSRF-Token': this.#csrfToken,
+                },
+                withCredentials: true
+            });
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour des informations:', error);
+            throw error;
+        }
+    }
 }
 
 export default UserInfo;
