@@ -16,17 +16,24 @@ const UserProfile = sequelize.define('UserProfile', {
         allowNull: true
     },
     dateOfBirth: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: true
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: 'Users',
+            key: 'id'
+        },
+        primaryKey: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     }
 });
 
 UserProfile.associate = (models) => {
-    UserProfile.belongsTo(models.User, {
+    UserProfile.belongsTo(models.Users, {
         foreignKey: 'userId',
         as: 'user'
     });

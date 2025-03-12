@@ -158,8 +158,9 @@
   <Navbar on:rotateCube={rotateCube} />
   {console.log("nav", get(pageActuelle))}
   {#if currentPage === 'front'}
-  <button class="cordon" on:click={() => handleClick('cordon')} type="button" title="cordon" />
-  {:else if currentPage === 'left'}
+  <button class="cordon"  name="cordon" aria-label="cordon" on:click={() => handleClick('cordon')} type="button" title="cordon" >
+  </button>
+    {:else if currentPage === 'left'}
   <button class="btnNavUserBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
     Navbar
   </button>

@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { get } from "svelte/store";
     import { faceActuelle } from "../../stores/cube";
-    import {utilisateurConnecte, estAuthentifie} from '../../stores/sessionStore.js';
+    import {utilisateurConnecte, estAuthentifie, infosUser} from '../../stores/sessionStore.js';
     let navbarElement;
     let isOpen = false;
 
@@ -29,6 +29,7 @@ export function logout() {
         console.log('Déconnexion réussie, cookie supprimé');
         pageActuelle.set("front");
         utilisateurConnecte.set(null);
+        infosUser.set(null);
         estAuthentifie.set(false);
     })
     .catch(error => {

@@ -34,11 +34,11 @@ class Utilisateur {
         this.#password = newPassword;
     }
 
-    set csrfToken(newCsrfToken) {
-        if (!newCsrfToken || typeof newCsrfToken !== 'string') {
+    set csrfToken(newToken) {
+        if (!newToken || typeof newToken !== 'string') {
             throw new Error('Token CSRF invalide');
         }
-        this.#csrfToken = newCsrfToken;
+        this.#csrfToken = newToken;
     }
     async envoyer() {
         try {

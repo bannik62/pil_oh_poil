@@ -19,5 +19,7 @@ function createPersistentStore(key, initialValue) {
 // Créer les stores persistants
 export const estAuthentifie = createPersistentStore('estAuthentifie', false);
 export const utilisateurConnecte = createPersistentStore('utilisateurConnecte', null);
-
-console.log('estAuthentifiestore', utilisateurConnecte);
+export const infosUser = createPersistentStore('infosUser', null);
+console.log('estAuthentifie store', estAuthentifie);
+console.log('utilisateurConnecte store', utilisateurConnecte);
+console.log('infosUser store', infosUser);
