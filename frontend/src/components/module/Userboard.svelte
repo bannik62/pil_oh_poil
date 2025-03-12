@@ -1,43 +1,78 @@
 <script>
   // Imports
   import axios from 'axios';
+  import { get } from "svelte/store";
   import { onMount } from 'svelte';
-  import { utilisateurConnecte, estAuthentifie } from '../../stores/sessionStore';
+  import { utilisateurConnecte, estAuthentifie , infosUser} from '../../stores/sessionStore';
   import { faceActuelle } from '../../stores/cube';
+  import UserInfo from '../../class/userClassInfo';
+  onMount(async () => {    
+    mounted = true;
+    const userId = $utilisateurConnecte.id;
+    try {
+      const response = await axios.get(`http://localhost:3000/users/api/infos/get/${userId}`, { withCredentials: true });
+      console.log("response.data", response.data.userProfile.firstName);
+      infosUser.set(response.data.userProfile);
+      console.log("getinfosUser", get(infosUser));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
+    }
+   
+    const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
+    const data = await res.json();
+    csrfToken = data.csrfToken;
+    console.info("Formulaire de login sécurisé avec token csrfToken pour infos user")
+  });
   
   export let title = "Espaces utilisateur";
   let utilisateur;
   let buttonValiderEmail;
   let masqueInfoUser; 
   let divInfoMail;
+  
+  let inputNom;
+  let inputPrenom;
+  let inputTelephone;
+  let inputAdresse;
+  let inputDateDeNaissance;
+  let buttonEnregistrerInfos;
+  let csrfToken;
+  let mounted = false;
 
-  onMount(() => {
-    mounted = true;
-  });
-  // Props
-
+  let getinfosUser;
+  
+   
+  $: getinfosUser = $infosUser; // Cela met à jour getinfosUser automatiquement
+  $: estConnecte = $estAuthentifie;
+  $: face = $faceActuelle;
   $: {
     utilisateur = $utilisateurConnecte;
-    console.log('Utilisateur:', utilisateur);
+    // console.log('Utilisateur:', utilisateur);
     if (utilisateur.isvalid) {
-        console.log('Utilisateur isvalid:', utilisateur);
-        console.log('masqueInfoUser:', masqueInfoUser);
-        if(masqueInfoUser){
-          masqueInfoUser.style.display = 'none';
-          buttonValiderEmail.style.display = 'none';
-          divInfoMail.innerHTML = 'Votre email est validé';
-        }
+      
+      if(masqueInfoUser){
+        masqueInfoUser.style.display = 'none';
+        buttonValiderEmail.style.display = 'none';
+        divInfoMail.innerHTML = 'Votre email est validé';
+      }
     } else {
-        console.log('Utilisateur non valide:', utilisateur);
+      // console.log('Utilisateur non valide:', utilisateur);
     }
   }
 
-  $: estConnecte = $estAuthentifie;
-  $: face = $faceActuelle;
-  // Variables
-  let mounted = false;
+  function enregistrerInfos(event){
+    event.preventDefault();
+    buttonEnregistrerInfos.style.transform = "scale(0.9)";
+    setTimeout(() => {
+        buttonEnregistrerInfos.style.transform = "scale(1)";
+    }, 150);
+    console.log("csrfToken:", csrfToken);
+    const userInfo = new UserInfo( utilisateur.id, inputNom.value, inputPrenom.value, inputAdresse.value, inputTelephone.value, inputDateDeNaissance.value, csrfToken);
+    console.log("Enregistrement des informations:", userInfo);
 
-  
+    userInfo.saveInfosUser();
+
+  }
   
   function validerEmail(event) {
     event.preventDefault();
@@ -71,9 +106,6 @@
 }
 
 
-
-  // Lifecycle
-
 </script>
 
 <h1>{title}</h1>
@@ -86,11 +118,11 @@
             </div>
            
             <div bind:this={divInfoMail} class="div-info-mail">
-              {#if utilisateur.nom}
+              {#if utilisateur.firstName}
                 <p>{utilisateur.email}</p>
               {:else}
                 <p>Pour accéder à nos services, veuillez valider votre adresse email.</p>
-                <button id="button-valider-email" bind:this={buttonValiderEmail} onclick={validerEmail}>Valider mon email</button>
+                <button id="button-valider-email" bind:this={buttonValiderEmail} on:click={validerEmail}>Valider mon email</button>
               {/if}
             </div>
         </div>
@@ -99,27 +131,40 @@
         <div class="column-bottom">
     
           <div bind:this={masqueInfoUser} class="masque-info-user">
+
             </div>
+            {#if getinfosUser}
+            <p>Nom: {getinfosUser.firstName}</p>
+            <p>Prénom: {getinfosUser.lastName}</p>
+            <p>Adresse: {getinfosUser.address}</p>
+            <p>Date de Naissance: {getinfosUser.dateOfBirth}</p>
+          {:else}
+            
+          
             <form class="user-form">
                 <div class="form-group">
                     <label for="nom">Nom :</label>
-                    <input type="text" id="nom" name="nom" placeholder="Votre nom">
+                    <input bind:this={inputNom} type="text" id="nom" name="nom" placeholder="Votre nom">
                 </div>
                 <div class="form-group">
                     <label for="prenom">Prénom :</label>
-                    <input type="text" id="prenom" name="prenom" placeholder="Votre prénom">
+                    <input bind:this={inputPrenom} type="text" id="prenom" name="prenom" placeholder="Votre prénom">
                 </div>
                 <div class="form-group">
-                    <label for="adresse">Adresse :</label>
-                    <input type="text" id="adresse" name="adresse" placeholder="Votre adresse">
+                      <label for="adresse">Adresse :</label>
+                    <input bind:this={inputAdresse} type="text" id="adresse" name="adresse" placeholder="Votre adresse">
                 </div>
                 <div class="form-group">
                     <label for="telephone">Téléphone :</label>
-                    <input type="tel" id="telephone" name="telephone" placeholder="Votre téléphone">
+                    <input bind:this={inputTelephone} type="text" id="telephone" name="telephone" placeholder="Votre téléphone">
                 </div>
-                <button  type="submit" class="submit-btn">Enregistrer</button>
+                <div class="form-group">
+                  <label for="dateDeNaissance">Date de naissance :</label>
+                  <input bind:this={inputDateDeNaissance} type="date" id="dateDeNaissance" name="dateDeNaissance" placeholder="Votre date de naissance">
+                </div>
+                <button bind:this={buttonEnregistrerInfos} on:click={enregistrerInfos} class="submit-btn">Enregistrer</button>
             </form>
-          
+{/if}          
 
         </div>
       <!-- Content goes here -->

@@ -6,6 +6,8 @@ const dotenv = require('dotenv');
 // routes user connexion
 const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
 const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
+const userRouteInfos = require('./routes/users/userRouteInfos.cjs');
+const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
@@ -33,7 +35,7 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token']
+    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token', 'Cookie']
 }));
 // ✅ Middlewares globaux
 app.use(express.json());
@@ -59,16 +61,35 @@ app.get('/api/verifySession', verifyCookieToken, (req, res) => {
     });
 });
 
-// app.use('/users/api/email', userRouteMailValidate);
+//                                      **********************
+//                                      *                    *
+//                                      *   enregistrement   *
+//                                      *        login       *
+// ____________________________________ **********************______________________________________________/
 
-// ✅ Routes protection CSRF
+// ✅ Routes enregistrementprotection CSRF
 app.use('/users/api/', csrfProtection, userRouteRegister);
 
-// ✅ Routes protection CSRF
+// ✅ Routes connexion protection CSRF
 app.use('/users/api/', csrfProtection, userRouteLogin);
 
-// ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
-app.use(csrfErrorHandler);
+// ✅ Routes enregistrement  infos personnelles protection CSRF
+app.use('/users/api/',csrfProtection, userRouteInfos);
+
+//                                      **********************
+//                                      *                    *
+//                                      *   recuperation     *
+//                                      *       infos        *
+// ____________________________________ **********************______________________________________________/
+
+// ✅ Route pour récupérer les informations de l'utilisateur
+app.use('/users/api/infos/', userRouteGetInfos);
+
+//                                      **********************
+//                                      *                    *
+//                                      *   verification     *
+//                                      *       email        *
+// ____________________________________ **********************______________________________________________/
 
 // ✅ Route pour envoyer un email de validation isvalid
 app.use('/api/verify/mail',verifyEmailMiddleware, async (req, res) => {
@@ -90,6 +111,38 @@ app.use('/api/verify/mail',verifyEmailMiddleware, async (req, res) => {
 
 // ✅ Route pour vérifier le token de l'email
 app.use('/verify-email/', userRouteMailValidate);
+
+//                                      **********************
+//                                      *                    *
+//                                      *   gestion des      *
+//                                      *     erreurs        *
+// ____________________________________ **********************______________________________________________/
+
+//                                      **********************
+//                                      *                    *
+//                                      *   deconnexion      *
+//                                      *                    *
+// ____________________________________ **********************______________________________________________/
+
+// ✅ Route de déconnexion
+app.post('/api/user/auth/logout', (req, res) => {
+    try {
+        // Supprimer le cookie de session
+        res.clearCookie('SessionCookiePilOhPoil', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
+
+        res.status(200).json({ message: 'Déconnexion réussie' });
+    } catch (error) {
+        console.error('Erreur lors de la déconnexion:', error);
+        res.status(500).json({ error: 'Erreur lors de la déconnexion' });
+    }
+});
+
+// ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
+app.use(csrfErrorHandler);
 
 // ✅ Gestion des erreurs globales
 app.use((err, req, res, next) => {

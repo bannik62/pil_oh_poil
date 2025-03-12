@@ -35,7 +35,7 @@
   event.preventDefault();
 
   try {
-    const user = new Utilisateur(emailRegister, passwordRegister);
+    const user = new Utilisateur(emailRegister, passwordRegister, csrfToken);
     const result = await user.envoyer();
 
     if (result.message) {

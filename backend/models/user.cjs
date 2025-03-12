@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./index.cjs');
 
-const User = sequelize.define('User', {
+const User = sequelize.define('Users', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -21,12 +21,13 @@ const User = sequelize.define('User', {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
-    }
+    },
+
 });
 
 User.associate = (models) => {
     User.hasOne(models.UserProfile, {
-        foreignKey: 'userId',
+        foreignKey: 'id',
         as: 'userProfile'
     });
 };
