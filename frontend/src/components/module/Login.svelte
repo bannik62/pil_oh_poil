@@ -61,7 +61,7 @@
   }
 };
 
-  async function envoyerDonneesLogin(event) {
+  const envoyerDonneesLogin = async (event) => {
     event.preventDefault(); // Empêcher le rechargement de la page
     message = "";
     messageClass = "";
