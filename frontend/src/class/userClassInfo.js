@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 class UserInfo {
     #userId;
     #firstName;
@@ -85,12 +84,8 @@ class UserInfo {
     }
 
     set telephone(value) {
-        if (!this.#telephone || typeof this.#telephone !== 'string') {
-            const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
-            if (!phoneRegex.test(this.#telephone)) {
-                throw new Error('Le numéro de téléphone doit être au format français (ex: 06 12 34 56 78)');
-            }
-            throw new Error('Téléphone invalide');
+        if (typeof value !== 'string' || !/^(?:(?:\+|00)33|0)[1-9](?:[\s.-]?\d{2}){4}$/.test(value)) {
+            throw new Error('Le numéro de téléphone doit être au format français (ex: 01 23 45 67 89 ou +33 6 12 34 56 78)');
         }
         this.#telephone = value;
     }
@@ -113,6 +108,7 @@ class UserInfo {
     }
     // Méthode pour enregistrer les informations
     async saveInfosUser() {
+        let erreurMiseAJour = '';
         try {
             const response = await axios.post('http://localhost:3000/users/api/info', {
                 userId: this.#userId,
@@ -133,34 +129,50 @@ class UserInfo {
             console.log(response.data);
             return response.data;
         } catch (error) {
-            console.error('Erreur lors de l\'enregistrement des informations:', error);
-            throw error;
+            // Capture et affichage de l'erreur
+            console.error('Erreur lors de l\'enregistrement :', error);
+            erreurMiseAJour = error || 'Une erreur est survenue lors de la mise à jour.';// eslint-disable-line no-unused-vars
+
+            // Efface le message d'erreur après 5 secondes
+            setTimeout(() => {
+                erreurMiseAJour = '';
+            }, 5000);
         }
+
     }
-    async updateInfosUser() {
+    async updateUserInfos(updatedFields) {
+        let erreurMiseAJour = '';
         try {
-            const response = await axios.put('http://localhost:3000/users/api/info', {
-                userId: this.#userId,
-                firstName: this.#firstName,
-                lastName: this.#lastName,
-                telephone: this.#telephone,
-                address: this.#address,
-                dateOfBirth: this.#dateOfBirth,
-                csrfToken: this.#csrfToken
-            }, {
+            if (!updatedFields || Object.keys(updatedFields).length === 0) {
+                console.warn('Aucune modification détectée.');
+                return;
+            }
+
+            // Ajouter l'ID de l'utilisateur
+            updatedFields.userId = this.#userId;
+            updatedFields.csrfToken = this.#csrfToken;
+
+            const response = await axios.patch(`http://localhost:3000/users/api/update/patch/${this.#userId}`, updatedFields, {
                 headers: {
                     'Content-Type': 'application/json',
                     'CSRF-Token': this.#csrfToken,
                 },
                 withCredentials: true
             });
-            console.log(response.data);
+
+            console.log('Mise à jour réussie:', response.data);
             return response.data;
+
         } catch (error) {
-            console.error('Erreur lors de la mise à jour des informations:', error);
-            throw error;
+            console.error('Erreur lors de la mise à jour :', error);
+            erreurMiseAJour = error.message || 'Une erreur est survenue lors de la mise à jour.';// eslint-disable-line no-unused-vars
+
+            setTimeout(() => {
+                erreurMiseAJour = error.message || 'Une erreur est survenue lors de la mise à jour.';
+            }, 5000);
         }
     }
+
 }
 
 export default UserInfo;

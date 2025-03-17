@@ -19,6 +19,10 @@ const UserProfile = sequelize.define('UserProfile', {
         type: DataTypes.DATEONLY,
         allowNull: true
     },
+    telephone: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,

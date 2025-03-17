@@ -103,6 +103,7 @@
             console.log("decodedPayload",decodedPayload);
             utilisateurConnecte.set(decodedPayload);
             estAuthentifie.set(true);
+          
 
             if(decodedPayload.role === "admin") {
               console.log("direction admin");
