@@ -3,11 +3,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
-// routes user connexion
+// routes user
 const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
 const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
 const userRouteInfos = require('./routes/users/userRoutePostInfos.cjs');
 const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
+const userRouteUpdateInfos = require('./routes/users/userRouteUpdateInfos.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
@@ -35,7 +36,7 @@ const app = express();
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token', 'Cookie']
 }));
 // ✅ Middlewares globaux
@@ -88,6 +89,9 @@ app.use('/users/api/',csrfProtection, userRouteInfos);
 
 // ✅ Route pour récupérer les informations de l'utilisateur
 app.use('/users/api/infos/', userRouteGetInfos);
+
+// ✅ Route pour mettre à jour les informations de l'utilisateur
+app.use('/users/api/update/', userRouteUpdateInfos);
 
 //                                      **********************
 //                                      *                    *
