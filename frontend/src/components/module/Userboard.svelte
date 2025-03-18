@@ -1,16 +1,18 @@
 <script>
   // Imports
   import axios from "axios";
-  import { get } from "svelte/store";
   import { onMount } from "svelte";
   import {
     utilisateurConnecte,
     estAuthentifie,
     infosUser,
     isValid,
+    displayService,
   } from "../../stores/sessionStore";
   import { faceActuelle } from "../../stores/cube";
   import UserInfo from "../../class/userClassInfo";
+  import Rdv from "./services/Rdv.svelte";
+  import Messagerie from "./services/Messagerie.svelte";
 
   let csrfToken;
   let mounted = false;
@@ -38,7 +40,7 @@
         `http://localhost:3000/users/api/infos/get/${userId}`,
         { withCredentials: true }
       );
-      console.log("setInTheStore:", response.data.userProfile);
+      console.log("setiNFOInTheStore:", response.data.userProfile);
       infosUser.set(response.data.userProfile);
     } catch (error) {
       console.error(
@@ -69,6 +71,7 @@
     await fetchCsrfToken();
     await fetchIsValide(userId);
     await fetchUserInfo(userId);
+
   });
 
   export let title = "Espaces utilisateur";
@@ -76,6 +79,7 @@
   let utilisateurMailIsValid;
   let buttonValiderEmail;
   let masqueInfoUser;
+  let masqueService;
   let divInfoMail;
   let inputNom;
   let inputPrenom;
@@ -86,11 +90,19 @@
   let buttonUpdateInfos;
   let getinfosUser;
   let registrer = false;
+  let ongletRdv;
+  let ongletMessagerie;
   // les erreurs
   let erreurMiseAJour;
 
+  function setDisplayService(service) {
+    displayService.set(service);
+    console.log("displayService:", $displayService);
+  }
+
   $: utilisateur = $utilisateurConnecte;
   $: getinfosUser = $infosUser;
+
   console.log("getinfosUser:", getinfosUser);
   $: estConnecte = $estAuthentifie;
   $: face = $faceActuelle;
@@ -369,8 +381,7 @@
   {#if mounted}
     <div class="content-left">
       <div class="column-top">
-        <div class="photo-profil" >
-        </div>
+        <div class="photo-profil" />
         <div bind:this={divInfoMail} class="div-info-mail">
           <p>
             Pour accéder à nos services, veuillez valider votre adresse email.
@@ -384,8 +395,7 @@
       </div>
 
       <div class="column-bottom">
-        <div bind:this={masqueInfoUser} class="masque-info-user" >
-        </div>
+        <div bind:this={masqueInfoUser} class="masque-info-user" />
         {#if getinfosUser !== null}
           <div class="infos-user">
             <p>Nom: {getinfosUser.firstName}</p>
@@ -472,14 +482,33 @@
     </div>
 
     <div class="content-right">
-      <div class="onglet onglet1">
+      <button
+        bind:this={ongletRdv}
+        on:click={() => setDisplayService("rdv")}
+        class="onglet onglet1"
+      >
         <p>Prendre rendez vous</p>
-      </div>
-      <div class="onglet onglet2">
+      </button>
+      <button
+        bind:this={ongletMessagerie}
+        on:click={() => setDisplayService("messagerie")}
+        class="onglet onglet2"
+      >
         <p>Informations Pile oh poil</p>
-      </div>
-      <div class="module-rdv">
-        <p>Rdv</p>
+      </button>
+      <div class="module-service">
+        {#if getinfosUser !== null}
+          {#if $displayService === "rdv" }
+            <Rdv />
+          {:else if $displayService === "messagerie"}
+            <Messagerie />
+          {/if}
+        {:else}
+          <div bind:this={masqueService} class="masque-service">
+            <p>Veuillez remplir vos informations personnelles</p>
+            <p>pour accéder à nos services</p>
+          </div>
+        {/if}
       </div>
     </div>
   {/if}
@@ -563,12 +592,7 @@
     background-color: aliceblue;
     color: black;
   }
-  .error-message {
-    color: red;
-  }
-  .success-message {
-    color: green;
-  }
+
   .infos-user {
     display: flex;
     flex-direction: column;
@@ -604,23 +628,43 @@
     background-color: aliceblue;
     color: black;
   }
+  .module-service {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: aliceblue;
+    color: black;
+    overflow: auto;
+  }
+  .masque-service {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(83, 74, 74, 0.396);
+    color: black;
+    z-index: 100;
+  }
   .onglet {
     position: absolute;
     width: auto;
-    height: 50px;
-    background-color: aliceblue;
-    color: black;
     padding: 1rem;
     border-radius: 10px 10px 0 0;
   }
   .onglet:hover {
-    top: -20px;
+    top: -50px;
     scale: 1.1;
     background-color: red;
   }
   .onglet1 {
     top: -50px;
     background-color: blue;
+  }
+  .onglet1:hover {
+    left: 5px;
+    scale: 1.1;
+    background-color: red;
   }
   .onglet2 {
     top: -50px;

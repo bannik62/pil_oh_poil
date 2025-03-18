@@ -21,6 +21,4 @@ export const estAuthentifie = createPersistentStore('estAuthentifie', false);
 export const utilisateurConnecte = createPersistentStore('utilisateurConnecte', null);
 export const infosUser = createPersistentStore('infosUser', null);
 export const isValid = createPersistentStore('isValid', false);
-console.log('estAuthentifie store', estAuthentifie);
-console.log('utilisateurConnecte store', utilisateurConnecte);
-console.log('infosUser store', infosUser);
+export const displayService = createPersistentStore('displayService', 'rdv');

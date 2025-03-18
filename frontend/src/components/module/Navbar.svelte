@@ -32,6 +32,13 @@ export function logout() {
         infosUser.set(null);
         estAuthentifie.set(false);
         isValid.set(false);
+        displayService.set("rdv");
+        selectedDay.set(null);
+        selectedTimeSlot.set(null);
+        currentWeek.set([]);
+        weekOffset.set(0);
+        joursFermes.set([0, 3]);
+
     })
     .catch(error => {
         console.error('Erreur lors de la déconnexion:', error);
