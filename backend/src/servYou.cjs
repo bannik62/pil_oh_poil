@@ -9,6 +9,7 @@ const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
 const userRouteInfos = require('./routes/users/userRoutePostInfos.cjs');
 const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
 const userRouteUpdateInfos = require('./routes/users/userRouteUpdateInfos.cjs');
+const userRouteAppointments = require('./routes/users/userRouteAppointments.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
@@ -125,6 +126,23 @@ app.use('/verify-email/', userRouteMailValidate);
 //                                      *   gestion des      *
 //                                      *     erreurs        *
 // ____________________________________ **********************______________________________________________/
+// ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
+app.use(csrfErrorHandler);
+
+// ✅ Gestion des erreurs globales
+app.use((err, req, res, next) => {
+    console.error('Erreur serveur:', err);
+    res.status(500).json({ message: 'Erreur interne du serveur ❌' });
+});
+
+//                                      **********************
+//                                      *                    *
+//                                      *   gestion des      *
+//                                      *   rendez-vous      *
+// ____________________________________ **********************______________________________________________/
+
+// ✅ Route pour obtenir tous les rendez-vous
+app.use('/api/appointments/', userRouteAppointments);
 
 //                                      **********************
 //                                      *                    *
@@ -147,15 +165,6 @@ app.post('/api/user/auth/logout', (req, res) => {
         console.error('Erreur lors de la déconnexion:', error);
         res.status(500).json({ error: 'Erreur lors de la déconnexion' });
     }
-});
-
-// ✅ Gestion des erreurs CSRF (après application de la protection CSRF)
-app.use(csrfErrorHandler);
-
-// ✅ Gestion des erreurs globales
-app.use((err, req, res, next) => {
-    console.error('Erreur serveur:', err);
-    res.status(500).json({ message: 'Erreur interne du serveur ❌' });
 });
 
 const PORT = process.env.PORT_EXPRESS || 3000;

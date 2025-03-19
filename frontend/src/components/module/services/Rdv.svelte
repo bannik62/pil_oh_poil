@@ -1,8 +1,11 @@
 <script>
+    import axios from "axios";
     import { fade } from "svelte/transition";
     import { onMount } from "svelte";
     import { writable, get } from "svelte/store";
     import { utilisateurConnecte } from "../../../stores/sessionStore";
+    export let divInfoMail;
+    // console.log("divInfoMailtyp:", typeof divInfoMail);
 
     let title = "Rendez-vous :";
     let currentWeek = writable([]);
@@ -12,9 +15,135 @@
 
     const joursFermes = [0, 3]; // Fermé le mercredi et dimanche
 
+    let btnDel = document.createElement("button");
+    btnDel.innerHTML = "Supprimer";
+    btnDel.style.backgroundColor = "red";
+    btnDel.style.color = "white";
+    btnDel.style.border = "none";
+    btnDel.style.padding = "5px 10px";
+    btnDel.style.borderRadius = "5px";
+    btnDel.style.cursor = "pointer";
+    btnDel.addEventListener("click", () => {
+        deleteAppointment(userId);
+    });
+
     onMount(() => {
         generateWeek();
+        fetchAppointments(get(utilisateurConnecte).id);
     });
+     
+    async function fetchAppointments(userId) {
+    console.log("userId :", userId);
+    try {
+        const response = await axios.get(`http://localhost:3000/api/appointments/get/${userId}`);
+        console.log("response :", response.data);
+        let appoint = response.data;
+
+        // Réinitialise le tableau pour éviter les doublons
+        divInfoMail.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Créneau Horaire</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        `;
+
+        // Sélectionne le tbody
+        let tbody = divInfoMail.querySelector("tbody");
+
+        appoint.forEach(element => {
+            let tr = document.createElement("tr");
+
+            let tdDay = document.createElement("td");
+            tdDay.textContent = element.day;
+
+            let tdTimeSlot = document.createElement("td");
+            tdTimeSlot.textContent = element.timeSlot;
+
+            let tdAction = document.createElement("td");
+            let btnDel = document.createElement("button");
+            btnDel.textContent = "Supprimer";
+            btnDel.style.backgroundColor = "red";
+            btnDel.style.color = "white";
+            btnDel.style.border = "none";
+            btnDel.style.borderRadius = "5px";
+            btnDel.style.cursor = "pointer";
+
+            // Ajoute un event listener spécifique à chaque bouton
+            btnDel.addEventListener("click", () => {
+                deleteAppointment(userId); 
+            });
+
+            tdAction.appendChild(btnDel);
+            tr.appendChild(tdDay);
+            tr.appendChild(tdTimeSlot);
+            tr.appendChild(tdAction);
+
+            // Ajoute la ligne dans le tableau
+            tbody.appendChild(tr);
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Erreur lors de la récupération des rendez-vous:', error);
+        throw error;
+    }
+}
+
+
+    async function createAppointment(userId, day, timeSlot) {
+        utilisateurConnecte.subscribe(async (user) => {
+        if (user && get(selectedDay) && get(selectedTimeSlots).length > 0) {
+            const day = get(selectedDay).toISOString().split("T")[0]; // Format YYYY-MM-DD
+            const appointments = get(selectedTimeSlots).map(timeSlot => ({ userId: user.id, day, timeSlot }));
+
+
+            try {
+                // Envoi des rendez-vous avec Axios
+                await Promise.all(appointments.map(async (appointment) => {
+                    const response = await axios.post(`http://localhost:3000/api/appointments/${user.id}`, {
+                        day: appointment.day,
+                        timeSlot: appointment.timeSlot
+                    });
+                    return response.data;
+                }));
+
+                alert("Rendez-vous pris avec succès !");
+                selectedDay.set(null);
+                selectedTimeSlots.set([]);
+                setTimeout(() => {
+                    fetchAppointments(get(utilisateurConnecte).id);
+                }, 1000);
+            } catch (error) {
+                console.error("Erreur lors de la réservation :", error);
+                alert("Erreur : " + (error.response?.data?.error || "Une erreur s'est produite"));
+            }
+        } else {
+            alert("Veuillez sélectionner un jour et au moins un créneau horaire.");
+        }
+    });
+    }
+
+    async function deleteAppointment(userId) {
+        alert("Suppression du rendez-vous en cours...");
+        try {
+            const response = await axios.delete(`http://localhost:3000/api/appointments/${userId}`);
+
+            setTimeout(() => {  
+                fetchAppointments(get(utilisateurConnecte).id);
+            }, 1000);
+            return response.data;
+        } catch (error) {
+            console.error('Erreur lors de la suppression du rendez-vous:', error);
+            throw error;
+        }
+    }
+
 
     function generateWeek() {
         const today = new Date();
@@ -60,28 +189,13 @@
         });
     }
 
-    function bookAppointment() {
-        utilisateurConnecte.subscribe(user => {
-            if (user && get(selectedDay) && get(selectedTimeSlots).length > 0) {
-                const appointments = get(selectedTimeSlots).map(timeSlot => ({
-                    userId: user.id,
-                    day: get(selectedDay).toISOString().split("T")[0], // Format YYYY-MM-DD
-                    timeSlot
-                }));
-
-                console.log("Rendez-vous enregistrés :", appointments);
-                selectedDay.set(null);
-                selectedTimeSlots.set([]);
-
-                alert("Rendez-vous pris avec succès !");
-            } else {
-                alert("Veuillez sélectionner un jour et au moins un créneau horaire.");
-            }
-        });
-    }
+    async function bookAppointment() {
+        createAppointment(get(utilisateurConnecte).id, get(selectedDay), get(selectedTimeSlots));
+}
 </script>
 
 <div class="rdv-container" transition:fade>
+
     <div class="rdv-choice">
         <h2>{title}</h2>
         {#if $selectedDay}
@@ -114,7 +228,7 @@
 
         {#if $selectedDay}
             <div class="time-slots">
-                <h2>{$selectedDay.toLocaleDateString("fr-FR", { weekday: 'long', day: '2-digit', month: '2-digit' })}</h2>
+                <h3>{$selectedDay.toLocaleDateString("fr-FR", { weekday: 'long', day: '2-digit', month: '2-digit' })}</h3>
                 {#each ["08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"] as timeSlot}
                     <button class="time-slot" on:click={() => toggleTimeSlot(timeSlot)}
                         class:active={$selectedTimeSlots.includes(timeSlot)}>
@@ -168,7 +282,12 @@
         text-decoration: underline;
         text-underline-offset: 0.5rem;
     }
-
+    h3 {
+        text-align: center;
+        color: rgb(24, 22, 22);
+        text-decoration: underline;
+        text-underline-offset: 0.5rem;
+    }
     .calendar-container {
         background: white;
         padding: 10px;

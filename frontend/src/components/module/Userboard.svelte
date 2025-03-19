@@ -80,7 +80,7 @@
   let buttonValiderEmail;
   let masqueInfoUser;
   let masqueService;
-  let divInfoMail;
+  export let divInfoMail;
   let inputNom;
   let inputPrenom;
   let inputTelephone;
@@ -499,7 +499,7 @@
       <div class="module-service">
         {#if getinfosUser !== null}
           {#if $displayService === "rdv" }
-            <Rdv />
+            <Rdv {divInfoMail} />
           {:else if $displayService === "messagerie"}
             <Messagerie />
           {/if}
@@ -572,6 +572,7 @@
     color: black;
     border-radius: 10px;
     padding: 5px;
+    overflow-y: auto;
   }
   .div-info-mail button {
     all: unset;

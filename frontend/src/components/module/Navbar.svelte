@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { get } from "svelte/store";
     import { faceActuelle } from "../../stores/cube";
-    import {utilisateurConnecte, estAuthentifie, infosUser, isValid} from '../../stores/sessionStore.js';
+    import {utilisateurConnecte, estAuthentifie, infosUser, isValid, displayService} from '../../stores/sessionStore.js';
     let navbarElement;
     let isOpen = false;
 
