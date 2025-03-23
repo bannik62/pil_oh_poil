@@ -3,9 +3,10 @@
     import { onMount } from "svelte";
     import { get } from "svelte/store";
     import { faceActuelle } from "../../stores/cube";
-    import {utilisateurConnecte, estAuthentifie, infosUser, isValid, displayService} from '../../stores/sessionStore.js';
+    import {utilisateurConnecte, estAuthentifie, infosUser, isValid, displayService, appointments} from '../../stores/sessionStore.js';
     let navbarElement;
     let isOpen = false;
+
 
     //transformation dee la valeur cube en page
     const pageActuelle = faceActuelle;
@@ -33,11 +34,8 @@ export function logout() {
         estAuthentifie.set(false);
         isValid.set(false);
         displayService.set("rdv");
-        selectedDay.set(null);
-        selectedTimeSlot.set(null);
-        currentWeek.set([]);
-        weekOffset.set(0);
-        joursFermes.set([0, 3]);
+        appointments.set([]);
+
 
     })
     .catch(error => {
