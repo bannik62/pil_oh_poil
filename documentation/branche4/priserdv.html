@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Gestion des Rendez-vous</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #0073e6;
+        }
+        h3 {
+            color: #00e6a1;
+        }
+        strong {
+            color: #0073e6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        h2, h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Documentation : Gestion des Rendez-vous</h1>
+    
+    <h2>1. Flux des Données</h2>
+    <p>Voici comment les données transitent entre le frontend et le backend :</p>
+    <ul>
+        <li>Le frontend affiche les créneaux disponibles.</li>
+        <li>Lorsqu'un utilisateur sélectionne un créneau, une requête est envoyée au backend.</li>
+        <li>Le backend vérifie la disponibilité et enregistre le rendez-vous en base de données.</li>
+        <li>Le frontend met à jour l'affichage pour refléter la réservation.</li>
+    </ul>
+
+    <h2>2. Génération de la semaine</h2>
+    <p>La fonction <strong>generateWeek()</strong> permet de créer une semaine de rendez-vous en prenant en compte les jours fermés.</p>
+    <pre>
+function generateWeek() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+}
+    </pre>
+    
+    <h2>3. Vérification des disponibilités</h2>
+    <p>La fonction <strong>verifyDisponibility()</strong> vérifie si un créneau horaire est disponible à une date donnée.</p>
+    <pre>
+const verifyDisponibility = ($allAppointments, selectedDay, timeSlot) => {
+    if (!selectedDay || !(selectedDay instanceof Date)) {
+        return false;
+    }
+    const dayISO = selectedDay.toISOString().split("T")[0];
+    return $allAppointments.some(appointment => {
+        return appointment.day === dayISO && appointment.timeSlot === timeSlot;
+    });
+};
+    </pre>
+    
+    <h2>4. Récupération des rendez-vous</h2>
+    <p>La fonction <strong>fetchAppointments()</strong> récupère les rendez-vous de l'utilisateur.</p>
+    <pre>
+async function fetchAppointments(userId) {
+    const response = await axios.get(`http://localhost:3000/api/appointments/get/${userId}`);
+    appointments.set(response.data);
+}
+    </pre>
+    
+    <h2>5. Création d'un rendez-vous</h2>
+    <p>La fonction <strong>createAppointment()</strong> enregistre un rendez-vous pour l'utilisateur connecté.</p>
+    <pre>
+async function createAppointment(utilisateurConnecteId) {
+    const user = $utilisateurConnecte;
+    if (user && get(selectedDay) && get(selectedTimeSlots).length > 0) {
+        const day = get(selectedDay).toISOString().split("T")[0];
+        await axios.post(`http://localhost:3000/api/appointments/${user.id}`, {
+            day,
+            timeSlot: get(selectedTimeSlots)[0]
+        });
+    }
+}
+    </pre>
+    
+    <h2>6. Suppression d'un rendez-vous</h2>
+    <p>La fonction <strong>deleteAppointment()</strong> permet de supprimer un rendez-vous existant.</p>
+    <pre>
+async function deleteAppointment(appointmentId) {
+    await axios.delete(`http://localhost:3000/api/appointments/${appointmentId}`);
+    fetchAllAppointments();
+}
+    </pre>
+</body>
+</html>

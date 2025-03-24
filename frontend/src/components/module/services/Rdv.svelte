@@ -3,7 +3,7 @@
     import { fade } from "svelte/transition";
     import { onMount } from "svelte";
     import { get } from "svelte/store";
-    import { utilisateurConnecte,displayService, appointments } from "../../../stores/sessionStore";
+    import { utilisateurConnecte,displayService, appointments,infosUser } from "../../../stores/sessionStore";
     import { weekOffset, selectedTimeSlots, selectedDay, currentWeek, allAppointments } from "../../../stores/calendar";
     export let divInfoMail;
     // console.log("divInfoMailtyp:", typeof divInfoMail);
@@ -11,42 +11,52 @@
     let title = "Rendez-vous :";
     let joursFermes = [0, 3];
 
-    const verifyDisponibility = ($allAppointments,selectedDay, timeSlot) => {
-    // Vérifiez si 'day' est une date valide
-    if (!selectedDay || !(selectedDay instanceof Date)) {
-        console.error("La variable 'day' est undefined ou non valide.");
-        return false;
-    }
+    const verifyDisponibility = ($allAppointments, selectedDay, timeSlot) => {
+        // Vérifiez si 'day' est une date valide
+        if (!selectedDay || !(selectedDay instanceof Date)) {
+            console.error("La variable 'day' est undefined ou non valide.");
+            return false;
+        }
 
-    const dayISO = selectedDay.toISOString().split("T")[0]; // Convertir la date en format YYYY-MM-DD
-    
-    // Vérifiez si $allAppointments est un tableau valide
-    if (!Array.isArray($allAppointments)) {
-        console.error("$allAppointments n'est pas un tableau valide.");
-        return false;
-    }
+        // Ajoutez un jour à la date sélectionnée
+        const adjustedDay = new Date(selectedDay);
+        adjustedDay.setDate(adjustedDay.getDate() + 1); // Ajout d'un jour
 
-    return $allAppointments.some(appointment => {
-        const appointmentDayISO = new Date(appointment.day).toISOString().split("T")[0];
-        return appointmentDayISO === dayISO && appointment.timeSlot === timeSlot;
-    });
-};
+        const dayISO = adjustedDay.toISOString().split("T")[0]; // Convertir la date en format YYYY-MM-DD
+        
+        // Vérifiez si $allAppointments est un tableau valide
+        if (!Array.isArray($allAppointments)) {
+            console.error("$allAppointments n'est pas un tableau valide.");
+            return false;
+        }
+
+        return $allAppointments.some(appointment => {
+            const appointmentDayISO = new Date(appointment.day).toISOString().split("T")[0];
+            return appointmentDayISO === dayISO && appointment.timeSlot === timeSlot;
+        });
+    };
 
 
     
     onMount(() => {
+        fetchAllAppointments();
         if($displayService === "rdv" ){
             generateWeek();
             fetchAppointments($utilisateurConnecte.id);
-            fetchAllAppointments();
             // verifyDisponibility($selectedDay, allTimeSlots);
         }
     });
 
     async function fetchAllAppointments() {
+    try {
         const response = await axios.get(`http://localhost:3000/api/appointments/getall/all`);
         allAppointments.set(response.data);
+        console.log("📌 Tous les rendez-vous récupérés :", response.data);
+    } catch (error) {
+        console.error("❌ Erreur lors de la récupération des rendez-vous :", error);
     }
+}
+
 
      
     async function fetchAppointments(userId) {
@@ -141,10 +151,18 @@
     async function createAppointment(utilisateurConnecteId) {
         const user = $utilisateurConnecte; // Utilisez $ pour accéder à l'utilisateur connecté
         console.log("userutil :", user);
+
         // Vérifiez si l'utilisateur est connecté et si un jour et des créneaux horaires sont sélectionnés
         if (user && get(selectedDay) && get(selectedTimeSlots).length > 0) {
-            const day = get(selectedDay).toISOString().split("T")[0]; // Format YYYY-MM-DD
-            const appointments = get(selectedTimeSlots).map(timeSlot => ({ userId: user.id, day, timeSlot }));
+            const selectedDate = new Date(get(selectedDay));
+            selectedDate.setDate(selectedDate.getDate() + 1);
+            const formattedDay = selectedDate.toISOString().split("T")[0]; // Format YYYY-MM-DD
+
+            const appointments = get(selectedTimeSlots).map(timeSlot => ({ 
+                userId: user.id, 
+                day: formattedDay , 
+                timeSlot 
+            }));
 
             try {
                 // Envoi des rendez-vous avec Axios
@@ -174,25 +192,24 @@
     }
 
     async function deleteAppointment(appointmentId) {
-        alert("Suppression du rendez-vous en cours...");
-        try {
-            const response = await axios.delete(`http://localhost:3000/api/appointments/${appointmentId}`);
-            setTimeout(() => {  
-                fetchAllAppointments();
-                verifyDisponibility($allAppointments, $selectedDay, timeSlot);
-                fetchAppointments(get(utilisateurConnecte).id);
-            }, 1000);
-            return response.data;
-        } catch (error) {
-            console.error('Erreur lors de la suppression du rendez-vous:', error);
-            throw error;
-        }
+    alert("Suppression du rendez-vous en cours...");
+    try {
+        await axios.delete(`http://localhost:3000/api/appointments/${appointmentId}`);
+        await fetchAllAppointments(); // On récupère les nouvelles données après suppression
+        await generateWeek(); // On regénère le calendrier pour refléter les changements
+        await fetchAppointments(get(utilisateurConnecte).id); // On met à jour les rendez-vous de l'utilisateur
+    } catch (error) {
+        console.error('❌ Erreur lors de la suppression du rendez-vous:', error);
     }
+}
+
 
 
     let unavailableSlots = {}; // Stocker les créneaux horaires indisponibles pour chaque jour
 
-function generateWeek() {
+async function generateWeek() {
+  await fetchAllAppointments();
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const startOfWeek = new Date(today);
@@ -283,27 +300,56 @@ function generateWeek() {
         <div class="time-slots">
             <h3>{$selectedDay.toLocaleDateString("fr-FR", { weekday: 'long', day: '2-digit', month: '2-digit' })}</h3>
             {#each ["08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"] as timeSlot}
-                <button
-                    class="time-slot"
-                    on:click={() => toggleTimeSlot(timeSlot)}
-                    class:active={$selectedTimeSlots.includes(timeSlot)}
-                    disabled={unavailableSlots[$selectedDay.toISOString().split("T")[0]]?.includes(timeSlot)}
-                >
-                    {timeSlot}
-                    {#if unavailableSlots[$selectedDay.toISOString().split("T")[0]]?.includes(timeSlot)}
-                        <span class="disponibility-badge">Indisponible</span>
+              <button
+                class="time-slot"
+                on:click={() => toggleTimeSlot(timeSlot)}
+                class:active={$selectedTimeSlots.includes(timeSlot)}
+                disabled={unavailableSlots[$selectedDay.toISOString().split("T")[0]]?.includes(timeSlot)}>
+                
+                {timeSlot}
+                
+                {#if unavailableSlots[$selectedDay.toISOString().split("T")[0]]?.includes(timeSlot)}
+                  <span class="disponibility-badge">
+                    {#if $allAppointments.some(appointment => appointment.userId === $utilisateurConnecte.id && appointment.timeSlot === timeSlot)}
+                      <!-- Affiche "Votre RDV" si ce créneau précis appartient à l'utilisateur -->
+                      <p class="unavailable your-appointment">Votre RDV {$infosUser.firstName}</p>
+                      {console.log("infosUser.firstName:", $infosUser)}
                     {:else}
-                        <span class="disponibility-badge">Disponible</span>
+                      <!-- Sinon, affiche "Indisponible" -->
+                      <p class="unavailable">Indisponible deja réservé</p>
                     {/if}
-                </button>
+                  </span>
+                {:else}
+                  <span class="disponibility-badge">Disponible</span>
+                {/if}
+              </button>
             {/each}
-        </div>
+          </div>
+          
             <button class="confirm-button" on:click={bookAppointment}>Prendre rendez-vous</button>
         {/if}
     </div>
 </div>
 
 <style>
+    .unavailable {
+        border: 2px solid red;
+        border-radius: 5px;
+  color: red;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.your-appointment {
+    border: 2px solid orange;
+    border-radius: 5px;
+  content: " (Votre RDV)";
+  color: rgb(10, 122, 10); /* Style personnalisable */
+}
+.disponibility-badge {
+    color: darkgreen;
+    opacity: 0.7;
+    padding: 0.5rem;
+}
     
     .rdv-container {
         overflow: auto;
