@@ -11,9 +11,8 @@ router.get('/get/:userId', async (req, res) => {
 
         const appointments = await Appointment.findAll({
             where: { userId }, // Filtrer par utilisateur
-
         });
-        console.log('appointments!!!!! :', appointments);
+        // console.log('appointments!!!!! :', appointments);
 
         res.json(appointments);
     } catch (error) {
@@ -37,7 +36,7 @@ router.post('/:userId', async (req, res) => {
         }
 
         // Création du rendez-vous
-        const appointment = await Appointment.create({ userId, day, timeSlot });
+        const appointment = await Appointment.create({userId, day, timeSlot });
         res.status(201).json(appointment);
     } catch (error) {
         console.error(error);
@@ -46,14 +45,26 @@ router.post('/:userId', async (req, res) => {
 });
 
 // Supprimer un rendez-vous
-router.delete('/:userId', async (req, res) => {
+router.delete('/:appointmentId', async (req, res) => {
     try {
-        const { userId } = req.params;
-        await Appointment.destroy({ where: { userId } });
+        const { appointmentId } = req.params; // Récupération de l'ID du rendez-vous depuis l'URL
+        await Appointment.destroy({ where: { id: appointmentId } }); // Supprime le rendez-vous avec cet ID
         res.json({ message: 'Rendez-vous supprimé avec succès.' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erreur lors de la suppression du rendez-vous.' });
+    }
+});
+
+router.get('/all', async (req, res) => {
+    try {
+        const appointments = await Appointment.findAll();
+        console.log('appointments !!!!! :', appointments);
+        console.log('res :', res);
+        res.json(appointments);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erreur lors de la récupération des rendez-vous.' });
     }
 });
 

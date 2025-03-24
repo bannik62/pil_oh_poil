@@ -22,3 +22,4 @@ export const utilisateurConnecte = createPersistentStore('utilisateurConnecte', 
 export const infosUser = createPersistentStore('infosUser', null);
 export const isValid = createPersistentStore('isValid', false);
 export const displayService = createPersistentStore('displayService', 'rdv');
+export const appointments = createPersistentStore('appointments', []);

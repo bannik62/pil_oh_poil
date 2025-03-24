@@ -2,7 +2,12 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./index.cjs');
 
-const Appointment = sequelize.define('Appointment', {
+const Appointment = sequelize.define('Appointments', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true, // Incrémente automatiquement l'ID
+        primaryKey: true, // Définit ce champ comme clé primaire
+    },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,

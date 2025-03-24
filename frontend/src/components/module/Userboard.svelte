@@ -69,7 +69,7 @@
     mounted = true;
     const userId = $utilisateurConnecte.id;
     await fetchCsrfToken();
-    await fetchIsValide(userId);
+      await fetchIsValide(userId);
     await fetchUserInfo(userId);
 
   });
@@ -109,7 +109,7 @@
   $: {
     utilisateurMailIsValid = $isValid;
     console.log("UtilisateurmailisValid:", utilisateurMailIsValid);
-    if (utilisateurMailIsValid) {
+    if (utilisateurMailIsValid === true) {
       if (masqueInfoUser) {
         masqueInfoUser.style.display = "none";
         buttonValiderEmail.style.display = "none";
@@ -626,16 +626,16 @@
     align-items: center;
     width: 50%;
     height: 100%;
-    background-color: aliceblue;
+    background-color: transparent;
     color: black;
   }
   .module-service {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: aliceblue;
-    color: black;
+    background-color: transparent;
     overflow: auto;
+    border-radius: 10px;
   }
   .masque-service {
     position: absolute;

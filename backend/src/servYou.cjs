@@ -144,6 +144,9 @@ app.use((err, req, res, next) => {
 // ✅ Route pour obtenir tous les rendez-vous
 app.use('/api/appointments/', userRouteAppointments);
 
+// ✅ Route pour obtenir tous les rendez-vous
+app.use('/api/appointments/getall', userRouteAppointments);
+
 //                                      **********************
 //                                      *                    *
 //                                      *   deconnexion      *
