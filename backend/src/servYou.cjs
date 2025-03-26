@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 // routes user
 const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
 const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
-const userRouteInfos = require('./routes/users/userRoutePostInfos.cjs');
+const userRoutePostInfos = require('./routes/users/userRoutePostInfos.cjs');
 const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
 const userRouteUpdateInfos = require('./routes/users/userRouteUpdateInfos.cjs');
 const userRouteAppointments = require('./routes/users/userRouteAppointments.cjs');
@@ -80,7 +80,7 @@ app.use('/users/api/', csrfProtection, userRouteRegister);
 app.use('/users/api/', csrfProtection, userRouteLogin);
 
 // ✅ Routes enregistrement  infos personnelles protection CSRF
-app.use('/users/api/',csrfProtection, userRouteInfos);
+app.use('/users/api/user/',csrfProtection, userRoutePostInfos);
 
 //                                      **********************
 //                                      *                    *

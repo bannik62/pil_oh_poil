@@ -3,8 +3,19 @@
     import { fade } from "svelte/transition";
     import { onMount } from "svelte";
     import { get } from "svelte/store";
-    import { utilisateurConnecte,displayService, appointments,infosUser } from "../../../stores/sessionStore";
-    import { weekOffset, selectedTimeSlots, selectedDay, currentWeek, allAppointments } from "../../../stores/calendar";
+    import {
+        utilisateurConnecte,
+        displayService,
+        appointments,
+        infosUser,
+    } from "../../../stores/sessionStore";
+    import {
+        weekOffset,
+        selectedTimeSlots,
+        selectedDay,
+        currentWeek,
+        allAppointments,
+    } from "../../../stores/calendar";
     export let divInfoMail;
     // console.log("divInfoMailtyp:", typeof divInfoMail);
 
@@ -23,24 +34,27 @@
         adjustedDay.setDate(adjustedDay.getDate() + 1); // Ajout d'un jour
 
         const dayISO = adjustedDay.toISOString().split("T")[0]; // Convertir la date en format YYYY-MM-DD
-        
+
         // Vérifiez si $allAppointments est un tableau valide
         if (!Array.isArray($allAppointments)) {
             console.error("$allAppointments n'est pas un tableau valide.");
             return false;
         }
 
-        return $allAppointments.some(appointment => {
-            const appointmentDayISO = new Date(appointment.day).toISOString().split("T")[0];
-            return appointmentDayISO === dayISO && appointment.timeSlot === timeSlot;
+        return $allAppointments.some((appointment) => {
+            const appointmentDayISO = new Date(appointment.day)
+                .toISOString()
+                .split("T")[0];
+            return (
+                appointmentDayISO === dayISO &&
+                appointment.timeSlot === timeSlot
+            );
         });
     };
 
-
-    
     onMount(() => {
         fetchAllAppointments();
-        if($displayService === "rdv" ){
+        if ($displayService === "rdv") {
             generateWeek();
             fetchAppointments($utilisateurConnecte.id);
             // verifyDisponibility($selectedDay, allTimeSlots);
@@ -48,26 +62,31 @@
     });
 
     async function fetchAllAppointments() {
-    try {
-        const response = await axios.get(`http://localhost:3000/api/appointments/getall/all`);
-        allAppointments.set(response.data);
-        console.log("📌 Tous les rendez-vous récupérés :", response.data);
-    } catch (error) {
-        console.error("❌ Erreur lors de la récupération des rendez-vous :", error);
+        try {
+            const response = await axios.get(
+                `http://localhost:3000/api/appointments/getall/all`
+            );
+            allAppointments.set(response.data);
+            console.log("📌 Tous les rendez-vous récupérés :", response.data);
+        } catch (error) {
+            console.error(
+                "❌ Erreur lors de la récupération des rendez-vous :",
+                error
+            );
+        }
     }
-}
 
-
-     
     async function fetchAppointments(userId) {
         console.log("userId :", userId);
         try {
-            const response = await axios.get(`http://localhost:3000/api/appointments/get/${userId}`);
+            const response = await axios.get(
+                `http://localhost:3000/api/appointments/get/${userId}`
+            );
             console.log("response :", response.data);
             let appoint = response.data;
             appointments.set(appoint);
             // Vérifie si le tableau contient au moins un rendez-vous
-            if (appoint.length > 0) { 
+            if (appoint.length > 0) {
                 // Réinitialise le tableau pour éviter les doublons
                 divInfoMail.innerHTML = `
                     <table>
@@ -83,11 +102,9 @@
                 `;
 
                 // Sélectionne le tbody
-                    let tbody = divInfoMail.querySelector("tbody");
+                let tbody = divInfoMail.querySelector("tbody");
 
-
-
-                appoint.forEach(element => {
+                appoint.forEach((element) => {
                     let tr = document.createElement("tr");
                     tr.style.backgroundColor = "rgb(132, 189, 239)";
                     tr.style.padding = "1rem";
@@ -99,7 +116,6 @@
                     tdDay.style.borderRadius = "0.5rem 0 0 0.5rem";
                     let tdTimeSlot = document.createElement("td");
                     tdTimeSlot.textContent = element.timeSlot;
-                   
 
                     let tdAction = document.createElement("td");
                     tdAction.style.backgroundColor = "rgb(132, 189, 239)";
@@ -119,7 +135,7 @@
                     btnDel.style.border = "none";
                     btnDel.style.borderRadius = "5px";
                     btnDel.style.cursor = "pointer";
- 
+
                     // Ajoute un event listener spécifique à chaque bouton
                     btnDel.addEventListener("click", () => {
                         console.log("element.id :", element.id);
@@ -143,7 +159,10 @@
                 console.log("Aucun rendez-vous trouvé.");
             }
         } catch (error) {
-            console.error('Erreur lors de la récupération des rendez-vous:', error);
+            console.error(
+                "Erreur lors de la récupération des rendez-vous:",
+                error
+            );
             throw error;
         }
     }
@@ -158,21 +177,26 @@
             selectedDate.setDate(selectedDate.getDate() + 1);
             const formattedDay = selectedDate.toISOString().split("T")[0]; // Format YYYY-MM-DD
 
-            const appointments = get(selectedTimeSlots).map(timeSlot => ({ 
-                userId: user.id, 
-                day: formattedDay , 
-                timeSlot 
+            const appointments = get(selectedTimeSlots).map((timeSlot) => ({
+                userId: user.id,
+                day: formattedDay,
+                timeSlot,
             }));
 
             try {
                 // Envoi des rendez-vous avec Axios
-                await Promise.all(appointments.map(async (appointment) => {
-                    const response = await axios.post(`http://localhost:3000/api/appointments/${user.id}`, {
-                        day: appointment.day,
-                        timeSlot: appointment.timeSlot
-                    });
-                    return response.data;
-                }));
+                await Promise.all(
+                    appointments.map(async (appointment) => {
+                        const response = await axios.post(
+                            `http://localhost:3000/api/appointments/${user.id}`,
+                            {
+                                day: appointment.day,
+                                timeSlot: appointment.timeSlot,
+                            }
+                        );
+                        return response.data;
+                    })
+                );
 
                 alert("Rendez-vous pris avec succès !");
                 selectedDay.set(null);
@@ -183,64 +207,81 @@
                 }, 1000);
             } catch (error) {
                 console.error("Erreur lors de la réservation :", error);
-                alert("Erreur : " + (error.response?.data?.error || "Une erreur s'est produite"));
+                alert(
+                    "Erreur : " +
+                        (error.response?.data?.error ||
+                            "Une erreur s'est produite")
+                );
             }
         } else {
             // Affiche un message d'erreur si les conditions ne sont pas remplies
-            alert("Veuillez sélectionner un jour et au moins un créneau horaire.");
+            alert(
+                "Veuillez sélectionner un jour et au moins un créneau horaire."
+            );
         }
     }
 
     async function deleteAppointment(appointmentId) {
-    alert("Suppression du rendez-vous en cours...");
-    try {
-        await axios.delete(`http://localhost:3000/api/appointments/${appointmentId}`);
-        await fetchAllAppointments(); // On récupère les nouvelles données après suppression
-        await generateWeek(); // On regénère le calendrier pour refléter les changements
-        await fetchAppointments(get(utilisateurConnecte).id); // On met à jour les rendez-vous de l'utilisateur
-    } catch (error) {
-        console.error('❌ Erreur lors de la suppression du rendez-vous:', error);
-    }
-}
-
-
-
-    let unavailableSlots = {}; // Stocker les créneaux horaires indisponibles pour chaque jour
-
-async function generateWeek() {
-  await fetchAllAppointments();
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() + (get(weekOffset) * 7));
-
-    const week = [];
-    unavailableSlots = {}; // Réinitialiser l'objet
-
-    for (let i = 0; i < 7; i++) {
-        const day = new Date(startOfWeek);
-        day.setDate(startOfWeek.getDate() + i);
-        if (!joursFermes.includes(day.getDay())) {
-            week.push(day);
-            // Vérifier les créneaux horaires indisponibles pour ce jour
-            unavailableSlots[day.toISOString().split("T")[0]] = ["08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"]
-                .filter(timeSlot => verifyDisponibility($allAppointments, day, timeSlot));
+        alert("Suppression du rendez-vous en cours...");
+        try {
+            await axios.delete(
+                `http://localhost:3000/api/appointments/${appointmentId}`
+            );
+            await fetchAllAppointments(); // On récupère les nouvelles données après suppression
+            await generateWeek(); // On regénère le calendrier pour refléter les changements
+            await fetchAppointments(get(utilisateurConnecte).id); // On met à jour les rendez-vous de l'utilisateur
+        } catch (error) {
+            console.error(
+                "❌ Erreur lors de la suppression du rendez-vous:",
+                error
+            );
         }
     }
 
-    currentWeek.set(week);
+    let unavailableSlots = {}; // Stocker les créneaux horaires indisponibles pour chaque jour
 
-    if (week.some(d => d.getTime() === today.getTime())) {
-        selectedDay.set(today);
-        console.log("selectedDay :", $selectedDay);
-    } else {
-        selectedDay.set(null);
+    async function generateWeek() {
+        await fetchAllAppointments();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() + get(weekOffset) * 7);
+
+        const week = [];
+        unavailableSlots = {}; // Réinitialiser l'objet
+
+        for (let i = 0; i < 7; i++) {
+            const day = new Date(startOfWeek);
+            day.setDate(startOfWeek.getDate() + i);
+            if (!joursFermes.includes(day.getDay())) {
+                week.push(day);
+                // Vérifier les créneaux horaires indisponibles pour ce jour
+                unavailableSlots[day.toISOString().split("T")[0]] = [
+                    "08:00 - 09:00",
+                    "09:00 - 10:00",
+                    "10:00 - 11:00",
+                    "14:00 - 15:00",
+                    "15:00 - 16:00",
+                    "16:00 - 17:00",
+                ].filter((timeSlot) =>
+                    verifyDisponibility($allAppointments, day, timeSlot)
+                );
+            }
+        }
+
+        currentWeek.set(week);
+
+        if (week.some((d) => d.getTime() === today.getTime())) {
+            selectedDay.set(today);
+            console.log("selectedDay :", $selectedDay);
+        } else {
+            selectedDay.set(null);
+        }
     }
-}
 
     function changeWeek(offset) {
-        weekOffset.update(n => n + offset);
+        weekOffset.update((n) => n + offset);
         generateWeek();
     }
 
@@ -250,9 +291,9 @@ async function generateWeek() {
     }
 
     function toggleTimeSlot(timeSlot) {
-        selectedTimeSlots.update(slots => {
+        selectedTimeSlots.update((slots) => {
             if (slots.includes(timeSlot)) {
-                return slots.filter(slot => slot !== timeSlot); // Retirer si déjà sélectionné
+                return slots.filter((slot) => slot !== timeSlot); // Retirer si déjà sélectionné
             } else {
                 return [...slots, timeSlot]; // Ajouter sinon
             }
@@ -264,69 +305,103 @@ async function generateWeek() {
     }
 </script>
 
-<div class="rdv-container" transition:fade>
-
+<div class="rdv-container" transition:fade={{delay: 100, duration: 600, }}>
     <div class="rdv-choice">
         <h2>{title}</h2>
         {#if $selectedDay}
             <p class="rdv-choice-text">
-                {$selectedDay.toLocaleDateString("fr-FR", { weekday: 'long', day: '2-digit', month: '2-digit' })}
-                {#if $selectedTimeSlots.length > 0} à
+                {$selectedDay.toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "2-digit",
+                })}
+                {#if $selectedTimeSlots.length > 0}
+                    à
                     {#each $selectedTimeSlots as slot, i}
-                        {slot}  {#if i < $selectedTimeSlots.length - 1}, {/if}
+                        {slot}
+                        {#if i < $selectedTimeSlots.length - 1}, {/if}
                     {/each}
                 {/if}
-            </p> 
-        <br>
+            </p>
+            <br />
         {/if}
     </div>
-    
+
     <div class="calendar-container">
         <div class="week-nav">
-            <button on:click={() => changeWeek(-1)} disabled={$weekOffset === 0}>◀ Semaine précédente</button>
+            <button on:click={() => changeWeek(-1)} disabled={$weekOffset === 0}
+                >◀ Semaine précédente</button
+            >
             <button on:click={() => changeWeek(1)}>Semaine suivante ▶</button>
         </div>
 
         <div class="week-container">
             {#each $currentWeek as day}
-                <button class="day" on:click={() => selectDay(day)}
-                    class:active={$selectedDay && $selectedDay.toDateString() === day.toDateString()}>
-                    {day.toLocaleDateString("fr-FR", { weekday: 'long', day: '2-digit', month: '2-digit' })}
+                <button
+                    class="day"
+                    on:click={() => selectDay(day)}
+                    class:active={$selectedDay &&
+                        $selectedDay.toDateString() === day.toDateString()}
+                >
+                    {day.toLocaleDateString("fr-FR", {
+                        weekday: "long",
+                        day: "2-digit",
+                        month: "2-digit",
+                    })}
                 </button>
             {/each}
         </div>
 
         {#if $selectedDay}
-        <div class="time-slots">
-            <h3>{$selectedDay.toLocaleDateString("fr-FR", { weekday: 'long', day: '2-digit', month: '2-digit' })}</h3>
-            {#each ["08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"] as timeSlot}
-              <button
-                class="time-slot"
-                on:click={() => toggleTimeSlot(timeSlot)}
-                class:active={$selectedTimeSlots.includes(timeSlot)}
-                disabled={unavailableSlots[$selectedDay.toISOString().split("T")[0]]?.includes(timeSlot)}>
-                
-                {timeSlot}
-                
-                {#if unavailableSlots[$selectedDay.toISOString().split("T")[0]]?.includes(timeSlot)}
-                  <span class="disponibility-badge">
-                    {#if $allAppointments.some(appointment => appointment.userId === $utilisateurConnecte.id && appointment.timeSlot === timeSlot)}
-                      <!-- Affiche "Votre RDV" si ce créneau précis appartient à l'utilisateur -->
-                      <p class="unavailable your-appointment">Votre RDV {$infosUser.firstName}</p>
-                      {console.log("infosUser.firstName:", $infosUser)}
-                    {:else}
-                      <!-- Sinon, affiche "Indisponible" -->
-                      <p class="unavailable">Indisponible deja réservé</p>
-                    {/if}
-                  </span>
-                {:else}
-                  <span class="disponibility-badge">Disponible</span>
-                {/if}
-              </button>
-            {/each}
-          </div>
-          
-            <button class="confirm-button" on:click={bookAppointment}>Prendre rendez-vous</button>
+            <div class="time-slots">
+                <h3>
+                    {$selectedDay.toLocaleDateString("fr-FR", {
+                        weekday: "long",
+                        day: "2-digit",
+                        month: "2-digit",
+                    })}
+                </h3>
+                {#each ["08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"] as timeSlot}
+                    <button
+                        class="time-slot"
+                        on:click={() => toggleTimeSlot(timeSlot)}
+                        class:active={$selectedTimeSlots.includes(timeSlot)}
+                        disabled={unavailableSlots[
+                            $selectedDay.toISOString().split("T")[0]
+                        ]?.includes(timeSlot)}
+                    >
+                        {timeSlot}
+
+                        {#if unavailableSlots[$selectedDay
+                                .toISOString()
+                                .split("T")[0]]?.includes(timeSlot)}
+                            <span class="disponibility-badge">
+                                {#if $allAppointments.some((appointment) => appointment.userId === $utilisateurConnecte.id && appointment.timeSlot === timeSlot)}
+                                    <!-- Affiche "Votre RDV" si ce créneau précis appartient à l'utilisateur -->
+                                    <p class="unavailable your-appointment">
+                                        Votre RDV {$infosUser.firstName}
+                                    </p>
+                                    {console.log(
+                                        "infosUser.firstName:",
+                                        $infosUser
+                                    )}
+                                {:else}
+                                    <!-- Sinon, affiche "Indisponible" -->
+                                    <p class="unavailable">
+                                        Indisponible deja réservé
+                                    </p>
+                                {/if}
+                            </span>
+                        {:else}
+                            <span class="disponibility-badge">Disponible</span>
+                        {/if}
+                    </button>
+                {/each}
+            </div>
+
+            <button class="confirm-button" on:click={bookAppointment}
+                >Prendre rendez-vous</button
+            >
         {/if}
     </div>
 </div>
@@ -334,23 +409,35 @@ async function generateWeek() {
 <style>
     .unavailable {
         border: 2px solid red;
+        background-color: red;
+        padding: 0.5rem;
+        color: white;
+        opacity: 0.7;
+        cursor: not-allowed;
+        font-weight: bold;
+    }
+    .your-appointment {
+        border: 2px solid orange;
+        background-color: rgb(255, 166, 0);
+        padding: 0.5rem;
         border-radius: 5px;
-  color: red;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-.your-appointment {
-    border: 2px solid orange;
-    border-radius: 5px;
-  content: " (Votre RDV)";
-  color: rgb(10, 122, 10); /* Style personnalisable */
-}
-.disponibility-badge {
-    color: darkgreen;
-    opacity: 0.7;
-    padding: 0.5rem;
-}
-    
+        content: " (Votre RDV)";
+        font-weight: bold;
+        color: white; /* Style personnalisable */
+    }
+
+    .time-slot {
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        padding: 0.5rem;
+    }
+    .disponibility-badge {
+        color: darkgreen;
+        opacity: 0.7;
+        padding: 0.5rem;
+    }
+
     .rdv-container {
         overflow: auto;
         width: 100%;
@@ -358,25 +445,32 @@ async function generateWeek() {
         margin: auto;
         background-color: rgb(91, 146, 193);
         padding: 1rem;
+        border: 30px 0 0 0 solid rgb(192, 162, 223);
         border-radius: 8px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2) inset;
+        /* margin-top: 10px; */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;
+    }
+    .rdv-container::-webkit-scrollbar {
+        display: none;
     }
 
     .rdv-choice {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: 8px;
+        border-radius: 8px 8px 0 0;
         padding: 1rem;
         background-color: rgb(132, 189, 239);
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgb(132, 189, 239);
     }
 
     .rdv-choice-text {
         color: white;
         font-size: 1.5rem;
         font-weight: bold;
-        width: 60%;
+        width: 65%;
         height: 30%;
         max-height: 70px;
         overflow-y: auto;
@@ -384,7 +478,9 @@ async function generateWeek() {
         text-align: center;
         border-radius: 8px;
         background-color: rgb(92, 162, 223);
-        border: 1px solid rgb(132, 189, 239);
+        border: 1px solid rgb(132, 189, 239);       
+         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2) inset;
+
     }
 
     h2 {
@@ -402,10 +498,11 @@ async function generateWeek() {
     .calendar-container {
         background: white;
         padding: 10px;
-        border-radius: 8px;
+        border-radius: 0px 0px 8px 0;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        text-align: center; 
+        text-align: center;
         overflow: hidden;
+        height: 100%;
     }
 
     .week-nav {
@@ -441,6 +538,10 @@ async function generateWeek() {
         border-radius: 5px;
         cursor: pointer;
         transition: background 0.3s;
+    }
+    .day:hover {
+        background: #007BFF;
+        color: white;
     }
 
     .day.active {

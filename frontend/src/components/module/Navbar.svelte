@@ -33,7 +33,7 @@ export function logout() {
         infosUser.set(null);
         estAuthentifie.set(false);
         isValid.set(false);
-        displayService.set("rdv");
+        displayService.set("messagerie");
         appointments.set([]);
 
 
