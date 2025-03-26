@@ -510,7 +510,7 @@
           {#if $displayService === "rdv" }
             <Rdv {divInfoMail} />
           {:else if $displayService === "messagerie"}
-            <Messagerie />
+            <Messagerie {divInfoMail} />
           {/if}
         {:else}
           <div bind:this={masqueService} class="masque-service">
