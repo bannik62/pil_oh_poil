@@ -16,9 +16,9 @@
         currentWeek,
         allAppointments,
     } from "../../../stores/calendar";
+   
+   
     export let divInfoMail;
-    // console.log("divInfoMailtyp:", typeof divInfoMail);
-
     let title = "Rendez-vous :";
     let joursFermes = [0, 3];
 
@@ -501,7 +501,7 @@
         border-radius: 0px 0px 8px 0;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
-        overflow: hidden;
+        overflow: scroll;
         height: 100%;
     }
 
