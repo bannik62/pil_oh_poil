@@ -6,7 +6,7 @@
   import Navbar from "../../module/Navbar.svelte";
   import Login from "../../module/Login.svelte";
   import { faceActuelle } from "../../../stores/cube";
-  import { estAuthentifie, utilisateurConnecte } from "../../../stores/sessionStore";
+  import { estAuthentifie, utilisateurConnecte, infosUser } from "../../../stores/sessionStore";
   import Userboard from "../../module/Userboard.svelte";
   import CookieHautentifier from "../../../utils/CookieHautentifier.svelte";
   let cordonElement;
@@ -17,7 +17,10 @@
   let h1titlepng2;
   let pageActuelle = faceActuelle;
   
+  console.log("infosUser he!!!!!!!!!!!!!!!!!!!", get(infosUser));
   // Utiliser directement le store avec $ pour la réactivité
+  $: infosUtilisateur = $infosUser;
+  console.log("infosUtilisateur", infosUtilisateur);
   $: currentPage = $faceActuelle;
   $: estConnecte = $estAuthentifie;
   $: utilisateur = $utilisateurConnecte;
@@ -152,7 +155,10 @@
     }
 </script>
 
+
+{#if get(pageActuelle) === 'left'}
 <CookieHautentifier />
+{/if}
 <header>
 
   <Navbar on:rotateCube={rotateCube} />
@@ -219,7 +225,13 @@
     <div class="cube-face cube-left userboard-container side">
       <div class="userboard" id="userboard">
         {#if estConnecte && utilisateur }
-            <h2>Bienvenue {get(utilisateurConnecte).email}</h2>
+            <h2>Bienvenue 
+              {#if infosUtilisateur}
+                {infosUtilisateur.firstName}
+              {:else if utilisateur.email}
+                {utilisateur.email}
+              {/if}
+            </h2>
             <Userboard title="Compte utilisateur" />
         {:else}          
             <h2>Accès non autorisé</h2>

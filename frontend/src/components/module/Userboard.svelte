@@ -40,7 +40,7 @@
         `http://localhost:3000/users/api/infos/get/${userId}`,
         { withCredentials: true }
       );
-      console.log("setiNFOInTheStore:", response.data.userProfile);
+      console.log("setInfosInTheStore:", response.data.userProfile);
       infosUser.set(response.data.userProfile);
     } catch (error) {
       console.error(
@@ -68,9 +68,9 @@
   onMount(async () => {
     mounted = true;
     const userId = $utilisateurConnecte.id;
+    fetchUserInfo(userId);  
     await fetchCsrfToken();
-      await fetchIsValide(userId);
-    await fetchUserInfo(userId);
+    await fetchIsValide(userId);
 
   });
 
@@ -102,8 +102,7 @@
 
   $: utilisateur = $utilisateurConnecte;
   $: getinfosUser = $infosUser;
-
-  console.log("getinfosUser:", getinfosUser);
+  console.log("getinfosUser:", $getinfosUser);
   $: estConnecte = $estAuthentifie;
   $: face = $faceActuelle;
   $: {
@@ -149,7 +148,7 @@
       buttonEnregistrerInfos.style.transform = "scale(1)";
     }, 150);
 
-    console.log("csrfToken:", csrfToken);
+    console.log("csrfToken userboard:", csrfToken);
 
     // Création de l'objet userInfo
     const userInfo = new UserInfo(
@@ -398,12 +397,22 @@
         <div bind:this={masqueInfoUser} class="masque-info-user" />
         {#if getinfosUser !== null}
           <div class="infos-user">
-            <p>Nom: {getinfosUser.firstName}</p>
-            <p>Prénom: {getinfosUser.lastName}</p>
-            <p>Adresse: {getinfosUser.address}</p>
-            <p>Date de Naissance: {getinfosUser.dateOfBirth}</p>
-            <p>Téléphone: {getinfosUser.telephone}</p>
-            <button
+            <div class="firstname">
+              <p>Nom: {getinfosUser.firstName}</p>
+            </div>
+            <div class="lastname">
+              <p>Prénom: {getinfosUser.lastName}</p>
+            </div>
+            <div class="address">
+              <p>Adresse: {getinfosUser.address}</p>
+            </div>
+            <div class="date-of-birth">
+              <p>Date de Naissance: {getinfosUser.dateOfBirth}</p>
+            </div>
+            <div class="telephone">
+              <p>Téléphone: {getinfosUser.telephone}</p>
+            </div>
+            <button class="button-update-infos"
               on:click={() => {
                 registrer = true;
                 infosUser.set(null);
@@ -600,10 +609,41 @@
     justify-content: space-evenly;
     width: 100%;
     height: 100%;
-    background-color: aliceblue;
+    background-color: rgb(132, 189, 239);
     color: black;
     padding: 0.5rem;
-    border-radius: 10px;
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;
+  }
+  .infos-user::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .infos-user div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: rgb(92, 162, 223);
+    border: 1px solid white;
+  }
+  .button-update-infos {
+    background-color: green;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  
+  .infos-user p {
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 1px;
   }
   .masque-info-user {
     position: absolute;
@@ -615,9 +655,11 @@
     color: black;
     z-index: 100;
   }
-  p {
+
+
+  /* p {
     all: unset;
-  }
+  } */
   .content-right {
     position: relative;
     display: flex;
@@ -628,14 +670,18 @@
     height: 100%;
     background-color: transparent;
     color: black;
+    
   }
   .module-service {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: transparent;
+    background-color: rgb(132, 189, 239);
     overflow: auto;
-    border-radius: 10px;
+    border-radius: 0px 0px 10px 10px;
+    z-index: 2;
+
+    /* border-top: 5px solid black; */
   }
   .masque-service {
     position: absolute;
@@ -652,25 +698,48 @@
     width: auto;
     padding: 1rem;
     border-radius: 10px 10px 0 0;
+    background-color: rgb(132, 189, 239);
+    cursor: pointer;
+    color: white;
+    font-weight: 900;
+    font-size: 0.9rem;
   }
   .onglet:hover {
-    top: -50px;
+    top: -80px;
     scale: 1.1;
-    background-color: red;
+    background-color: rgb(92, 162, 223);
   }
   .onglet1 {
-    top: -50px;
-    background-color: blue;
+    top: -60px;
   }
   .onglet1:hover {
-    left: 5px;
-    scale: 1.1;
-    background-color: red;
+    left: 8px;
+    background-color: rgb(92, 162, 223);
+    z-index: 1;
+  }
+  .onglet1:hover::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    box-shadow:  inset -5px 0px 5px rgba(34, 76, 138, 0.5) , inset 0px -5px 5px rgba(34, 76, 138, 0.5);
+
   }
   .onglet2 {
-    top: -50px;
+    top: -60px;
     left: 27%;
-    background-color: blue;
+  }
+  .onglet2:hover::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow:  inset -5px 0px 5px rgba(34, 76, 138, 0.5) , inset 0px -5px 5px rgba(34, 76, 138, 0.5);
+
   }
 
   .user-form {

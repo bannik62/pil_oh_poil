@@ -108,9 +108,10 @@ class UserInfo {
     }
     // Méthode pour enregistrer les informations
     async saveInfosUser() {
+        console.log('csrfToken:', this.#csrfToken);
         let erreurMiseAJour = '';
         try {
-            const response = await axios.post('http://localhost:3000/users/api/info', {
+            const response = await axios.post('http://localhost:3000/users/api/user/info', {
                 userId: this.#userId,
                 firstName: this.#firstName,
                 lastName: this.#lastName,
