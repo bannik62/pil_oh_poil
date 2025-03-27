@@ -10,6 +10,7 @@ const userRoutePostInfos = require('./routes/users/userRoutePostInfos.cjs');
 const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
 const userRouteUpdateInfos = require('./routes/users/userRouteUpdateInfos.cjs');
 const userRouteAppointments = require('./routes/users/userRouteAppointments.cjs');
+const userRouteMessages = require('./routes/users/messagerie/userRoutesMessages.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
@@ -147,6 +148,14 @@ app.use('/api/appointments/', userRouteAppointments);
 // ✅ Route pour obtenir tous les rendez-vous
 app.use('/api/appointments/getall', userRouteAppointments);
 
+//                                      **********************
+//                                      *                    *
+//                                      *   gestion des      *
+//                                      *     messages       *
+// ____________________________________ **********************______________________________________________/
+
+// ✅ Route pour obtenir tous les messages
+app.use('/api/user/chat/', userRouteMessages);
 //                                      **********************
 //                                      *                    *
 //                                      *   deconnexion      *

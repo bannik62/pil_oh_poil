@@ -671,6 +671,7 @@
     background-color: transparent;
     color: black;
     
+    
   }
   .module-service {
     position: relative;
@@ -678,8 +679,9 @@
     height: 100%;
     background-color: rgb(132, 189, 239);
     overflow: auto;
-    border-radius: 0px 0px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
     z-index: 2;
+    
 
     /* border-top: 5px solid black; */
   }
@@ -698,7 +700,7 @@
     width: auto;
     padding: 1rem;
     border-radius: 10px 10px 0 0;
-    background-color: rgb(132, 189, 239);
+    background-color:   rgb(92, 162, 223);
     cursor: pointer;
     color: white;
     font-weight: 900;
@@ -706,15 +708,17 @@
   }
   .onglet:hover {
     top: -80px;
-    scale: 1.1;
+    scale: 1;
     background-color: rgb(92, 162, 223);
   }
   .onglet1 {
+    left: 15px;
     top: -60px;
+    box-shadow:  inset -5px 0px 5px rgba(34, 76, 138, 0.5)
   }
   .onglet1:hover {
     left: 8px;
-    background-color: rgb(92, 162, 223);
+    background-color: rgb(132, 189, 239);
     z-index: 1;
   }
   .onglet1:hover::after {
@@ -729,7 +733,11 @@
   }
   .onglet2 {
     top: -60px;
+    left: 29%;
+  }
+  .onglet2:hover {
     left: 27%;
+    background-color: rgb(132, 189, 239);
   }
   .onglet2:hover::after {
     content: "";
@@ -739,7 +747,6 @@
     width: 100%;
     height: 100%;
     box-shadow:  inset -5px 0px 5px rgba(34, 76, 138, 0.5) , inset 0px -5px 5px rgba(34, 76, 138, 0.5);
-
   }
 
   .user-form {
