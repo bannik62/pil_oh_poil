@@ -399,9 +399,7 @@
                 {/each}
             </div>
 
-            <button class="confirm-button" on:click={bookAppointment}
-                >Prendre rendez-vous</button
-            >
+            <button class="confirm-button" on:click={bookAppointment}>Prendre rendez-vous</button>
         {/if}
     </div>
 </div>
