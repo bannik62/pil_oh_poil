@@ -19,7 +19,7 @@ class UserClassMessage {
 
     setUserId(value) {
         if (typeof value !== 'number' || value <= 0) {
-            this.#erreur.push("L'ID de l'utilisateur doit être un nombre positif.");
+            this.#erreur.push('L\'ID de l\'utilisateur doit être un nombre positif.');
         } else {
             this.#userId = value;
         }
@@ -27,9 +27,9 @@ class UserClassMessage {
 
     setUserAuthor(value) {
         if (typeof value !== 'string' || value.length === 0) {
-            this.#erreur.push("Le nom de l'auteur doit être une chaîne de caractères non vide.");
+            this.#erreur.push('Le nom de l\'auteur doit être une chaîne de caractères non vide.');
         } else if (value.length > 30) {
-            this.#erreur.push("Le nom de l'auteur doit contenir moins de 30 caractères.");
+            this.#erreur.push('Le nom de l\'auteur doit contenir moins de 30 caractères.');
         } else {
             this.#userAuthor = value;
         }
@@ -37,9 +37,9 @@ class UserClassMessage {
 
     setContent(value) {
         if (typeof value !== 'string' || value.length === 0) {
-            this.#erreur.push("Le contenu doit être une chaîne de caractères non vide.");
+            this.#erreur.push('Le contenu doit être une chaîne de caractères non vide.');
         } else if (value.length > 100) {
-            this.#erreur.push("Le contenu doit contenir moins de 100 caractères.");
+            this.#erreur.push('Le contenu doit contenir moins de 100 caractères.');
         } else {
             this.#content = value;
         }
