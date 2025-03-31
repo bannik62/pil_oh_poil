@@ -407,7 +407,7 @@
               <p>Adresse: {getinfosUser.address}</p>
             </div>
             <div class="date-of-birth">
-              <p>Date de Naissance: {getinfosUser.dateOfBirth}</p>
+              <p>Date de Naissance: {getinfosUser.dateOfBirth.split('T')[0]}</p>
             </div>
             <div class="telephone">
               <p>Téléphone: {getinfosUser.telephone}</p>
@@ -503,7 +503,7 @@
         on:click={() => setDisplayService("messagerie")}
         class="onglet onglet2"
       >
-        <p>Informations Pile oh poil</p>
+        <p>Messagerie Pile oh poil</p>
       </button>
       <div class="module-service">
         {#if getinfosUser !== null}
@@ -550,12 +550,13 @@
     margin-bottom: 1rem;
   }
   .column-top {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 60%;
+    height: 65%;
     background-color: rgb(92, 162, 223);
     color: black;
     padding: 0.5rem;
@@ -601,6 +602,9 @@
     height: 55%;
     background-color: aliceblue;
     color: black;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.5) inset);
   }
 
   .infos-user {
@@ -615,6 +619,7 @@
     overflow-y: auto;
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
     scrollbar-width: none;
+    border-radius: 0 0 10px 10px;
   }
   .infos-user::-webkit-scrollbar {
     display: none;
