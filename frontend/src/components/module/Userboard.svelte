@@ -33,7 +33,7 @@
       );
     }
   };
-
+ 
   const fetchUserInfo = async (userId) => {
     try {
       const response = await axios.get(
@@ -68,9 +68,13 @@
   onMount(async () => {
     mounted = true;
     const userId = $utilisateurConnecte.id;
-    fetchUserInfo(userId);  
-    await fetchCsrfToken();
-    await fetchIsValide(userId);
+    console.log("utilisateurConnectepourrole", $utilisateurConnecte.role);
+    if ($utilisateurConnecte.role === "user") {
+      fetchUserInfo(userId);  
+      await fetchCsrfToken();
+      await fetchIsValide(userId);
+    console.log("utilisateur.role", $utilisateurConnecte.role);
+  }
 
   });
 

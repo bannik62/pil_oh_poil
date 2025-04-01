@@ -5,6 +5,7 @@
   import h1title from "../../../assets/img/h1title.png";
   import Navbar from "../../module/Navbar.svelte";
   import Login from "../../module/Login.svelte";
+  import GestionBoard from "../../module/services/serviceGestion/GestionBoard.svelte";
   import { faceActuelle } from "../../../stores/cube";
   import { estAuthentifie, utilisateurConnecte, infosUser } from "../../../stores/sessionStore";
   import Userboard from "../../module/Userboard.svelte";
@@ -17,7 +18,6 @@
   let h1titlepng2;
   let pageActuelle = faceActuelle;
   
-  console.log("infosUser he!!!!!!!!!!!!!!!!!!!", get(infosUser));
   // Utiliser directement le store avec $ pour la réactivité
   $: infosUtilisateur = $infosUser;
   console.log("infosUtilisateur", infosUtilisateur);
@@ -156,7 +156,7 @@
 </script>
 
 
-{#if get(pageActuelle) === 'left'}
+{#if get(pageActuelle) === 'left' || get(pageActuelle) === 'bottom'}
 <CookieHautentifier />
 {/if}
 <header>
@@ -198,9 +198,51 @@
     @keyframes scaleUp {
       from {
         transform: scale(0);
+        border-radius: 0;
       }
       to {
         transform: scale(1);
+        border-radius: 50%;
+      }
+    }
+  </style>
+  {:else if currentPage === 'bottom'}
+  <button class="btnNavUserBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
+    Navbar
+  </button>
+  <style>
+    .btnNavUserBoard {
+      outline: 1px solid red;
+      position: absolute;
+      top: 30px;
+      right:100px;
+      width: 100px;
+      height: 100px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: white;
+      border: none;
+      cursor: pointer;
+      z-index: 3;
+      color: black;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      animation: scaleUp 1s ease-out forwards;
+    }
+
+    @keyframes scaleUp {
+      from {
+        transform: scale(0);
+        border-radius: 0;
+      }
+      to {
+        transform: scale(1);
+        border-radius: 50%;
       }
     }
   </style>
@@ -288,8 +330,55 @@
 
     <div class="cube-face cube-bottom adminboard-container">
       <div class="bottom" id="bottom">
-        <h2>Bottom</h2>
-        <p>Welcome to the admin dashboard</p>
+        {#if estConnecte && utilisateur.role === "admin"}
+        <div class="adminboard">
+          <h3>Admin</h3>
+          <GestionBoard />
+        </div>
+        {:else}
+        <h2>Accès non autorisé</h2>
+        <p>Veuillez vous connecter pour accéder à cette section</p>
+        <div class="error-404">
+            <div class="sad-face">:(</div>
+            <h3>Erreur 404</h3>
+            <p>La page que vous recherchez semble introuvable...</p>
+            {redirectToHome()}
+        </div>
+        
+        <style>
+          .error-404 {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              padding: 2rem;
+              text-align: center;
+              background-color: white;
+              border-radius: 10px;
+              box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+
+          }
+
+          .sad-face {
+              font-size: 5rem;
+              margin-bottom: 1rem;
+              transform: rotate(90deg);
+              color: #666;
+              background-color: white;
+          }
+
+          .error-404 h3 {
+              font-size: 2.5rem;
+              margin-bottom: 1rem;
+              color: #333;
+          }
+
+          .error-404 p {
+              font-size: 1.2rem;
+              color: #666;
+          }
+      </style>
+        {/if}
       </div>
     </div>
   </div>
@@ -336,19 +425,16 @@
 
   .cube-right,
   .cube-left {
-    /* background-color: #333; */
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .cube-top,
   .cube-bottom {
-    background-color: #333;
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+
   }
   
   .login-container {
@@ -360,12 +446,32 @@
     border: 1px solid var(--color-secondary);
   }
  
-  .adminboard-face {
+  .bottom {
     box-sizing: border-box;
-    width: 102%;
-    height: 110%;
-    background-color: #333;
+    width: 100%;
+    height: 100%;
+    background-color: #33333381;
+    padding: 20px;
+    border: 10px solid var(--color-secondary);
+  }
 
+  .adminboard-container {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background-color: #333333bf;
+    padding: 20px;
+  }
+  h3 {
+    font-weight: bold;
+    text-align: center;
+  }
+  .adminboard {
+    width: 100%;
+    height: 100%;
+    background-color: #33333393;
+    padding: 20px;
+    border: 1px solid var(--color-secondary);
   }
   .top-face {
     box-sizing: border-box;
@@ -373,9 +479,7 @@
     height: 100%;
     background-color: #333;
   }
-  .userboard{
-    margin-top: 150px;
-  }
+
   .userboard-container {
     margin-top: 150px;
     box-sizing: border-box;
