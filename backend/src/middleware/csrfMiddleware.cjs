@@ -1,7 +1,7 @@
 const csrf = require('csurf');
 
 // Middleware de protection CSRF
-const csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({ cookie: true});
 
 const csrfErrorHandler = (err, req, res, next) => {
     if (err.code === 'EBADCSRFTOKEN') {

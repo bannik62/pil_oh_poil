@@ -245,6 +245,12 @@
         border-radius: 50%;
       }
     }
+  @media (max-width: 430px) {
+    .btnNavUserBoard {
+      top: 5px;
+      right: 5px;
+    }
+  }
   </style>
   {/if}
   
@@ -459,7 +465,7 @@
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    background-color: #333333bf;
+    /* background-color: #333333bf; */
     padding: 20px;
   }
   h3 {
@@ -583,7 +589,7 @@
   /* 📟 Tablettes */
   @media (max-width: 600px) {
     header {
-      width: 96vw;
+      width: 100vw;
       height: 100vh;
       margin-bottom: 40px;
       /* background-position: center; */
@@ -600,6 +606,11 @@
       letter-spacing: 10px;
       top: 70%;
     }
+ 
+    .adminboard {
+      overflow: auto;
+    }
+    
     .navbar {
       height: 40vh;
     }

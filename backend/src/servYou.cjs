@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const csrf = require('csurf');
 
 // routes user
 const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
@@ -11,6 +12,7 @@ const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
 const userRouteUpdateInfos = require('./routes/users/userRouteUpdateInfos.cjs');
 const userRouteAppointments = require('./routes/users/userRouteAppointments.cjs');
 const userRouteMessages = require('./routes/users/messagerie/userRoutesMessages.cjs');
+const userRouteGetInfosAdmin = require('./routes/admin/adminRouteGetInfo.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
@@ -80,7 +82,7 @@ app.use('/users/api/', csrfProtection, userRouteRegister);
 // ✅ Routes connexion protection CSRF
 app.use('/users/api/', csrfProtection, userRouteLogin);
 
-// ✅ Routes enregistrement  infos personnelles protection CSRF
+// ✅ Routes poste  infos personnelles protection CSRF
 app.use('/users/api/user/',csrfProtection, userRoutePostInfos);
 
 //                                      **********************
@@ -94,6 +96,9 @@ app.use('/users/api/infos/', userRouteGetInfos);
 
 // ✅ Route pour mettre à jour les informations de l'utilisateur
 app.use('/users/api/update/', userRouteUpdateInfos);
+
+// ✅ Route pour récupérer les informations de l'utilisateur admin
+app.use('/users/api/admin/infos/', userRouteGetInfosAdmin);
 
 //                                      **********************
 //                                      *                    *
