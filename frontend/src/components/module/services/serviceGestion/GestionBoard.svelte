@@ -1,88 +1,150 @@
 <script>
     import { onMount } from "svelte";
-    import { fly } from "svelte/transition";
-
+    import { writable } from "svelte/store";
+    import SearchClients from "./clients/SearchClients.svelte";
+    import ClientDisplay from "./clients/ClientDisplay.svelte";
+    import engrenage from "../../../../assets/img/engrenage.png";
     let circle;
     let circleItems = []; // Array to hold references to circle items
     let items = ["clients", "messages", "gestion"]; // Array of items
     let menuExpanded = false;
     let displayMenu;
+    let displayContentMenu;
+    let displayInfo;
+    let searchQuery = "";
+    let users = writable([]);
+    let searchType = "name";
     onMount(() => {
+        displayMenu;
+        displayMenu.style.opacity = "1";
         circleItems.forEach((item, index) => {
             item.classList.add(items[index]);
         });
     });
 
     function moveThis(item, index) {
-        console.log("item", item.classList);
+        item.style.opacity = "1";
+
+    requestAnimationFrame(() => {
+        // item.style.transition = "transform 0.9s ease-in-out";
+        item.style.display = "flex";
+        item.style.opacity = "1";
         if (item.classList.contains("clients")) {
-            console.log("clients");
             item.style.transform = "translate(0%, -100%)";
-            // Move each item
+        } else if (item.classList.contains("messages")) {
+            item.style.transform = "translate(50%, 0%)";
+        } else if (item.classList.contains("gestion")) {
+            item.style.transform = "translate(15%, 102%)";
+        }
+    });
+}
+
+    function moveThisClose(item, index) {
+        if (item.classList.contains("clients")) {
+            item.style.transform = "translate(-150%, 0%)";
+            item.style.zIndex = "-10";
+            // item.style.opacity = "0";
             item.style.transition = "all 0.9s ease-in-out";
-            item.classList.add(items[index]);
+            item.classList.remove(items[index]);
         }
         if (item.classList.contains("messages")) {
-            console.log("messages");
-            item.style.transform = "translate(50%, -0%)";
-            item.style.transition = "all  0.9s ease-in-out";
-            item.classList.add(items[index]);
+            item.style.transform = "translate(-150%, -0%)";   
+            // item.style.opacity = "0";
+            item.style.transition = "all 0.9s ease-in-out";
+            setTimeout(() => {
+            }, 500);
+            item.classList.remove(items[index]);
         }
         if (item.classList.contains("gestion")) {
-            console.log("gestion");
-            item.style.transform = "translate(15%, 102%)";
+            item.style.transform = "translate(-150%, 0%)";
+            // item.style.opacity = "0";
             item.style.transition = "all 0.9s ease-in-out";
-            item.classList.add(items[index]);
+            item.classList.remove(items[index]);
         }
-    }
-    function moveThisClose(item, index) {
-        item.classList.remove(items[index]);
     }
 
     function expandCircle() {
+        // circle.style.rotate = "-25deg";
         circle.style.translate = "-40%";
 
-        // Animate each circle item
         requestAnimationFrame(() => {
             circleItems.forEach((item, index) => {
-                item.style.display = "flex";
-                item.style.translate = "160%"; // Move each item
-                item.style.transition = "all 0.9s ease-in-out";
-                item.classList.add(items[index]);
                 setTimeout(() => {
                     moveThis(item, index);
                 }, 500);
-            });
-        }, 1000);
-        menuExpanded = true;
-    }
+                item.style.translate = "160%";
+                // item.style.display = "flex";
+                item.style.transition = "all 0.9s ease-in-out";
+                item.classList.add(items[index]);
+                
+                
+                menuExpanded = true;
 
-    function collapseCircle() {
-        // Logic to collapse the circle if needed
-        circle.style.translate = "0%";
-        circleItems.forEach((item, index) => {
-            item.style.translate = "0%";
-            item.style.transition = "all 0.9s ease-in-out";
-            menuExpanded = false;
-            setTimeout(() => {
-                item.style.display = "none";
-            }, 1000);
+            });
         });
     }
-    function infoClientsRegistry() {
-        console.log("displayMenu", displayMenu);
-        displayMenu.style.flex = "1 1 1";
+
+    function collapseCircle() {            
+        circle.style.translate = "0%";
+        // circle.style.rotate = "25deg";
+        circle.style.zIndex = "10";
+        requestAnimationFrame(() => {
+            circleItems.forEach((item, index) => {
+                item.style.opacity = "0";
+                item.style.zIndex = "-10";
+                item.style.transition = "all 0.9s ease-in-out";
+                
+                setTimeout(() => {
+                  ;  item.style.display = "none";
+                }, 500);
+                
+                moveThisClose(item, index);
+                menuExpanded = false;
+            });
+        });
+    }
+    async function infoClientsRegistry(item) {
+    console.log("displayMenu", displayMenu);
+    
+    if (displayMenu) {
+        requestAnimationFrame(() => {
+            displayMenu.style.display = "block";
+            displayMenu.style.opacity = "1";
+        });
+
+        console.log("displayMenublok", displayMenu);
+
+    }
     }
 
-    function handleClick(item) {
+    function message() {
+ 
+        if (displayMenu) {
+            displayMenu.innerHTML = " message";
+        }
+    }
+
+
+    function btnCircleItem(e, item) {
+        console.log("item", item);
+        e.stopPropagation();
         if (item === "clients") {
-            console.log("Clients clicked");
-            infoClientsRegistry(); // Appeler la fonction associée
+            e.preventDefault()
+            console.log("Clients clicked");  
+            displayMenu = "";
+            displayContentMenu = "clients";
+            infoClientsRegistry(); 
         } else if (item === "messages") {
             console.log("Messages clicked");
-            // Appeler la fonction associée pour messages
+            console.log("item", item);
+            displayMenu = "";
+            displayContentMenu = "messages";
+            message();
         } else if (item === "gestion") {
             console.log("Gestion clicked");
+            console.log("item", item);
+            displayMenu = "";
+            displayContentMenu = "gestion";
             // Appeler la fonction associée pour gestion
         }
     }
@@ -93,38 +155,37 @@
         <div class="circle-menu">
             <div
                 bind:this={circle}
-                on:click={() =>
-                    menuExpanded ? collapseCircle() : expandCircle()}
-                class="circle"
-            >
+                on:click={() =>menuExpanded ? collapseCircle() : expandCircle()}
+                class="circle">
+                <!-- <img src={engrenage} alt="engrenage" /> -->
                 {#each items as item, index}
                     <button
                         bind:this={circleItems[index]}
                         class="circle-item"
-                        on:click={() => handleClick(item)}
-                    >
+                        on:click={(e) => btnCircleItem(e, item)}>
                         <p>{item}</p>
                     </button>
                 {/each}
-                {console.log(menuExpanded)}
                 {#if menuExpanded}
                     <style>
                         .clients {
-                            background-color: red !important;
+                            background-image: url("../../../../assets/img/engrenage.png");
+                            background-size:200%;
+                            background-position: center;
+                            background-clip: content-box;
                         }
+                      
                         .messages {
-                            background-color: green !important;
+                            background-image: url("../../../../assets/img/engrenage.png");
+                            background-size:200%;
+                            background-position: center;
+                            background-clip: content-box;
                         }
                         .gestion {
-                            background-color: blue !important;
-                        }
-                        .circle:hover {
-                            background-color: grey;
-                            cursor: pointer;
-                            filter: drop-shadow(
-                                0 0 10px rgba(255, 70, 70, 0.5)
-                            ); /* Ajout d'ombre */
-                            box-shadow: 0 0 10px 0 rgba(235, 231, 231, 0.5); /* Ajout d'ombre */
+                            background-image: url("../../../../assets/img/engrenage.png");
+                            background-size:200%;
+                            background-position: center;
+                            background-clip: content-box;
                         }
                     </style>
                 {/if}
@@ -132,10 +193,32 @@
         </div>
     </div>
     <div class="div-center matrice">
-        <div bind:this={displayMenu} class="display-menu" />
+        <div bind:this={displayMenu} class="display-menu" >
+            {console.log("btn", circleItems.classList === "clients")}
+            {#if displayContentMenu === "clients"}
+                <SearchClients bind:searchQuery bind:searchType bind:users />
+            {:else if displayContentMenu === "messages"}
+                <p>messages</p>
+                <!-- <SearchMessages /> -->
+            {:else if displayContentMenu === "gestion"}
+                <p>gestion</p>
+                <!-- <SearchGestion /> -->
+            {/if}
+           
+        </div>
     </div>
     <div class="div-right matrice">
-        <div class="display-info" />
+        <div bind:this={displayInfo} class="display-info" >
+        {#if displayContentMenu === "gestion"}
+            <p>gestion</p>
+        {/if}
+        {#if displayContentMenu === "messages"}
+            <p>messages</p>
+        {/if}
+        {#if displayContentMenu === "clients"}
+        <ClientDisplay bind:searchQuery bind:searchType bind:users />
+        {/if}
+    </div>
     </div>
 </main>
 
@@ -149,19 +232,35 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        flex-wrap: wrap;
         align-items: center;
         width: 100%;
         height: 100%;
+        overflow: auto;
     }
     .matrice {
         display: flex;
         flex-wrap: wrap;
-        width: 100px;
-        height: 90%;
+        width: 30%;
+        height: 80%;
         overflow: hidden;
+        border: 1px solid white;
+        min-width:190px;
     }
+.display-info {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    border: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
     .div-left {
-        flex: 1;
+        /* flex: 1; */
+        border: 1px solid white;
     }
     .circle-menu {
         position: relative;
@@ -177,31 +276,83 @@
         left: 0;
         width: 45%;
         height: 45%;
-        background-color: blue;
+        /* background-color: grey; */
+        background-image: url("../../../../assets/img/engrenage.png");
+        background-size:200%;
+        background-position: center;
+        background-clip: content-box;
         border-radius: 50%;
         transition: all 0.9s ease-in-out; /* Transition sur tout */
-        filter: drop-shadow(0 0 0 rgba(255, 70, 70, 0.5)); /* Initial */
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); /* Initial */
+   
+        z-index: 6;
     }
-    .circle-item {
+    /* .circle img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    } */
+    .circle:hover {
+        cursor: pointer; 
+        filter: drop-shadow(
+            0 0 10px rgba(223, 215, 215, 0.5)
+        );
+        /* box-shadow: 0 0 10px 0 rgba(234, 233, 233, 0.5);  */
+    }
+    button.circle-item {
+        position: relative;
+        background-image: url("../../../../assets/img/engrenage.png");
+        background-size:200%,200%;
+        background-position: center;
+        background-color: transparent;
+        /* background-clip: content-box; */
         position: fixed;
         top: 25%;
         left: 25%;
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 40%;
-        height: 40%;
-        background-color: transparent;
+        width: 45%;
+        height: 50%;
         border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.9s ease-in-out;
+        opacity: 0;
+        display: none;
+        z-index: -5;
+        color: white;
+
     }
+    .circle p {
+        position: absolute;
+        bottom: -85%;
+        left: 5px;
+        width: 100%;
+        height: 100%;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        color: white;
+        letter-spacing: 1px;
+        
+    }
+   
 
     .div-center {
-        flex: 0;
-        background-color: blue;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        background-color: transparent;
     }
+    /* .div-center.active {
+        display: block;
+        flex: 1;
+
+    } */
     .div-right {
         flex: 1;
-        background-color: green;
     }
 </style>
