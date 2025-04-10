@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Recherche et Suppression d'Utilisateur</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+        }
+    
+        h1, h2 {
+          color: #0073e6;
+        }
+    
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 20px 0;
+        }
+    
+        th, td {
+          border: 1px solid #ddd;
+          padding: 10px;
+          text-align: left;
+        }
+    
+        th {
+          background-color: #0073e6;
+          color: white;
+        }
+    
+        pre {
+          background: #252525;
+          padding: 10px;
+          border-radius: 5px;
+          overflow-x: auto;
+          color: white;
+        }
+    
+        h2, h1 {
+          border-bottom: 1px solid #ccc;
+          padding-bottom: 5px;
+        }
+    
+        nav {
+          background-color: #0073e6;
+          padding: 3px;
+          border-radius: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          padding: 10px;
+        }
+    
+        nav a {
+          margin-right: 15px;
+          text-decoration: none;
+          color: #0d1114;
+          height: 10vh;
+        }
+    
+        strong {
+          color: #0073e6;
+        }
+    
+        h3 {
+          color: #00e6a1;
+        }
+      </style>
+</head>
+<body>
+
+    <h1>Documentation de l'Application de Recherche et Suppression d'Utilisateur</h1>
+
+    <div class="section">
+        <h2>Introduction</h2>
+        <p>
+            Cette application permet de rechercher des utilisateurs par différents critères (nom, email, téléphone), d'afficher les résultats dans une table, et de supprimer un utilisateur via un bouton sécurisé.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Fonctionnalités</h2>
+        <ul>
+            <li>Recherche d'utilisateurs par nom, email ou téléphone.</li>
+            <li>Affichage dynamique des résultats de la recherche dans une table.</li>
+            <li>Suppression sécurisée d'un utilisateur avec une confirmation de suppression.</li>
+            <li>Gestion des erreurs et des statuts de la requête via des messages visuels.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Explication du Code</h2>
+
+        <h3>Composant Svelte - Recherche et Suppression d'Utilisateur</h3>
+        <p>
+            Ce composant gère la recherche d'utilisateurs via une API Express, l'affichage des résultats sous forme de tableau, et la suppression d'un utilisateur.
+        </p>
+
+        <div class="code-example">
+            <h4>1. Variables et Initialisation</h4>
+            <pre>
+
+    import axios from "axios";
+    import { writable } from "svelte/store";
+
+    export let searchQuery = "";
+    export let searchType = "name";
+    let users = writable([]);
+    let statusResponse = writable(null);
+    let errorMessage = writable(null);
+
+            </pre>
+        </div>
+
+        <p>
+            Nous utilisons les variables suivantes :
+        </p>
+        <ul>
+            <li><code>searchQuery</code>: La valeur de la recherche (nom, email, ou téléphone).</li>
+            <li><code>searchType</code>: Le type de recherche sélectionné (par défaut, par nom).</li>
+            <li><code>users</code>: Un store Svelte qui contient la liste des utilisateurs trouvés.</li>
+            <li><code>statusResponse</code>: Un store pour afficher le message de succès après une action.</li>
+            <li><code>errorMessage</code>: Un store pour afficher les erreurs lors de l'exécution des requêtes.</li>
+        </ul>
+
+        <div class="code-example">
+            <h4>2. Fonction de Recherche</h4>
+            <pre>
+function handleSearch(event) {
+    searchQuery = event.target.value;
+    if (searchQuery.length >= 2) {
+        if (searchType === "name") {
+            axios.get(`/users/api/admin/infos/getUserByName/${searchQuery}`)
+                .then(response => {
+                    users.set(response.data.userProfiles);
+                    statusResponse.set(response.data.message);
+                })
+                .catch(error => {
+                    errorMessage.set(error.response.data.error);
+                });
+        }
+        // Autres types de recherche (email, téléphone) suivent une logique similaire.
+    }
+}
+            </pre>
+        </div>
+
+        <p>
+            La fonction <code>handleSearch</code> s'active à chaque saisie dans le champ de recherche et effectue une requête vers l'API en fonction du type de recherche sélectionné.
+        </p>
+
+        <div class="code-example">
+            <h4>3. Suppression d'un Utilisateur</h4>
+            <pre>
+const deleteUser = (userId, csrfToken) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+        axios.delete(`/users/api/admin/infos/deleteUser/${userId}`, {
+            headers: {
+                "CSRF-Token": csrfToken
+            }
+        }).then(response => {
+            statusResponse.set(response.data.message);
+        }).catch(error => {
+            errorMessage.set(error.response.data.message);
+        });
+    }
+};
+            </pre>
+        </div>
+
+        <p>
+            La fonction <code>deleteUser</code> permet de supprimer un utilisateur après une confirmation. Elle envoie une requête <code>DELETE</code> avec un token CSRF pour sécuriser l'action.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Affichage et UI</h2>
+
+        <h3>Résultats de Recherche</h3>
+        <p>
+            Après avoir effectué une recherche, les utilisateurs correspondant aux critères sont affichés sous forme de tableau.
+            Si aucun utilisateur n'est trouvé, un message d'erreur est affiché.
+        </p>
+
+        <div class="code-example">
+            <h4>Exemple de Tableau des Utilisateurs</h4>
+            <pre>
+{#if $users.length > 0}
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each $users as user (user.id)}
+                <tr>
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.phone}</td>
+                    <td>
+                        <button class="button" on:click={() => deleteUser(user.id, csrfToken)}>
+                            Supprimer
+                        </button>
+                    </td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+{:else}
+    <p>Aucun utilisateur trouvé.</p>
+{/if}
+            </pre>
+        </div>
+
+        <h3>Messages d'État</h3>
+        <p>
+            Les messages de succès ou d'erreur sont affichés dynamiquement en fonction de l'action réalisée, par exemple après la suppression d'un utilisateur.
+        </p>
+
+        <div class="code-example">
+            <h4>Affichage des Messages</h4>
+            <pre>
+{#if $statusResponse}
+    <p class="success-message">Succès : {$statusResponse}</p>
+{/if}
+
+{#if $errorMessage}
+    <p class="error-message">Erreur : {$errorMessage}</p>
+{/if}
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Conclusion</h2>
+        <p>
+            Ce composant Svelte est conçu pour faciliter la gestion des utilisateurs dans un environnement sécurisé. Il permet une recherche rapide et efficace, tout en assurant la protection contre les actions malveillantes grâce à l'utilisation de CSRF tokens pour la suppression des utilisateurs.
+        </p>
+    </div>
+
+</body>
+</html>

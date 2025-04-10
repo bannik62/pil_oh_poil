@@ -28,10 +28,8 @@
         console.info("Formulaire de delete Client sécurisé avec token csrfToken ", csrfToken);
       });
 
-console.log("csrfToken", csrfToken);
-if (searchQuery === "") {
-            users.set([]);
-        }
+        console.log("csrfToken", csrfToken);
+        if (searchQuery === "") {users.set([]);}
 
     const deleteUser = (userId,csrfToken) => {
         console.log("csrfToken req", csrfToken);
