@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Documentation - Module Gestion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    h1, h2 {
+      color: #0073e6;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0073e6;
+      color: white;
+    }
+
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+
+    h2, h1 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    nav {
+      background-color: #0073e6;
+      padding: 3px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 10px;
+    }
+
+    nav a {
+      margin-right: 15px;
+      text-decoration: none;
+      color: #0d1114;
+      height: 10vh;
+    }
+
+    strong {
+      color: #0073e6;
+    }
+
+    h3 {
+      color: #00e6a1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="./index.html"><strong>🏠 Retour à l'accueil</strong></a>
+    <a href="./doc-messages.html"><strong>📩 Module Messagerie</strong></a>
+    <a href="./doc-clients.html"><strong>👥 Module Clients</strong></a>
+  </nav>
+
+  <h2>Engrenage du Menu Circulaire</h2>
+
+<p>
+Le menu circulaire est un composant central qui permet d’ouvrir l’accès aux différents sous-modules via une animation de type engrenage. Il repose sur une série de fonctions JavaScript qui manipulent les styles CSS des éléments.
+</p>
+
+<h3>Structure des éléments</h3>
+<p>
+Chaque élément du menu est une <code>div</code> ou un <code>button</code> appartenant à <code>circleItems</code> (une liste d’éléments enfants). Ils sont animés à l’aide des classes et des transformations CSS.
+</p>
+
+<h3>Fonctions clés</h3>
+
+<h2><code>expandCircle()</code></h2>
+<ul>
+  <li>Déclenchée à l’ouverture du menu</li>
+  <li>Déplace chaque élément avec un effet de translation (style engrenage)</li>
+  <li>Ajoute dynamiquement des classes spécifiques aux éléments (ex: <code>clients</code>, <code>messages</code>, etc.)</li>
+</ul>
+
+<pre><code>function expandCircle() {
+    circle.style.translate = "-40%";
+    requestAnimationFrame(() => {
+        circleItems.forEach((item, index) => {
+            setTimeout(() => {
+                moveThis(item, index);
+            }, 500);
+            item.style.translate = "160%";
+            item.style.transition = "all 0.9s ease-in-out";
+            item.classList.add(items[index]); // Ex: "clients"
+            menuExpanded = true;
+        });
+    });
+}
+</code></pre>
+
+---
+
+<h2><code>ce code :moveThis(item, index)</code></h2>
+<p>Positionne et rend visible l’élément ciblé selon son rôle :</p>
+<ul>
+  <li><code>clients</code> : translate(0%, -100%)</li>
+  <li><code>messages</code> : translate(50%, 0%)</li>
+  <li><code>gestion</code> : translate(15%, 102%)</li>
+</ul>
+
+<pre><code>function moveThis(item, index) {
+    item.style.opacity = "1";
+    requestAnimationFrame(() => {
+        item.style.display = "flex";
+        item.style.opacity = "1";
+        if (item.classList.contains("clients")) {
+            item.style.transform = "translate(0%, -100%)";
+        } else if (item.classList.contains("messages")) {
+            item.style.transform = "translate(50%, 0%)";
+        } else if (item.classList.contains("gestion")) {
+            item.style.transform = "translate(15%, 102%)";
+        }
+    });
+}
+</code></pre>
+
+---
+
+<h2><code>ce code :collapseCircle()</code></h2>
+<ul>
+  <li>Inverser l’animation du menu</li>
+  <li>Masque tous les éléments et remet leur position d’origine</li>
+</ul>
+
+<pre><code>function collapseCircle() {
+    circle.style.translate = "0%";
+    circle.style.zIndex = "10";
+    requestAnimationFrame(() => {
+        circleItems.forEach((item, index) => {
+            item.style.opacity = "0";
+            item.style.zIndex = "-10";
+            item.style.transition = "all 0.9s ease-in-out";
+            setTimeout(() => {
+                item.style.display = "none";
+            }, 500);
+            moveThisClose(item, index);
+            menuExpanded = false;
+        });
+    });
+}
+</code></pre>
+
+---
+
+<h2><code>ce code :moveThisClose(item, index)</code></h2>
+<p>
+    Ferme un élément en le déplaçant hors du champ de vision, supprime sa classe et définit des transitions.
+</p>
+
+<pre><code>function moveThisClose(item, index) {
+    if (item.classList.contains("clients")) {
+        item.style.transform = "translate(-150%, 0%)";
+        item.style.zIndex = "-10";
+        item.style.transition = "all 0.9s ease-in-out";
+        item.classList.remove(items[index]);
+    }
+    if (item.classList.contains("messages")) {
+        item.style.transform = "translate(-150%, -0%)";   
+        item.style.transition = "all 0.9s ease-in-out";
+        item.classList.remove(items[index]);
+    }
+    if (item.classList.contains("gestion")) {
+        item.style.transform = "translate(-150%, 0%)";
+        item.style.transition = "all 0.9s ease-in-out";
+        item.classList.remove(items[index]);
+    }
+}
+</code></pre>
+
+---
+
+<p>
+Ce système offre une navigation fluide, modulaire et visuellement engageante vers les sous-modules de l'application de gestion.
+</p>
+
+
+  <h1>📊 Documentation - Module Gestion</h1>
+
+  <h2>Description</h2>
+  <p>
+    Le module <strong>Gestion</strong> est le module principal de l’espace d’administration. Il regroupe plusieurs sous-modules fonctionnels accessibles via un menu circulaire interactif. L'affichage des modules enfants est conditionné par l'état global géré par des <strong>stores Svelte</strong>.
+  </p>
+
+  <h2>Objectifs</h2>
+  <ul>
+    <li>Centraliser les modules de gestion (clients, messages, utilisateurs, etc.).</li>
+    <li>Afficher dynamiquement les composants enfants selon l’item sélectionné dans le menu.</li>
+    <li>Gérer l’état de navigation à l’aide des <code>stores/navigation.js</code> et <code>stores/store.js</code>.</li>
+  </ul>
+
+  <h2>Architecture</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Fichier</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>components/gestion/Gestion.svelte</code></td>
+        <td>Composant principal, racine de tous les modules de gestion. Contrôle le rendu conditionnel des enfants.</td>
+      </tr>
+      <tr>
+        <td><code>components/gestion/Menu.svelte</code></td>
+        <td>Menu circulaire permettant de choisir un module enfant.</td>
+      </tr>
+      <tr>
+        <td><code>stores/navigation.js</code></td>
+        <td>Store qui conserve l’état du module actuellement affiché.</td>
+      </tr>
+      <tr>
+        <td><code>stores/store.js</code></td>
+        <td>Store général regroupant les états partagés entre modules (auth, tokens, etc.).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Logique de navigation</h2>
+  <pre><code>// Exemple : navigation.js
+import { writable } from 'svelte/store';
+
+export const currentModule = writable(null); // ex : "clients", "messages"
+</code></pre>
+
+  <h2>Affichage conditionnel des modules enfants</h2>
+  <pre><code>&lt;script&gt;
+  import { currentModule } from '../../stores/navigation.js';
+  import Messages from '../module/messages/Messages.svelte';
+  import Clients from '../module/clients/Clients.svelte';
+
+  $: module = $currentModule;
+&lt;/script&gt;
+
+{#if module === 'messages'}
+  &lt;Messages /&gt;
+{:else if module === 'clients'}
+  &lt;Clients /&gt;
+{/if}
+</code></pre>
+
+  <h2>Navigation depuis le Menu</h2>
+  <p>
+    Le menu utilise une animation circulaire et envoie le nom du module sélectionné dans le store <code>currentModule</code>, ce qui déclenche le rendu dans <code>Gestion.svelte</code>.
+  </p>
+
+  <h2>Modules Enfants Disponibles</h2>
+  <ul>
+    <li><a href="./doc-messages.html">📩 Messagerie</a></li>
+    <li><a href="./doc-clients.html">👥 Clients</a></li>
+    <!-- Tu pourras ajouter d'autres liens ici (Utilisateurs, Rendez-vous, etc.) -->
+  </ul>
+
+</body>
+
+</html>

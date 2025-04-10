@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation du Composant de Messagerie</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+        }
+    
+        h1, h2 {
+          color: #0073e6;
+        }
+    
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 20px 0;
+        }
+    
+        th, td {
+          border: 1px solid #ddd;
+          padding: 10px;
+          text-align: left;
+        }
+    
+        th {
+          background-color: #0073e6;
+          color: white;
+        }
+    
+        pre {
+          background: #0c0c0c;
+          padding: 10px;
+          border-radius: 5px;
+          overflow-x: auto;
+          color: white;
+        }
+    
+        h2, h1 {
+          border-bottom: 1px solid #ccc;
+          padding-bottom: 5px;
+        }
+    
+        nav {
+          background-color: #0073e6;
+          padding: 3px;
+          border-radius: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          padding: 10px;
+        }
+    
+        nav a {
+          margin-right: 15px;
+          text-decoration: none;
+          color: #0d1114;
+          height: 10vh;
+        }
+    
+        strong {
+          color: #0073e6;
+        }
+    
+        h3 {
+          color: #00e6a1;
+        }
+      </style>
+</head>
+<body>
+
+    <h1>Documentation du Composant de Messagerie</h1>
+
+    <section class="section">
+        <h2>Introduction</h2>
+        <p>
+            Ce composant de messagerie est utilisé pour gérer l'affichage et la gestion des messages des utilisateurs dans une interface d'administration. 
+            Il utilise Svelte pour l'interface et Axios pour interagir avec une API backend. Le composant permet de rechercher des messages, 
+            de trier par date et de supprimer des messages tout en gérant la sécurité via un token CSRF.
+        </p>
+    </section>
+
+    <section class="section">
+        <h2>Principaux Composants</h2>
+        <p>Le composant est structuré autour des éléments suivants :</p>
+        <ul class="list">
+            <li><strong>Variables d'état</strong> : Utilisation de Svelte Store (`writable`) pour gérer l'état dynamique de l'application.</li>
+            <li><strong>Fonctions d'API</strong> : Axios est utilisé pour faire des appels HTTP à une API backend.</li>
+            <li><strong>Transitions</strong> : Le module `fade` est utilisé pour animer les éléments lors de leur apparition.</li>
+            <li><strong>Composant de Recherche</strong> : Permet de filtrer les messages par nom ou contenu.</li>
+            <li><strong>Fonctions de tri</strong> : Trie les messages par date (ascendant ou descendant).</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Variables et États</h2>
+        <p>Voici les principales variables d'état utilisées dans le composant :</p>
+        <ul class="list">
+            <li><code>newMessage</code> : Contient le contenu du nouveau message à envoyer.</li>
+            <li><code>searchQuery</code> : Représente la chaîne de recherche utilisée pour filtrer les messages.</li>
+            <li><code>csrfToken</code> : Token CSRF utilisé pour sécuriser les requêtes API.</li>
+            <li><code>statusResponse</code> : Stocke le statut de la réponse de l'API (succès ou erreur).</li>
+            <li><code>numberOfMessages</code> : Stocke le nombre total de messages récupérés.</li>
+            <li><code>reponseExpandable</code> : Permet d'afficher ou masquer les réponses des messages.</li>
+            <li><code>sortOrder</code> : Détermine l'ordre de tri des messages ("asc" pour ascendant, "desc" pour descendant).</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Fonctions Principales</h2>
+        <p>Le composant comprend plusieurs fonctions clés pour interagir avec les données :</p>
+
+        <h3>1. <code>getCsrfToken</code></h3>
+        <p>Cette fonction récupère le token CSRF depuis le backend afin de sécuriser les requêtes API.</p>
+        <div class="code">
+            <pre>
+async function getCsrfToken() {
+    const res = await fetch("http://localhost:3000/csrf-token", { credentials: "include" });
+    const data = await res.json();
+    csrfToken = data.csrfToken;
+    console.info("Token CSRF récupéré :", csrfToken);
+}
+            </pre>
+        </div>
+
+        <h3>2. <code>countMessages</code></h3>
+        <p>Cette fonction récupère le nombre total de messages depuis l'API et met à jour l'état <code>numberOfMessages</code>.</p>
+        <div class="code">
+            <pre>
+async function countMessages(csrfToken) {
+    try {
+        const res = await axios.get("http://localhost:3000/users/api/admin/messages/get/messages/count", {
+            withCredentials: true,
+            headers: { "CSRF-Token": csrfToken }
+        });
+        numberOfMessages.set(res.data);
+    } catch (error) {
+        console.error("Erreur lors du comptage des messages :", error);
+    }
+}
+            </pre>
+        </div>
+
+        <h3>3. <code>fetchinfoMessages</code></h3>
+        <p>Cette fonction récupère les messages des utilisateurs et leurs informations associées, puis les enrichit en ajoutant les noms complets des utilisateurs.</p>
+        <div class="code">
+            <pre>
+async function fetchinfoMessages() {
+    try {
+        const [responseMessages, responseUsers] = await Promise.all([
+            axios.get("http://localhost:3000/users/api/admin/messages/get/messages", { withCredentials: true }),
+            axios.get("http://localhost:3000/users/api/admin/infos/getAllUsers/", { withCredentials: true })
+        ]);
+
+        const messages = responseMessages.data;
+        const users = responseUsers.data.userProfiles;
+
+        const messagesEnrichis = messages.map((msg) => {
+            const user = users.find((u) => u.userId === msg.userId);
+            const fullName = user ? `${user.firstName} ${user.lastName}` : "Utilisateur inconnu";
+            return { ...msg, fullName };
+        });
+
+        messagesUsers.set(messagesEnrichis);
+        statusResponse.set("Messages chargés avec succès");
+        setTimeout(() => statusResponse.set(null), 5000);
+    } catch (error) {
+        console.error("Erreur lors du chargement des messages ou utilisateurs :", error);
+    }
+}
+            </pre>
+        </div>
+
+        <h3>4. <code>deleteMessage</code></h3>
+        <p>Cette fonction permet de supprimer un message en envoyant une requête DELETE au backend avec le token CSRF.</p>
+        <div class="code">
+            <pre>
+async function deleteMessage(message) {
+    confirm("Vous allez supprimer le message de " + message.fullName);
+    try {
+        const response = await axios.delete(`http://localhost:3000/users/api/admin/messages/delete/message/${message.id}`, {
+            withCredentials: true,
+            headers: { "CSRF-Token": csrfToken }
+        });
+        statusResponse.set(response.data.message);
+        setTimeout(() => statusResponse.set(null), 3000);
+        fetchinfoMessages();
+    } catch (error) {
+        console.error("Erreur lors de la suppression du message :", error);
+        statusResponse.set(error.response?.data?.error || "Erreur inconnue");
+        setTimeout(() => statusResponse.set(null), 3000);
+    }
+}
+            </pre>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Interface Utilisateur</h2>
+        <p>L'interface utilisateur est divisée en plusieurs sections :</p>
+        <ul class="list">
+            <li><strong>Champ de Recherche</strong> : Permet de rechercher des messages par nom ou contenu.</li>
+            <li><strong>Menu de Tri</strong> : Permet de trier les messages par date (croissante ou décroissante).</li>
+            <li><strong>Affichage des Messages</strong> : Les messages sont affichés avec leur contenu, l'état (lu/non lu) et la possibilité de les supprimer.</li>
+        </ul>
+    </section>
+
+    <h1>Interface de gestion des messages</h1>
+
+    <section id="messages">
+        <h2>Messages</h2>
+        <p>Cette section permet de visualiser, répondre, et supprimer les messages reçus. L'interface affiche la liste des
+            messages avec des actions associées.</p>
+
+        <h3>Structure générale</h3>
+        <p>Chaque message est structuré de la manière suivante :</p>
+        <ul>
+            <li><strong>Nom de l'utilisateur</strong> : Affiche le nom de l'utilisateur qui a envoyé le message.</li>
+            <li><strong>Status de lecture</strong> : Un indicateur qui montre si le message a été lu (checked) ou non
+                (not-checked).</li>
+            <li><strong>Date de création</strong> : Affiche la date de création du message.</li>
+            <li><strong>Réponse</strong> : Un indicateur de si le message a reçu une réponse (réponse ok ou à répondre).</li>
+        </ul>
+
+        <h3>Actions disponibles sur chaque message</h3>
+        <p>Pour chaque message, plusieurs actions sont disponibles :</p>
+        <ul>
+            <li><strong>Répondre</strong> : Permet de répondre au message. Un textarea apparaît pour saisir la réponse, et un
+                bouton "Envoyer" permet de l'envoyer.</li>
+            <li><strong>Supprimer</strong> : Un bouton pour supprimer le message, qui déclenche une confirmation avant la
+                suppression.</li>
+        </ul>
+
+        <h3>Comportement détaillé</h3>
+        <p>Voici les principales fonctionnalités qui composent l'interface de gestion des messages :</p>
+
+        <h4>Envoi de message</h4>
+        <p>Lors de l'envoi d'une réponse, le message est envoyé à l'API via une requête HTTP PUT. Le CSRF Token est utilisé
+            pour sécuriser la requête.</p>
+
+        <h4>Gestion des messages</h4>
+        <p>Chaque message a un statut "checked" ou "not-checked", indiquant si l'admin a consulté le message ou non. Un
+            clic sur le bouton "Répondre" déclenche l'affichage du formulaire de réponse. Un bouton "Supprimer" permet de
+            supprimer le message après confirmation.</p>
+
+        <h4>Affichage des réponses</h4>
+        <p>Si une réponse a été donnée au message, elle est affichée sous le message original. Si aucune réponse n'a été
+            envoyée, un formulaire de réponse est disponible.</p>
+
+        <h3>Statut des actions</h3>
+        <p>Après chaque action (réponse ou suppression), un message de statut est affiché en haut de la section pour
+            informer l'utilisateur du succès ou de l'échec de l'action.</p>
+
+        <h4>Composants utilisés</h4>
+        <p>Les éléments suivants sont utilisés dans l'interface :</p>
+        <ul>
+            <li><strong>Textarea</strong> : Permet à l'admin de répondre à un message.</li>
+            <li><strong>Button</strong> : Pour envoyer une réponse ou supprimer un message.</li>
+            <li><strong>Span</strong> : Affiche le nom de l'utilisateur, la date et l'état du message (lu ou non lu).</li>
+        </ul>
+
+        <h4>Interaction avec l'API</h4>
+        <p>Les principales interactions avec l'API comprennent :</p>
+        <ul>
+            <li>GET pour récupérer les messages et les informations des utilisateurs.</li>
+            <li>PUT pour marquer un message comme lu ou envoyer une réponse.</li>
+            <li>DELETE pour supprimer un message.</li>
+        </ul>
+
+        <h4>CSS et Transition</h4>
+        <p>Une transition fade est utilisée pour animer l'affichage des messages lorsqu'ils sont chargés.</p>
+    </section>
+
+
+</body>
+</html>
