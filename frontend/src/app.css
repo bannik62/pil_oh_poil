@@ -51,15 +51,15 @@ p {
   transform: translateY(-70px);
   animation: fadeInUp 1s ease-out forwards;
   animation-timeline: --view-timeline;
-  animation-range: entry 25% cover 20%;
+  animation-range: entry 10% cover 20%;
   view-timeline-name: --view-timeline;
   view-timeline-axis: block;
-  transition: all 0.5s ease-out;
+  transition: all 2s ease-out;
   
 }
 
 .visible {
-  animation: fadeInUp 0.9s ease-out forwards;
+  animation: fadeInUp 2s ease-out forwards;
 }
 
  /* Add IntersectionObserver in your JS: */

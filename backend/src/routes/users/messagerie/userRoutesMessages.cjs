@@ -38,35 +38,6 @@ router.get('/fetch/messages/:id', async (req, res) => {
     }
 });
 
-// Route pour récupérer tous les messages d'un utilisateur (uniquement l'admin peut y accéder)
-router.get('/admin', async (req, res) => {
-    try {
-        const messages = await Message.findAll({
-            where: { checked: false },
-        });
-
-        res.status(200).json(messages);
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur lors de la récupération des messages.' });
-    }
-});
-
 // Route pour marquer un message comme vu par l'admin
-router.put('/:id', async (req, res) => {
-    try {
-        const message = await Message.findByPk(req.params.id);
-
-        if (!message) {
-            return res.status(404).json({ error: 'Message non trouvé.' });
-        }
-
-        message.checked = true; // Marquer comme vu
-        await message.save();
-
-        res.status(200).json(message);
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur lors de la mise à jour du message.' });
-    }
-});
 
 module.exports = router;

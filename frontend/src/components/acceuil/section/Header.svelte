@@ -164,10 +164,10 @@
   <Navbar on:rotateCube={rotateCube} />
   {console.log("nav", get(pageActuelle))}
   {#if currentPage === 'front'}
-  <button class="cordon"  name="cordon" aria-label="cordon" on:click={() => handleClick('cordon')} type="button" title="cordon" >
+  <button role="button" class="cordon"  name="cordon" aria-label="cordon" on:click={() => handleClick('cordon')} type="button" title="cordon" >
   </button>
     {:else if currentPage === 'left'}
-  <button class="btnNavUserBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
+  <button role="button" class="btnNavUserBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
     Navbar
   </button>
   <style>
@@ -207,7 +207,7 @@
     }
   </style>
   {:else if currentPage === 'bottom'}
-  <button class="btnNavUserBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
+  <button role="button" class="btnNavAdminBoard" on:click={() => handleClick('btnNav')} type="button" title="cordon" value="Navbar">
     Navbar
   </button>
   <style>
@@ -232,10 +232,10 @@
       justify-content: center;
       align-items: center;
       border-radius: 10px;
-      animation: scaleUp 1s ease-out forwards;
+      animation: scaleUpUserBoard 1s ease-out forwards;
     }
 
-    @keyframes scaleUp {
+    @keyframes scaleUpUserBoard {
       from {
         transform: scale(0);
         border-radius: 0;
@@ -251,6 +251,45 @@
       right: 5px;
     }
   }
+  .btnNavAdminBoard {
+    outline: 1px solid red;
+      position: absolute;
+      top: 30px;
+      right:100px;
+      width: 100px;
+      height: 100px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: white;
+      border: none;
+      cursor: pointer;
+      z-index: 3;
+      color: black;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      animation: scaleUpAdminBoard 1s ease-out forwards;
+  }
+
+  @keyframes scaleUpAdminBoard {
+    from {
+        transform: scale(0);
+        border-radius: 0;
+      }
+      to {
+        transform: scale(1);
+        border-radius: 50%;
+        background-color:#476788 ;
+        color: white;
+        filter: drop-shadow(12px -12px 2px rgba(0, 0, 0, 0.5));
+        outline: white 1px solid;
+      }
+  }
+
   </style>
   {/if}
   
@@ -292,6 +331,10 @@
             </div>
 
             <style>
+              body {
+                width: 100vw;
+                height: 100%;
+              }
                 .error-404 {
                     display: flex;
                     flex-direction: column;
@@ -352,6 +395,10 @@
         </div>
         
         <style>
+          body {
+            width: 100vw;
+            height: 100%;
+          }
           .error-404 {
               display: flex;
               flex-direction: column;
@@ -362,6 +409,7 @@
               background-color: white;
               border-radius: 10px;
               box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+              width: 100%;
 
           }
 

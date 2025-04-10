@@ -80,6 +80,7 @@
     }
 
     .footer-bottom {
+        height: 120px;
         text-align: center;
         margin-top: 2rem;
         padding-top: 2rem;

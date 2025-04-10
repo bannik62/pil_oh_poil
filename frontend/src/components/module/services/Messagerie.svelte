@@ -161,7 +161,18 @@ async function addPost(e) {
       <div class="post">
         <strong> {userAuthorName}:</strong>
         {post.content}
+        {#if post.checked === true}
+          <span class="checked">✔️</span>
+        {:else}
+          <span class="not-checked">❌</span>
+        {/if}
       </div>
+      {#if post.response !== null}
+        <div class="post-response">
+          <strong> Ludivine:</strong>
+          {post.response}
+        </div>
+      {/if}
     {/each}
   </div>
 

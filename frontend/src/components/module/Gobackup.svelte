@@ -1,5 +1,14 @@
 <script>
     let visible = false;
+    let scrollTimeout;
+
+    function handleScroll() {
+        clearTimeout(scrollTimeout);
+        visible = false;
+        scrollTimeout = setTimeout(() => {
+            visible = window.scrollY > 400;
+        }, 200);
+    }
 
     function scrollToTop() {
         window.scrollTo({
@@ -8,9 +17,9 @@
         });
     }
 
-    function handleScroll() {
-        visible = window.scrollY > 400;
-    }
+    // function handleScroll() {
+    //     visible = window.scrollY > 400;
+    // }
 </script>
 
 <svelte:window on:scroll={handleScroll} />
@@ -23,7 +32,7 @@
     .scroll-top {
         position: fixed;
         bottom: 20px;
-        right: 20px;
+        right: 90px;
         background-color: rgba(240, 248, 255, 0.252);
         backdrop-filter: blur(5px);
         color: white;

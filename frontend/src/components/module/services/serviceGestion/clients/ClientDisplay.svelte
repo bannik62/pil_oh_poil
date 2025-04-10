@@ -4,6 +4,7 @@
     import { writable } from "svelte/store";
     import UserInfo from "../../../../../class/UserClassLogin";
     import { get } from "svelte/store";
+    import { fade } from "svelte/transition";
     const userClient = new UserInfo();
 
     export let searchQuery;
@@ -24,7 +25,7 @@
         const res = await fetch('http://localhost:3000/csrf-token', { credentials: 'include' });
         const data = await res.json();
         csrfToken = data.csrfToken;
-        console.info("Formulaire de delete sécurisé avec token csrfToken ", csrfToken);
+        console.info("Formulaire de delete Client sécurisé avec token csrfToken ", csrfToken);
       });
 
 console.log("csrfToken", csrfToken);
@@ -67,11 +68,11 @@ if (searchQuery === "") {
         }
     };
 
-    onMount(() => {});
+    
 </script>
 
 <main>
-    <div class="client-display">
+    <div class="client-display" transition:fade>
         <div class="client-display-header">
             <h2>Client Information</h2>
             <p>votre requete est : {searchQuery}</p>
@@ -88,7 +89,7 @@ if (searchQuery === "") {
     {console.log("user beforetable", $users , "searchType :", searchType)}
     {#if searchType === "email"}
         {#if $users.length > 0}
-            <div class="searchWhitMail">
+            <div class="searchWhitMail" transition:fade>
                 <div class="searchWhitMail-header">
                     <table>
                         <thead>
@@ -163,7 +164,7 @@ if (searchQuery === "") {
         width: auto;
         margin: 5px;
         border-radius: 4px;
-        overflow-x: auto;
+        /* overflow-x: auto; */
     }
     .status-response {
         display: flex;
