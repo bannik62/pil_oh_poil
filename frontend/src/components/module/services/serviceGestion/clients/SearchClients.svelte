@@ -2,6 +2,7 @@
     import axios from "axios";
     import { onMount } from "svelte";
     import { writable } from "svelte/store";
+    import { fade } from "svelte/transition";
 
     export let searchQuery = "";
     export let searchType = "name";
@@ -48,7 +49,7 @@
             }).catch(error => {
                 erreurMessage.set(error.response.data.error);
                 setTimeout(() => {
-                    statusResponse.set(null);
+                    erreurMessage.set(null);
                 }, 3000);
             });
         }
@@ -58,13 +59,16 @@
                 withCredentials: true
             }).then(response => {
                 console.log("response", response);
-                statusResponse.set(error.response.data.error);
+                statusResponse.set(response.data.message);
                 let usersInfo = response.data.user;
                 users.set(usersInfo);
+                setTimeout(() => {
+                    statusResponse.set(null);
+                }, 3000);
             }).catch(error => {
                 erreurMessage.set(error.response.data.error);
                 setTimeout(() => {
-                    statusResponse.set(null);
+                    erreurMessage.set(null);
                 }, 5000);
             });
         }
@@ -96,7 +100,7 @@
         <p> Nombre d'utilisateurs : <span class="number-of-users-value">{$numberOfUsers}</span></p>
     </div>
 
-    <div class="search-container">
+    <div class="search-container" transition:fade>
         <input type="text" placeholder="Search..." on:input={handleSearch} />
         <div class="radio-buttons">
             <label>

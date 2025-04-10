@@ -3,6 +3,12 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('./index.cjs');
 
 const Message = sequelize.define('Message', {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
     content: {
         type: DataTypes.STRING,
         allowNull: false

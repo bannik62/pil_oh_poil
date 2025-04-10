@@ -3,7 +3,10 @@
     import { writable } from "svelte/store";
     import SearchClients from "./clients/SearchClients.svelte";
     import ClientDisplay from "./clients/ClientDisplay.svelte";
+    import MessagerieForum from "./messagerie/MessagerieForum.svelte";
+    import MessagerieForumDisplay from "./messagerie/MessagerieForumDisplay.svelte";
     import engrenage from "../../../../assets/img/engrenage.png";
+    import { messagesUsers, readMessageUsers } from "../../../../stores/gestionMessagerie"
     let circle;
     let circleItems = []; // Array to hold references to circle items
     let items = ["clients", "messages", "gestion"]; // Array of items
@@ -14,6 +17,7 @@
     let searchQuery = "";
     let users = writable([]);
     let searchType = "name";
+    let reponseExpandable = writable(false);
     onMount(() => {
         displayMenu;
         displayMenu.style.opacity = "1";
@@ -153,13 +157,14 @@
 <main>
     <div class="div-left matrice">
         <div class="circle-menu">
-            <div
+            <div type="button"
                 bind:this={circle}
                 on:click={() =>menuExpanded ? collapseCircle() : expandCircle()}
                 class="circle">
                 <!-- <img src={engrenage} alt="engrenage" /> -->
                 {#each items as item, index}
                     <button
+                        role="button"
                         bind:this={circleItems[index]}
                         class="circle-item"
                         on:click={(e) => btnCircleItem(e, item)}>
@@ -193,13 +198,13 @@
         </div>
     </div>
     <div class="div-center matrice">
+        <!-- <p>displayMenu</p> -->
         <div bind:this={displayMenu} class="display-menu" >
             {console.log("btn", circleItems.classList === "clients")}
             {#if displayContentMenu === "clients"}
                 <SearchClients bind:searchQuery bind:searchType bind:users />
             {:else if displayContentMenu === "messages"}
-                <p>messages</p>
-                <!-- <SearchMessages /> -->
+                <MessagerieForum   bind:reponseExpandable />
             {:else if displayContentMenu === "gestion"}
                 <p>gestion</p>
                 <!-- <SearchGestion /> -->
@@ -213,10 +218,10 @@
             <p>gestion</p>
         {/if}
         {#if displayContentMenu === "messages"}
-            <p>messages</p>
+            <MessagerieForumDisplay bind:users   bind:reponseExpandable />
         {/if}
         {#if displayContentMenu === "clients"}
-        <ClientDisplay bind:searchQuery bind:searchType bind:users />
+            <ClientDisplay bind:searchQuery bind:searchType bind:users />
         {/if}
     </div>
     </div>
@@ -242,15 +247,17 @@
         display: flex;
         flex-wrap: wrap;
         width: 30%;
+        max-width: 400px;
         height: 80%;
+        max-height: 500px;
         overflow: hidden;
-        border: 1px solid white;
+        /* border: 1px solid white; */
         min-width:190px;
     }
 .display-info {
     width: 100%;
     height: 100%;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     border: 1px solid white;
     display: flex;
     flex-direction: column;
@@ -258,10 +265,10 @@
     justify-content: center;
 }
 
-    .div-left {
+    /* .div-left { */
         /* flex: 1; */
-        border: 1px solid white;
-    }
+        /* border: 1px solid white; */
+    /* } */
     .circle-menu {
         position: relative;
         width: 100%;
