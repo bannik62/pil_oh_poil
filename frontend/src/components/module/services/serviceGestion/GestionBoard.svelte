@@ -5,8 +5,16 @@
     import ClientDisplay from "./clients/ClientDisplay.svelte";
     import MessagerieForum from "./messagerie/MessagerieForum.svelte";
     import MessagerieForumDisplay from "./messagerie/MessagerieForumDisplay.svelte";
+    import Rdv from "./rdvAndGestion/Rdv.svelte";
+    // import SearchGestion from "./
     import engrenage from "../../../../assets/img/engrenage.png";
     import { messagesUsers, readMessageUsers } from "../../../../stores/gestionMessagerie"
+    import { users, numberOfUsers, searchQuery, searchType, erreurMessage } from "../../../../stores/gestionUtilisateur";
+    $users;
+    $numberOfUsers;
+    $searchQuery;
+    $searchType;
+    $erreurMessage;
     let circle;
     let circleItems = []; // Array to hold references to circle items
     let items = ["clients", "messages", "gestion"]; // Array of items
@@ -14,10 +22,8 @@
     let displayMenu;
     let displayContentMenu;
     let displayInfo;
-    let searchQuery = "";
-    let users = writable([]);
-    let searchType = "name";
     let reponseExpandable = writable(false);
+  
     onMount(() => {
         displayMenu;
         displayMenu.style.opacity = "1";
@@ -161,7 +167,7 @@
                 bind:this={circle}
                 on:click={() =>menuExpanded ? collapseCircle() : expandCircle()}
                 class="circle">
-                <!-- <img src={engrenage} alt="engrenage" /> -->
+
                 {#each items as item, index}
                     <button
                         role="button"
@@ -171,6 +177,7 @@
                         <p>{item}</p>
                     </button>
                 {/each}
+
                 {#if menuExpanded}
                     <style>
                         .clients {
@@ -194,19 +201,20 @@
                         }
                     </style>
                 {/if}
+
             </div>
         </div>
     </div>
     <div class="div-center matrice">
         <!-- <p>displayMenu</p> -->
         <div bind:this={displayMenu} class="display-menu" >
-            {console.log("btn", circleItems.classList === "clients")}
+            <!-- {console.log("btn", circleItems.classList === "clients")} -->
             {#if displayContentMenu === "clients"}
-                <SearchClients bind:searchQuery bind:searchType bind:users />
+                <SearchClients    />
             {:else if displayContentMenu === "messages"}
                 <MessagerieForum   bind:reponseExpandable />
             {:else if displayContentMenu === "gestion"}
-                <p>gestion</p>
+                <Rdv />
                 <!-- <SearchGestion /> -->
             {/if}
            
@@ -218,10 +226,10 @@
             <p>gestion</p>
         {/if}
         {#if displayContentMenu === "messages"}
-            <MessagerieForumDisplay bind:users   bind:reponseExpandable />
+            <MessagerieForumDisplay  />
         {/if}
         {#if displayContentMenu === "clients"}
-            <ClientDisplay bind:searchQuery bind:searchType bind:users />
+            <ClientDisplay  />
         {/if}
     </div>
     </div>
@@ -241,13 +249,12 @@
         align-items: center;
         width: 100%;
         height: 100%;
-        overflow: auto;
+        /* overflow-y: scroll; */
+        
     }
     .matrice {
         display: flex;
         flex-wrap: wrap;
-        width: 30%;
-        max-width: 400px;
         height: 80%;
         max-height: 500px;
         overflow: hidden;
@@ -258,17 +265,17 @@
     width: 100%;
     height: 100%;
     /* overflow-y: scroll; */
-    border: 1px solid white;
+    /* border: 1px solid white; */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-    /* .div-left { */
-        /* flex: 1; */
+    .div-left { 
+        flex: 1; 
         /* border: 1px solid white; */
-    /* } */
+     } 
     .circle-menu {
         position: relative;
         width: 100%;
@@ -348,6 +355,9 @@
    
 
     .div-center {
+        flex: 0;
+        min-width: 370px;
+        max-width: 400px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -361,5 +371,7 @@
     } */
     .div-right {
         flex: 1;
+        
+    
     }
 </style>

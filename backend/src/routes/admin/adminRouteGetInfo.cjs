@@ -5,7 +5,7 @@ const { User } = require('../../../models/user.cjs');
 const { verifyCookieToken } = require('../../middleware/verifyCookieToken.cjs');
 const { Op } = require('sequelize');
 // Route pour récupérer tous les utilisateurs
-router.get('/getAllUsers',verifyCookieToken, async (req, res) => {
+router.get('/getAllUsers/infos',verifyCookieToken, async (req, res) => {
     try {
         // Récupérer tous les profils utilisateurs
         const userProfiles = await UserProfile.findAll();
@@ -25,6 +25,22 @@ router.get('/getAllUsers',verifyCookieToken, async (req, res) => {
     }
 });
 
+router.get('/getAllUsers/infos/forMail',verifyCookieToken, async (req, res) => {
+    try {
+        const user = await User.findAll();
+        const userProfilesWithoutPassword = user.map(user => {
+            const { password, ...userWithoutPassword } = user.dataValues; // Exclure le champ password
+            return userWithoutPassword;
+        });
+        res.status(200).json({
+            message: 'Informations des utilisateurs récupérées avec succès',
+            userProfilesInfos: userProfilesWithoutPassword
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des informations:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 // Route pour chercher un utilisateur par nom
 router.get('/getUserByName/:firstName', async (req, res) => {
     try {
@@ -74,26 +90,55 @@ router.get('/getUserByEmail/:email', async (req, res) => {
         email = email.trim().toLowerCase().replace(/ /g, '');
 
         console.log('Recherche avec :', email);
-
-        const users = await User.findAll({
+        const userEmail = await User.findAll({
             where: {
                 email: { [Op.like]: `${email}%` }
+
+            }
+
+        });
+
+        if (!userEmail || userEmail.length === 0) {
+            return res.status(404).json({ error: 'Aucun utilisateur trouvé avec cet email' });
+        }
+
+        res.status(200).json({
+            message: 'Informations des utilisateurs récupérées avec succès',
+            users: userEmail
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la recherche des informations:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get('/getUserByPhone/:phone', async (req, res) => {
+    try {
+        let { phone } = req.params;
+        console.log('phoneeeeeeeeeeeeeeee', phone);
+
+        if (!phone || typeof phone !== 'string') {
+            return res.status(400).json({ error: 'Le numéro de téléphone est invalide' });
+        }
+
+        phone = phone.trim().replace(/ /g, '');
+
+        console.log('Recherche avec :', phone);
+
+        const users = await UserProfile.findAll({
+            where: {
+                telephone: { [Op.like]: `${phone}%` }
             }
         });
 
         if (!users || users.length === 0) {
-            return res.status(404).json({ error: 'Aucun utilisateur trouvé avec cet email' });
+            return res.status(404).json({ error: 'Aucun utilisateur trouvé avec ce numéro de téléphone' });
         }
 
-        // Exclure le champ password
-        const usersWithoutPassword = users.map(user => {
-            const { password, ...userWithoutPassword } = user.dataValues; // Exclure le champ password
-            return userWithoutPassword;
-        });
-
         res.status(200).json({
-            message: 'Informations des utilisateurs récupérées avec succès',
-            user: usersWithoutPassword // Renvoie les utilisateurs sans le mot de passe
+            message: 'Numéro de téléphone récupéré avec succès',
+            userPhone: users
         });
 
     } catch (error) {
