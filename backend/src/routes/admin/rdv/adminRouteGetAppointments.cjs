@@ -3,7 +3,6 @@ import { Appointment } from '../../../models/appointment';
 
 const router = Router();
 
-
 router.get('/all/appointments', async (req, res) => {
     try {
         const appointments = await Appointment.findAll();
