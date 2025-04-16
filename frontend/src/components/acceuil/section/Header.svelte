@@ -646,7 +646,7 @@
       background-repeat: no-repeat;
     }
     .content-h1 {
-      height: 245vh;
+      height: 200vh;
     }
     h1 {
       filter: drop-shadow(5px -5px 2px rgba(0, 0, 0, 0.5)) !important;
@@ -726,13 +726,13 @@
 
 
     .content-h1 {
-      height: 205vh;
+      height: 200vh;
     }
 
     h1 {
       font-size: clamp(2rem, 14vw, 6rem);
       letter-spacing: 10px;
-      top: 45%;
+      top: 20%;
     }
   }
 </style>

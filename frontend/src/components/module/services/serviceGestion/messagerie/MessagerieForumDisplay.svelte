@@ -292,10 +292,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.9em;
+        font-size: clamp(12px, 1.1vw, 16px);
         color: #ffffff;
         background-color: #476788;
         padding: 5px;
+        border-radius: 5px 5px 0 0;
     }
     .checked {
         color: green;
@@ -307,7 +308,7 @@
     .not-checked {
         color: red;
         font-weight: bold;
-        padding: 5px;
+        padding-inline: 5px;
         border-radius: 5px;
         background-color: #bfd7ef;
     }
@@ -317,6 +318,7 @@
         background-color: white;
         padding: 15px;
         color: black;
+        border-radius: 0 0 5px 5px;
     }
 
     .message-reponse {
@@ -347,6 +349,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        margin-top: 10px;
         gap: 10px;
     }
 

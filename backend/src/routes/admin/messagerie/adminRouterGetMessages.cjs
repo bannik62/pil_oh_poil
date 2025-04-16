@@ -63,6 +63,11 @@ router.delete('/delete/message/:id', async (req, res) => {
     console.log('req.paramsmessage', req.params);
     try {
         const message = await Message.findByPk(req.params.id);
+
+        if (!message) {
+            return res.status(404).json({ error: 'Message non trouvé.' });
+        }
+
         await message.destroy();
         res.status(200).json({ message: 'Message supprimé avec succès.' });
     } catch (error) {

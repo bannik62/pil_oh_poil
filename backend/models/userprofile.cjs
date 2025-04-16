@@ -27,7 +27,7 @@ const UserProfile = sequelize.define('UserProfile', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Users',
+            model: 'User',
             key: 'id'
         },
         primaryKey: true,
@@ -37,7 +37,7 @@ const UserProfile = sequelize.define('UserProfile', {
 });
 
 UserProfile.associate = (models) => {
-    UserProfile.belongsTo(models.Users, {
+    UserProfile.belongsTo(models.User, {
         foreignKey: 'userId',
         as: 'user'
     });

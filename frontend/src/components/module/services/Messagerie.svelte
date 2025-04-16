@@ -25,19 +25,19 @@
   let utilisateur = $utilisateurConnecte; // Récupère l'utilisateur connecté
   let userAuthorName = $infosUser.firstName;
   let displayStatusErreur ;
-  console.log(
-    "displayStatusErreur",
-    "divInfoMailmessage",
-    divInfoMail,
-    "userIdAuthor",
-    userIdAuthor,
-    "userAuthor",
-    userAuthor,
-    "userContent",
-    userContent,
-    "utilisateur",
-    utilisateur
-  );
+  // console.log(
+  //   "displayStatusErreur",
+  //   "divInfoMailmessage",
+  //   divInfoMail,
+  //   "userIdAuthor",
+  //   userIdAuthor,
+  //   "userAuthor",
+  //   userAuthor,
+  //   "userContent",
+  //   userContent,
+  //   "utilisateur",
+  //   utilisateur
+  // );
 
   onMount(() => {
     displayStatusErreur;
@@ -88,7 +88,7 @@
 async function addPost(e) {
   e.preventDefault();
     let newPost = new UserClassMessage(userIdAuthor, userAuthorName, userContent);
-    console.log("newPost avant validation", newPost);
+    // console.log("newPost avant validation", newPost);
 
     // Vérifier s'il y a des erreurs avant d'envoyer
     if (newPost.erreur.length > 0) {

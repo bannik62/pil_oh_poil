@@ -95,6 +95,12 @@ body {
   height: max-content;
   background: radial-gradient(ellipse at center, var(--color-primary) 60%, #8A52B3);
   overflow-x: hidden;
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 
 h1 {

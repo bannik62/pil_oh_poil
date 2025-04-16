@@ -61,7 +61,7 @@
             withCredentials: true,
           }
         ),
-        axios.get("http://localhost:3000/users/api/admin/infos/getAllUsers/", {
+        axios.get("http://localhost:3000/users/api/admin/infos/getAllUsers/infos/", {
           withCredentials: true,
         }),
       ]);
@@ -163,7 +163,11 @@
 
     <div class="tri">
       <label for="sortOrder">Trier par date :</label>
-      <select id="sortOrder" on:blur={(event) => sortOrder = event.target.value} bind:value={sortOrder}>
+      <select
+        id="sortOrder"
+        on:blur={(event) => (sortOrder = event.target.value)}
+        bind:value={sortOrder}
+      >
         <option value="desc">Plus récents d'abord</option>
         <option value="asc">Plus anciens d'abord</option>
       </select>
@@ -171,19 +175,19 @@
     <!-- Champ de recherche -->
     <div class="search-container">
       <label for="searchQuery">Rechercher:</label>
-    <input
-      type="text"
-      placeholder="Rechercher par nom ou contenu"
-      bind:value={searchQuery}
-      class="search-input"
-      minlength="2"
-    />
+      <input
+        type="text"
+        placeholder="Rechercher par nom ou contenu"
+        bind:value={searchQuery}
+        class="search-input"
+        minlength="2"
+      />
     </div>
     {#each sortedMessages() as message}
       {console.log("messageread", message)}
       <div class="message-user">
         <div class="name">
-          Id: {message.userId} | Nom: {message.fullName}
+         <span> Id: {message.userId} | Nom: {message.fullName}</span>
           <span class="read-close-button-container">
             {#if message.checked === true}
               <span class="message-checked">
@@ -191,7 +195,7 @@
               </span>
             {:else}
               <span class="message-not-checked">
-                <p>Message non lu</p>
+                <p>non lu</p>
               </span>
             {/if}
             <span class="read">
@@ -200,7 +204,7 @@
               </button>
             </span>
             <span class="close-button-container">
-              <button class="close" on:click={() => deleteMessage(message) }
+              <button class="close" on:click={() => deleteMessage(message)}
                 >X</button
               >
             </span>
@@ -208,8 +212,11 @@
         </div>
 
         <div class="content">
-          <p style="font-weight: bold;">Message : </p>
-          <p>{message.fullName} :</p> <p style="color: green;">{message.content}</p>
+          <p style="font-weight: bold;">Message :</p>
+          <div class="divMessage" >
+            <p>{message.fullName} :</p>
+            <p style="color: green;">{message.content}</p>
+          </div>
         </div>
         {#if message.response !== null}
           <p style="font-weight: bold;">Reponse :</p>
@@ -261,8 +268,8 @@
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid white;
-    box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474) ;
-    filter: drop-shadow(0 0 15px rgb(120, 118, 118) );
+    box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474);
+    filter: drop-shadow(0 0 15px rgb(120, 118, 118));
   }
   .tri {
     display: flex;
@@ -275,8 +282,8 @@
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid white;
-    box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474) ;
-    filter: drop-shadow(0 0 15px rgb(120, 118, 118) );
+    box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474);
+    filter: drop-shadow(0 0 15px rgb(120, 118, 118));
   }
   .contain-forum {
     display: flex;
@@ -315,8 +322,8 @@
     border-radius: 5px;
     margin-top: 10px;
     border: 1px solid white;
-    box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474) ;
-    filter: drop-shadow(0 0 15px rgb(120, 118, 118) );
+    box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474);
+    filter: drop-shadow(0 0 15px rgb(120, 118, 118));
   }
   .count-messages {
     font-size: 1rem;
@@ -332,7 +339,7 @@
     font-weight: bold;
     padding: 10px;
     border-radius: 5px;
-  } 
+  }
   .message-checked {
     display: flex;
     justify-content: center;
@@ -350,9 +357,15 @@
   }
   .message-not-checked {
     background-color: #f1f1f1;
-    color: black;
+    color: rgb(207, 91, 91);
     border-radius: 5px;
     padding: 5px;
+    height: 25px;
+  }
+  .message-not-checked p {
+    all: unset;
+    font-size: 12px;
+    font-weight: bold;
   }
   .content {
     width: 100%;
@@ -360,12 +373,18 @@
     max-height: auto;
     font-size: 1rem;
     font-weight: bold;
-    background-color: #f1f1f1;
+    /* background-color: #f1f1f1; */
     padding: 5px;
+  }
+  .divMessage {
+    width: 100%;
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
   }
   .name {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     font-size: 12px;
     font-weight: bold;
@@ -377,11 +396,13 @@
     margin-bottom: 5px;
   }
   .read-close-button-container {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    gap: 10px;
+    padding-inline: 5px;
   }
+
   .read-button {
     background-color: #5565f5;
     color: rgb(255, 255, 255);
@@ -420,7 +441,7 @@
   .message-user::-webkit-scrollbar {
     display: none;
   }
-  
+
   .reponse {
     display: flex;
     flex-direction: row;
