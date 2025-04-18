@@ -14,6 +14,7 @@ const userRouteAppointments = require('./routes/users/userRouteAppointments.cjs'
 const userRouteMessages = require('./routes/users/messagerie/userRoutesMessages.cjs');
 const userRouteGetInfosAdmin = require('./routes/admin/adminRouteGetInfo.cjs');
 const userRouteGetMessagesAdmin = require('./routes/admin/messagerie/adminRouterGetMessages.cjs');
+const userRouteGetAppointmentsAdmin = require('./routes/admin/rdv/adminRouteGetAppointments.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
 const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
@@ -103,6 +104,12 @@ app.use('/users/api/admin/infos/', userRouteGetInfosAdmin);
 
 // ✅ Route pour récupérer les messages de l'utilisateur admin
 app.use('/users/api/admin/messages/',verifyCookieToken, userRouteGetMessagesAdmin);
+
+// ✅ Route pour récupérer tous les rendez-vous
+app.use('/users/api/admin/rdv/', userRouteGetAppointmentsAdmin);
+
+// ✅ Route pour supprimer un rendez-vous
+app.use('/users/api/admin/rdvuser/', userRouteGetAppointmentsAdmin);
 
 //                                      **********************
 //                                      *                    *
