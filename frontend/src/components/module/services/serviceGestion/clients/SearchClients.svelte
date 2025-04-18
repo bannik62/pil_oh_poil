@@ -4,7 +4,6 @@
     import { writable } from "svelte/store";
     import { fade } from "svelte/transition";
     import { users, numberOfUsers, searchQuery, searchType, erreurMessage } from "../../../../../stores/gestionUtilisateur";
-
     let statusResponse = writable(null);
     console.log("userssearchsearch", $users);
 

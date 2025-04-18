@@ -36,15 +36,15 @@ const
 
 User.associate = (models) => {
     User.hasOne(models.UserProfile, {
-        foreignKey: 'id',
+        foreignKey: 'userId',
         as: 'userProfile'
     });
     User.hasMany(models.Appointment, {
-        foreignKey: 'id',
+        foreignKey: 'userId',
         as: 'appointments'
     });
     User.hasMany(models.Message, {
-        foreignKey: 'id',
+        foreignKey: 'userId',
         as: 'messages'
     });
 };

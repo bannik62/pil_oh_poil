@@ -54,6 +54,9 @@
           case "top":
             cube.style.transform = "rotateX(-90deg)";
             break;
+          case "back":
+            cube.style.transform = "rotateY(-180deg)";
+            break;
           default:
             cube.style.transform = "rotateY(0deg)";
             break;
@@ -135,6 +138,10 @@
           case "top":
           pageActuelle.set('top');
           return "top";
+
+          case "back":
+          pageActuelle.set('back');
+          return "back";
       
           default:
           return "front";
@@ -435,6 +442,15 @@
         {/if}
       </div>
     </div>
+   
+    <div class="cube-face cube-back advance-parametre">
+      <div class="back">
+        <h2>retour</h2>
+        <p>a la gestion</p>
+        <button on:click={() => pageActuelle.set("bottom")}>back</button>
+      </div>
+    </div>
+ 
   </div>
 </header>
 
@@ -476,6 +492,9 @@
   .cube-bottom {
     transform: rotateX(-90deg) translateZ(50vw);
   }
+  .cube-back {
+    transform: rotateY(-180deg) translateZ(50vw);
+  }
 
   .cube-right,
   .cube-left {
@@ -490,7 +509,11 @@
     align-items: center;
 
   }
-  
+  .cube-back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .login-container {
     text-align: center;
     display: flex;

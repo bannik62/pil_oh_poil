@@ -5,11 +5,22 @@
     import ClientDisplay from "./clients/ClientDisplay.svelte";
     import MessagerieForum from "./messagerie/MessagerieForum.svelte";
     import MessagerieForumDisplay from "./messagerie/MessagerieForumDisplay.svelte";
-    import Rdv from "./rdvAndGestion/Rdv.svelte";
+    import Rdv from "./rdvAndGestion/AllRdv.svelte";
+    import DisplayRdv from "./rdvAndGestion/DisplayRdv.svelte";
+    import {faceActuelle} from "../../../../stores/cube";
     // import SearchGestion from "./
     import engrenage from "../../../../assets/img/engrenage.png";
-    import { messagesUsers, readMessageUsers } from "../../../../stores/gestionMessagerie"
-    import { users, numberOfUsers, searchQuery, searchType, erreurMessage } from "../../../../stores/gestionUtilisateur";
+    import {
+        messagesUsers,
+        readMessageUsers,
+    } from "../../../../stores/gestionMessagerie";
+    import {
+        users,
+        numberOfUsers,
+        searchQuery,
+        searchType,
+        erreurMessage,
+    } from "../../../../stores/gestionUtilisateur";
     $users;
     $numberOfUsers;
     $searchQuery;
@@ -23,7 +34,7 @@
     let displayContentMenu;
     let displayInfo;
     let reponseExpandable = writable(false);
-  
+
     onMount(() => {
         displayMenu;
         displayMenu.style.opacity = "1";
@@ -35,19 +46,19 @@
     function moveThis(item, index) {
         item.style.opacity = "1";
 
-    requestAnimationFrame(() => {
-        // item.style.transition = "transform 0.9s ease-in-out";
-        item.style.display = "flex";
-        item.style.opacity = "1";
-        if (item.classList.contains("clients")) {
-            item.style.transform = "translate(0%, -100%)";
-        } else if (item.classList.contains("messages")) {
-            item.style.transform = "translate(50%, 0%)";
-        } else if (item.classList.contains("gestion")) {
-            item.style.transform = "translate(15%, 102%)";
-        }
-    });
-}
+        requestAnimationFrame(() => {
+            // item.style.transition = "transform 0.9s ease-in-out";
+            item.style.display = "flex";
+            item.style.opacity = "1";
+            if (item.classList.contains("clients")) {
+                item.style.transform = "translate(0%, -100%)";
+            } else if (item.classList.contains("messages")) {
+                item.style.transform = "translate(50%, 0%)";
+            } else if (item.classList.contains("gestion")) {
+                item.style.transform = "translate(15%, 102%)";
+            }
+        });
+    }
 
     function moveThisClose(item, index) {
         if (item.classList.contains("clients")) {
@@ -58,11 +69,10 @@
             item.classList.remove(items[index]);
         }
         if (item.classList.contains("messages")) {
-            item.style.transform = "translate(-150%, -0%)";   
+            item.style.transform = "translate(-150%, -0%)";
             // item.style.opacity = "0";
             item.style.transition = "all 0.9s ease-in-out";
-            setTimeout(() => {
-            }, 500);
+            setTimeout(() => {}, 500);
             item.classList.remove(items[index]);
         }
         if (item.classList.contains("gestion")) {
@@ -86,15 +96,13 @@
                 // item.style.display = "flex";
                 item.style.transition = "all 0.9s ease-in-out";
                 item.classList.add(items[index]);
-                
-                
-                menuExpanded = true;
 
+                menuExpanded = true;
             });
         });
     }
 
-    function collapseCircle() {            
+    function collapseCircle() {
         circle.style.translate = "0%";
         // circle.style.rotate = "25deg";
         circle.style.zIndex = "10";
@@ -103,47 +111,44 @@
                 item.style.opacity = "0";
                 item.style.zIndex = "-10";
                 item.style.transition = "all 0.9s ease-in-out";
-                
+
                 setTimeout(() => {
-                  ;  item.style.display = "none";
+                    item.style.display = "none";
                 }, 500);
-                
+
                 moveThisClose(item, index);
                 menuExpanded = false;
             });
         });
     }
     async function infoClientsRegistry(item) {
-    console.log("displayMenu", displayMenu);
-    
-    if (displayMenu) {
-        requestAnimationFrame(() => {
-            displayMenu.style.display = "block";
-            displayMenu.style.opacity = "1";
-        });
+        console.log("displayMenu", displayMenu);
 
-        console.log("displayMenublok", displayMenu);
+        if (displayMenu) {
+            requestAnimationFrame(() => {
+                displayMenu.style.display = "block";
+                displayMenu.style.opacity = "1";
+            });
 
-    }
+            console.log("displayMenublok", displayMenu);
+        }
     }
 
     function message() {
- 
         if (displayMenu) {
             displayMenu.innerHTML = " message";
         }
     }
 
-
     function btnCircleItem(e, item) {
         console.log("item", item);
         e.stopPropagation();
         if (item === "clients") {
-            e.preventDefault()
-            console.log("Clients clicked");  
+            e.preventDefault();
+            console.log("Clients clicked");
             displayMenu = "";
             displayContentMenu = "clients";
-            infoClientsRegistry(); 
+            infoClientsRegistry();
         } else if (item === "messages") {
             console.log("Messages clicked");
             console.log("item", item);
@@ -162,18 +167,28 @@
 
 <main>
     <div class="div-left matrice">
-        <div class="circle-menu">
-            <div type="button"
-                bind:this={circle}
-                on:click={() =>menuExpanded ? collapseCircle() : expandCircle()}
-                class="circle">
+        {#if displayContentMenu === "gestion"}
+            <div class="gestion-parametre">
+            <p>Paramètre Avancé</p>
+            <button class="btn-parametre" on:click={() => faceActuelle.set("back")}> Go <span class="arrow-right">➡️</span> </button>
+        </div>
+        {/if}
 
+        <div class="circle-menu">
+            <div
+                type="button"
+                bind:this={circle}
+                on:click={() =>
+                    menuExpanded ? collapseCircle() : expandCircle()}
+                class="circle"
+            >
                 {#each items as item, index}
                     <button
                         role="button"
                         bind:this={circleItems[index]}
                         class="circle-item"
-                        on:click={(e) => btnCircleItem(e, item)}>
+                        on:click={(e) => btnCircleItem(e, item)}
+                    >
                         <p>{item}</p>
                     </button>
                 {/each}
@@ -182,56 +197,54 @@
                     <style>
                         .clients {
                             background-image: url("../../../../assets/img/engrenage.png");
-                            background-size:200%;
+                            background-size: 200%;
                             background-position: center;
                             background-clip: content-box;
                         }
-                      
+
                         .messages {
                             background-image: url("../../../../assets/img/engrenage.png");
-                            background-size:200%;
+                            background-size: 200%;
                             background-position: center;
                             background-clip: content-box;
                         }
                         .gestion {
                             background-image: url("../../../../assets/img/engrenage.png");
-                            background-size:200%;
+                            background-size: 200%;
                             background-position: center;
                             background-clip: content-box;
                         }
                     </style>
                 {/if}
-
             </div>
         </div>
     </div>
     <div class="div-center matrice">
         <!-- <p>displayMenu</p> -->
-        <div bind:this={displayMenu} class="display-menu" >
+        <div bind:this={displayMenu} class="display-menu">
             <!-- {console.log("btn", circleItems.classList === "clients")} -->
             {#if displayContentMenu === "clients"}
-                <SearchClients    />
+                <SearchClients />
             {:else if displayContentMenu === "messages"}
-                <MessagerieForum   bind:reponseExpandable />
+                <MessagerieForum bind:reponseExpandable />
             {:else if displayContentMenu === "gestion"}
                 <Rdv />
-                <!-- <SearchGestion /> -->
             {/if}
-           
         </div>
     </div>
     <div class="div-right matrice">
-        <div bind:this={displayInfo} class="display-info" >
-        {#if displayContentMenu === "gestion"}
-            <p>gestion</p>
-        {/if}
-        {#if displayContentMenu === "messages"}
-            <MessagerieForumDisplay  />
-        {/if}
-        {#if displayContentMenu === "clients"}
-            <ClientDisplay  />
-        {/if}
-    </div>
+        <div bind:this={displayInfo} class="display-info">
+            {#if displayContentMenu === "gestion"}
+                <DisplayRdv />
+                <p>gestion</p>
+            {/if}
+            {#if displayContentMenu === "messages"}
+                <MessagerieForumDisplay />
+            {/if}
+            {#if displayContentMenu === "clients"}
+                <ClientDisplay />
+            {/if}
+        </div>
     </div>
 </main>
 
@@ -242,6 +255,7 @@
         box-sizing: border-box;
     }
     main {
+        position: relative;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -250,7 +264,35 @@
         width: 100%;
         height: 100%;
         /* overflow-y: scroll; */
-        
+    }
+    .gestion-parametre {
+        position: absolute;
+        top: -50px;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .gestion-parametre p {
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+    }
+    .arrow-right {
+        font-size: 1rem;
+    }
+    .gestion-parametre button {
+        align-self: flex-start;
+        background-color: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        background-color: orange;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+        width: 100%;
     }
     .matrice {
         display: flex;
@@ -259,23 +301,23 @@
         max-height: 500px;
         overflow: hidden;
         /* border: 1px solid white; */
-        min-width:190px;
+        min-width: 190px;
     }
-.display-info {
-    width: 100%;
-    height: 100%;
-    /* overflow-y: scroll; */
-    /* border: 1px solid white; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-    .div-left { 
-        flex: 1; 
+    .display-info {
+        width: 100%;
+        height: 100%;
+        /* overflow-y: scroll; */
         /* border: 1px solid white; */
-     } 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .div-left {
+        flex: 1;
+        /* border: 1px solid white; */
+    }
     .circle-menu {
         position: relative;
         width: 100%;
@@ -292,12 +334,12 @@
         height: 45%;
         /* background-color: grey; */
         background-image: url("../../../../assets/img/engrenage.png");
-        background-size:200%;
+        background-size: 200%;
         background-position: center;
         background-clip: content-box;
         border-radius: 50%;
         transition: all 0.9s ease-in-out; /* Transition sur tout */
-   
+
         z-index: 6;
     }
     /* .circle img {
@@ -308,16 +350,14 @@
         height: 100%;
     } */
     .circle:hover {
-        cursor: pointer; 
-        filter: drop-shadow(
-            0 0 10px rgba(223, 215, 215, 0.5)
-        );
+        cursor: pointer;
+        filter: drop-shadow(0 0 10px rgba(223, 215, 215, 0.5));
         /* box-shadow: 0 0 10px 0 rgba(234, 233, 233, 0.5);  */
     }
     button.circle-item {
         position: relative;
         background-image: url("../../../../assets/img/engrenage.png");
-        background-size:200%,200%;
+        background-size: 200%, 200%;
         background-position: center;
         background-color: transparent;
         /* background-clip: content-box; */
@@ -336,7 +376,6 @@
         display: none;
         z-index: -5;
         color: white;
-
     }
     .circle p {
         position: absolute;
@@ -350,19 +389,30 @@
         text-align: center;
         color: white;
         letter-spacing: 1px;
-        
     }
-   
 
     .div-center {
-        flex: 0;
-        min-width: 370px;
-        max-width: 400px;
+        flex: 1;
+        /* min-width: 370px;
+        max-width: 400px; */
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 10px;
         background-color: transparent;
+        border-radius: 10px;
+    }
+    .display-menu {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        /* overflow-y: auto; */
+        padding: 10px;
+        border-radius: 10px;
     }
     /* .div-center.active {
         display: block;
@@ -371,7 +421,5 @@
     } */
     .div-right {
         flex: 1;
-        
-    
     }
 </style>

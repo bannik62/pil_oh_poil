@@ -147,6 +147,27 @@ router.get('/getUserByPhone/:phone', async (req, res) => {
     }
 });
 
+router.get('/getUserById/:id',verifyCookieToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await UserProfile.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Utilisateur non trouvé' });
+        }
+
+        res.status(200).json({
+            message: 'Utilisateur récupéré avec succès',
+            user
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l utilisateur pour le rdv:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 router.delete('/deleteUser/:profileId', verifyCookieToken, async (req, res) => {
     try {
         const { profileId } = req.params;
