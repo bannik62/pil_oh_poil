@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../../models/user.cjs');
+const { User } = require('../../../../models/user.cjs');
 
 // Route pour vérifier si l'email de l'utilisateur est validé
 router.get('/:userId', async (req, res) => {

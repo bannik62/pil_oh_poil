@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../../models/user.cjs');
+const { User } = require('../../../../models/user.cjs');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
-const config = require('../../../config/config.json');
+const config = require('../../../../config/config.json');
 const dotenv = require('dotenv');
 
 dotenv.config();

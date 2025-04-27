@@ -1,5 +1,5 @@
 const express = require('express');
-const { Appointment, User } = require('../../../models/appointment.cjs'); // Assure-toi que le modèle est bien importé
+const { Appointment, User } = require('../../../../models/appointment.cjs'); // Assure-toi que le modèle est bien importé
 
 const router = express.Router();
 

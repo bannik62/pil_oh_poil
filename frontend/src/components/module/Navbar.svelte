@@ -4,6 +4,7 @@
     import { get } from "svelte/store";
     import { faceActuelle } from "../../stores/cube";
     import {utilisateurConnecte, estAuthentifie, infosUser, isValid, displayService, appointments} from '../../stores/sessionStore.js';
+    import { navbarState } from "../../stores/navigation";
     let navbarElement;
     let isOpen = false;
 
@@ -35,6 +36,7 @@ export function logout() {
         isValid.set(false);
         displayService.set("messagerie");
         appointments.set([]);
+        navbarState.set({ navbarIsOpen: false });
 
 
     })
@@ -155,6 +157,7 @@ export function logout() {
             0.374
         ); 
         backdrop-filter: blur(5px);
+        color:white
     }
     .navbar:hover {
         background: var(--gradient-navbar); 
@@ -167,7 +170,7 @@ export function logout() {
         align-items: center;
         flex-direction: column;
         gap: 10px;
-        color: rgb(47, 46, 46);
+        color: white;
         font-size: 1.2rem;
         font-weight: bold;
         font-family: 'Playfair Display', sans-serif;
@@ -178,7 +181,7 @@ export function logout() {
     .navbar button:hover {
         filter: drop-shadow(10px -10px 5px rgba(110, 241, 110, 0.5));
         text-decoration: underline;
-        color: white;
+        color: var(--color-admin-secondary);
         transition: all 0.3s ease;
     }
     .nav-link {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { UserProfile } = require('../../../models/userprofile.cjs'); // Modèle Sequelize User
+const { UserProfile } = require('../../../../models/userprofile.cjs'); // Modèle Sequelize User
 
 // Route pour mettre à jour un utilisateur
 router.patch('/patch/:userId', async (req, res) => {

@@ -87,7 +87,7 @@
     h2 {
         position: absolute;
         top: -45%;
-        left: 50%;
+        left: 50% ;
         translate: calc(-50%);
         margin-bottom: 1rem;
         color: var(--color-secondary);
@@ -95,7 +95,7 @@
         color: #fff;
         font-size: clamp(3rem, 14vw, 10rem);
         filter: drop-shadow(10px -8px 2px rgba(0, 0, 0, 0.5));
-        z-index: 1;
+        z-index: 11;
     }
 
     p {

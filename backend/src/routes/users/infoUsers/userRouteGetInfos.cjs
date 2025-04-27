@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { UserProfile } = require('../../../models/userprofile.cjs');
+const { UserProfile } = require('../../../../models/userprofile.cjs');
 
 // Route pour récupérer les informations de profil de l'utilisateur
 router.get('/get/:userId', async (req, res) => {

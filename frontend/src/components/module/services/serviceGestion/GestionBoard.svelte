@@ -7,7 +7,9 @@
     import MessagerieForumDisplay from "./messagerie/MessagerieForumDisplay.svelte";
     import Rdv from "./rdvAndGestion/AllRdv.svelte";
     import DisplayRdv from "./rdvAndGestion/DisplayRdv.svelte";
-    import {faceActuelle} from "../../../../stores/cube";
+    import { faceActuelle } from "../../../../stores/cube";
+    import { fade } from "svelte/transition";
+    import svelteLogo from "../../../../assets/img/svelte.svg";
     // import SearchGestion from "./
     import engrenage from "../../../../assets/img/engrenage.png";
     import {
@@ -169,9 +171,14 @@
     <div class="div-left matrice">
         {#if displayContentMenu === "gestion"}
             <div class="gestion-parametre">
-            <p>Paramètre Avancé</p>
-            <button class="btn-parametre" on:click={() => faceActuelle.set("back")}> Go <span class="arrow-right">➡️</span> </button>
-        </div>
+                <p>Paramètre Avancé</p>
+                <button
+                    class="btn-parametre"
+                    on:click={() => faceActuelle.set("back")}
+                >
+                    Go <span class="arrow-right">➡️</span>
+                </button>
+            </div>
         {/if}
 
         <div class="circle-menu">
@@ -220,20 +227,38 @@
         </div>
     </div>
     <div class="div-center matrice">
-        <!-- <p>displayMenu</p> -->
         <div bind:this={displayMenu} class="display-menu">
-            <!-- {console.log("btn", circleItems.classList === "clients")} -->
-            {#if displayContentMenu === "clients"}
-                <SearchClients />
-            {:else if displayContentMenu === "messages"}
-                <MessagerieForum bind:reponseExpandable />
-            {:else if displayContentMenu === "gestion"}
-                <Rdv />
+            {console.log("displayContentMenu", displayContentMenu)}
+            {#if displayContentMenu === undefined}
+            <div class="wrapper-rotate">
+                <div
+                    class="welcome-admin"
+                    in:fade={{ duration: 3000, delay: 300 }}
+                    out:fade={{ duration: 800 }}
+                >
+                    <p>Administration</p>
+                </div>
+            </div>
+            {:else}
+                <!-- {console.log("btn", circleItems.classList === "clients")} -->
+                {#if displayContentMenu === "clients"}
+                    <SearchClients />
+                {:else if displayContentMenu === "messages"}
+                    <MessagerieForum bind:reponseExpandable />
+                {:else if displayContentMenu === "gestion"}
+                    <Rdv />
+                {/if}
             {/if}
         </div>
     </div>
     <div class="div-right matrice">
         <div bind:this={displayInfo} class="display-info">
+            {#if displayContentMenu === undefined}
+                <img src={svelteLogo} alt="svelte" class="svelte-logo" />
+                <p class="powered-by-p">
+                    Powered by <span class="powered-by">Svelte</span>
+                </p>
+            {/if}
             {#if displayContentMenu === "gestion"}
                 <DisplayRdv />
                 <p>gestion</p>
@@ -293,6 +318,7 @@
         border-radius: 10px;
         margin-top: 10px;
         width: 100%;
+        z-index: 10;
     }
     .matrice {
         display: flex;
@@ -301,7 +327,7 @@
         max-height: 500px;
         overflow: hidden;
         /* border: 1px solid white; */
-        min-width: 190px;
+        /* min-width: 190px; */
     }
     .display-info {
         width: 100%;
@@ -398,9 +424,197 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 10px;
+        padding: 15px;
         background-color: transparent;
         border-radius: 10px;
+    }
+    .welcome-admin {
+        all: unset;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        background-color: #4289d170;
+        border: 3px solid rgb(234, 170, 98);
+        outline: 5px solid rgba(83, 78, 78, 0.583);
+        padding: 10px;
+        border-radius: 50%;
+        box-shadow: 0 0 30px 0 rgba(187, 22, 22, 0.726);
+        animation: blink 10s infinite;
+    }
+    @keyframes blink {
+        0% {
+            box-shadow: 0 0 1px 0 rgba(187, 22, 22, 0.726);
+        }
+        10% {
+            box-shadow: 0 0 15px 0 rgba(240, 3, 3, 0.726) inset;
+        }
+        20% {
+            box-shadow: 0 0 30px 0 rgba(240, 3, 3, 0.726) inset;
+        }
+        40% {
+            box-shadow: 0 0 30px 0 rgba(187, 187, 22, 0.726) inset;
+        }
+        50% {
+            box-shadow: 0 0 30px 0 rgba(240, 3, 3, 0.726) inset;
+        }
+        70% {
+            box-shadow: 0 0 15px 0 rgba(240, 3, 3, 0.726) inset;
+        }
+        90% {
+            box-shadow: 0 0 15px 0 rgba(240, 187, 22, 0.726) inset;
+        }
+        100% {
+            box-shadow: 0 0 15px 0 rgba(187, 22, 22, 0.726) inset;
+        }
+    }
+.wrapper-rotate{
+    position: relative;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    border-bottom: 1px solid yellow;
+    border-right: 1px solid rgba(255, 0, 0, 0.674);
+    box-shadow: 0 0 50px 0 rgba(234, 168, 168, 0.562) inset;
+    animation:scale 2s linear infinite ;
+    
+}
+.wrapper-rotate::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-bottom: 3px solid rgba(255, 166, 0, 0.562);
+    border-top: 3px solid rgba(255, 166, 0, 0.562);
+    box-shadow: 0 0 20px 0 rgba(226, 13, 13, 0.562) inset;
+    animation:scale 2s linear infinite ;
+    border-radius: 50%;
+    animation:rotateWrapper 1s linear infinite ;
+}
+@keyframes rotateWrapper{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(-180deg);
+        
+    }
+    100%{
+        transform: rotate(-360deg);
+    }
+}
+@keyframes scale{
+    0%{
+        transform: scale(1.03);
+    }
+    50%{
+        transform: scale(1.02);
+    }
+    100%{
+        transform: scale(1.03);
+    }
+}
+    .welcome-admin p {
+        position: absolute;
+    top: 35%;
+    font-size: 1.6rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, yellow, red);
+    background-size: 100% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    z-index: 10;
+}
+
+
+    .welcome-admin::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        left: 0;
+        width: 100%;
+        border-bottom: 5px solid rgb(209, 216, 79);
+        height: 99%;
+        border-radius: 50%;
+        animation: rotate 0.5s infinite;
+        filter: drop-shadow(30px 30px 10px rgba(233, 233, 7, 0.982));
+    }
+    .welcome-admin::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-bottom: 5px solid rgb(199, 102, 102);
+        height: 100%;
+        border-radius: 50%;
+        animation: rotate2 0.5s infinite;
+        filter: drop-shadow(30px 30px 10px rgba(199, 102, 102, 0.982));
+    }
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+            width: 0%;
+        }
+        50% {
+            transform: rotate(-180deg);
+            scale: 1.1.1;
+        }
+        70% {
+            scale: 1.1.0;
+        }
+        100% {
+            transform: rotate(360deg);
+            scale: -1.1.0;
+            width: 100%;
+        }
+    }
+    @keyframes rotate2 {
+        0% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(-180deg);
+            scale: 1;
+        }
+        100% {
+            transform: rotate(-360deg);
+            scale: 1.1.0;
+        }
+    }
+    .svelte-logo {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: 50%;
+        mix-blend-mode:hard-light;
+        filter: drop-shadow(0 0 30px rgb(252, 169, 54));
+    }
+    .powered-by-p {
+        font-size: clamp(1rem, 2vw, 2rem);
+        font-weight: bold;
+        color: white;
+        display: flex;
+        gap: 10px;
+        align-self: center;
+        margin-top: 85%;
+    }
+    .powered-by {
+        color: rgb(240, 187, 22);
+        font-weight: bold;
     }
     .display-menu {
         position: relative;
@@ -420,6 +634,19 @@
 
     } */
     .div-right {
+        position: relative;
         flex: 1;
+    }
+    @media (max-width: 375px) {
+        main{
+            width: 100%;
+            height: 100%;
+        }
+        .div-center {
+            width: 100%;
+            height: 100%;
+            overflow: none;
+            outline: 1px solid white;
+        }
     }
 </style>

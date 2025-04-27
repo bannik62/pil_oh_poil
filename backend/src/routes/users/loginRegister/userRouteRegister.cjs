@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const { User } = require('../../../models/user.cjs');
+const { User } = require('../../../../models/user.cjs');
 
 console.log('user chargé !!! ', User);
 
-const { validationRegister } = require('../../validations/validationRegister.cjs');
+const { validationRegister } = require('../../../validations/validationRegister.cjs');
 
 router.post('/register',  async (req, res) => {
     console.log('Début de la requête /register');

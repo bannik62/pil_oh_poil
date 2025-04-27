@@ -30,7 +30,7 @@
     width: 100vw;
     height: 100vh;
     background-color: rgb(220, 213, 213);
-    background-image: url(../../../assets/img/marbrevert.jpg);
+    background-image: url(../../../assets/img/marbre.png);
     background-size: cover;
     background-position:20% 50%;
     background-attachment: fixed;
