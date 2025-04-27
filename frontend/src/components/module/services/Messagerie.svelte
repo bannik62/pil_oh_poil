@@ -22,6 +22,7 @@
   let userAuthor = $author;
   let userContent = $content;
   let userIdAuthor = $utilisateurConnecte.id;
+  console.log("🚀 ~ userIdAuthor:", userIdAuthor)
   let utilisateur = $utilisateurConnecte; // Récupère l'utilisateur connecté
   let userAuthorName = $infosUser.firstName;
   let displayStatusErreur ;
@@ -164,7 +165,7 @@ async function addPost(e) {
         {#if post.checked === true}
           <span class="checked">✔️</span>
         {:else}
-          <span class="not-checked">❌</span>
+          <span class="not-checked">❌ <small>En attente</small></span>
         {/if}
       </div>
       {#if post.response !== null}

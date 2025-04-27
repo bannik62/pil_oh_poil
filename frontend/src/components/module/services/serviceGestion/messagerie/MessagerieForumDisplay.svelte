@@ -294,7 +294,7 @@
         align-items: center;
         font-size: clamp(12px, 1.1vw, 16px);
         color: #ffffff;
-        background-color: #476788;
+        background-color: var(--color-admin);
         padding: 5px;
         border-radius: 5px 5px 0 0;
     }
@@ -310,11 +310,12 @@
         font-weight: bold;
         padding-inline: 5px;
         border-radius: 5px;
-        background-color: #bfd7ef;
+        font-size: 11px;
+        background-color: var(--color-admin-secondary);
     }
     .message-content {
         margin-top: 5px;
-        font-size: 1em;
+        font-size: 1rem;
         background-color: white;
         padding: 15px;
         color: black;

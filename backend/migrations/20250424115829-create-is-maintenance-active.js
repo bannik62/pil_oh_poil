@@ -2,29 +2,17 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Messages', {
+        await queryInterface.createTable('isMaintenanceActives', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            userId: {
-                type: Sequelize.INTEGER,
+            isActive: {
+                type: Sequelize.BOOLEAN,
                 allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'id'
-                }
-            },
-            content: {
-                type: Sequelize.STRING
-            },
-            response: {
-                type: Sequelize.STRING
-            },
-            checked: {
-                type: Sequelize.BOOLEAN
+                defaultValue: false
             },
             createdAt: {
                 allowNull: false,
@@ -37,6 +25,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Messages');
+        await queryInterface.dropTable('isMaintenanceActives');
     }
 };

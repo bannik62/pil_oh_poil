@@ -5,26 +5,30 @@ const dotenv = require('dotenv');
 const csrf = require('csurf');
 
 // routes user
-const userRouteRegister = require('./routes/users/userRouteRegister.cjs');
-const userRouteLogin = require('./routes/users/userRouteLogin.cjs');
-const userRoutePostInfos = require('./routes/users/userRoutePostInfos.cjs');
-const userRouteGetInfos = require('./routes/users/userRouteGetInfos.cjs');
-const userRouteUpdateInfos = require('./routes/users/userRouteUpdateInfos.cjs');
-const userRouteAppointments = require('./routes/users/userRouteAppointments.cjs');
+const userRouteRegister = require('./routes/users/loginRegister/userRouteRegister.cjs');
+const userRouteLogin = require('./routes/users/loginRegister/userRouteLogin.cjs');
+const userRoutePostInfos = require('./routes/users/infoUsers/userRoutePostInfos.cjs');
+const userRouteGetInfos = require('./routes/users/infoUsers/userRouteGetInfos.cjs');
+const userRouteUpdateInfos = require('./routes/users/infoUsers/userRouteUpdateInfos.cjs');
+const userRouteAppointments = require('./routes/users/appointments/userRouteAppointments.cjs');
 const userRouteMessages = require('./routes/users/messagerie/userRoutesMessages.cjs');
-const userRouteGetInfosAdmin = require('./routes/admin/adminRouteGetInfo.cjs');
+const userRouteGetInfosAdmin = require('./routes/admin/search/adminRouteGetInfo.cjs');
 const userRouteGetMessagesAdmin = require('./routes/admin/messagerie/adminRouterGetMessages.cjs');
 const userRouteGetAppointmentsAdmin = require('./routes/admin/rdv/adminRouteGetAppointments.cjs');
 // routes user email
 const { verifyEmailMiddleware } = require('./middleware/email/sendVerifValidityMail.cjs');
-const userRouteMailValidate = require('./routes/users/userRouteMailValidate.cjs');
-const userRouteEmailIsValid = require('./routes/users/userRouteEmailIsValid.cjs');
+const userRouteMailValidate = require('./routes/users/general/userRouteMailValidate.cjs');
+const userRouteEmailIsValid = require('./routes/users/general/userRouteEmailIsValid.cjs');
 // session
 const {verifyCookieToken} = require('./middleware/verifyCookieToken.cjs');
 // csrf
 const { csrfProtection, csrfErrorHandler } = require('./middleware/csrfMiddleware.cjs');
 // email
 // const verifyEmailTokenForValidity = require('./middleware/email/verifyemailTokenForValidity.cjs');
+
+//system
+const userRouteGetDiskUsageAdmin = require('./routes/admin/parametre/adminRouterAdvanced.cjs');
+const userRouteMaintenanceStatus = require('./routes/system/SystemRouteMaintenance.cjs');
 
 dotenv.config();
 
@@ -110,6 +114,15 @@ app.use('/users/api/admin/rdv/', userRouteGetAppointmentsAdmin);
 
 // ✅ Route pour supprimer un rendez-vous
 app.use('/users/api/admin/rdvuser/', userRouteGetAppointmentsAdmin);
+
+// ✅ Route pour récupérer les informations système
+app.use('/users/api/admin/advanced-parameter/disk-usage', userRouteGetDiskUsageAdmin);
+
+// ✅ Route pour vérifier l'état de la maintenance
+app.use('/api/system/', userRouteMaintenanceStatus);
+
+// ✅ Route pour vérifier l'état de la maintenance
+app.use('/api/system/', userRouteMaintenanceStatus);
 
 //                                      **********************
 //                                      *                    *

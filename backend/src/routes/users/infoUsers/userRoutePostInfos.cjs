@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { UserProfile } = require('../../../models/userprofile.cjs');
-const { User } = require('../../../models/user.cjs');
+const { UserProfile } = require('../../../../models/userprofile.cjs');
+const { User } = require('../../../../models/user.cjs');
 
 // Route pour mettre à jour les informations de profil de l'utilisateur
 router.post('/info', async (req, res) => {

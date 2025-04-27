@@ -3,14 +3,13 @@
     import { writable, get } from "svelte/store";
     import axios from "axios";
     import {allAppointments, setUserAppointment, userInfo, messageStatus} from "../../../../../stores/gestionRdv";
-
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
     let daysInMonth = [];
     let csrfToken;
     const today = new Date();
     today.setHours(12, 0, 0, 0);
-
+    $setUserAppointment;
     onMount(async () => {
         const res = await fetch("http://localhost:3000/csrf-token", {
             credentials: "include",
@@ -22,24 +21,30 @@
         generateCalendar(currentMonth, currentYear);
     });
 
-  async function fetchAppointments() {
-        try {
-            const res = await axios.get(
-                "http://localhost:3000/users/api/admin/rdv/all/appointments",
-                {
-                    withCredentials: true,
-                    headers: {
-                        'CSRF-Token':csrfToken
-                    },
-                }
-            );
-            allAppointments.set(res.data);
-            // console.log("📥 RDV récupérés:", res.data);
-        } catch (err) {
-            console.error("❌ Erreur RDV:", err);
-        }
-        
+    async function fetchAppointments( csrfToken ) {
+    try {
+        const res = await axios.get(
+            "http://localhost:3000/users/api/admin/rdv/all/appointments",
+            {
+                withCredentials: true,
+                headers: {
+                    'CSRF-Token':csrfToken
+                },
+            }
+        );
+        allAppointments.set(res.data);
+        messageStatus.set("RDV récupérés avec succès");
+        setTimeout(() => {
+            messageStatus.set(null);
+        }, 1000);
+        // console.log("📥 RDV récupérés:", res.data);
+    } catch (err) {
+        console.error("❌ Erreur RDV:", err);
     }
+
+    
+}
+
 
     function generateCalendar(month, year) {
         const firstOfMonth = new Date(year, month, 1);
@@ -126,6 +131,10 @@
         userInfo.set(data.user);
         console.log("userinfordv", data);
         messageStatus.set(data.message);
+
+        setTimeout(() => {
+            messageStatus.set(null);
+        }, 1000);
     }
 </script>
 
@@ -172,8 +181,9 @@
                                 on:click={(e) => watchUserAppointment(e, rdv)}
                             >
                                 {console.log(rdv)}
-                                <span class="rdv-valide-icon"><p>❌</p></span>
+                                <span class="rdv-valide-icon"><p>📌 </p></span>
                                 <span class="rdv-info"><p>rdv</p></span>
+                                <span class="rdv-info"><p>{rdv.timeSlot}</p></span>
                             </div>
                             <!-- <button on:click={() => deleteAppointment(rdv.id)}>Supprimer</button> -->
                         {/if}
@@ -204,6 +214,8 @@
         padding: 10px;
         -webkit-overflow-scrolling: touch;
         border-radius: 10px;
+        background-color: #7dc4db3a;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     }
     main::-webkit-scrollbar {
         display: none;
@@ -259,7 +271,7 @@
         grid-template-rows: repeat(6, 3fr);
         gap: 6px;
         width: 100%;
-        /* max-width: 700px; */
+        max-width: 700px;
         /* margin: 0 auto; */
     }
 
@@ -274,12 +286,17 @@
         padding: px;
         text-align: left;
         border-radius: 6px;
+        max-height: 400px;
         min-height: 70px;
+        /* max-height: 70px; */
+        /* min-width: 50px; */
+        max-width: 50px;
         position: relative;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        /* justify-content: center; */
         align-items: center;
+        
     }
 
     .empty {
@@ -316,7 +333,7 @@
     .rdv {
         font-size: 0.8rem;
         background: #def;
-        padding: 10px;
+        padding: 1px;
         margin-bottom: 2px;
         border-radius: 4px;
         color: black;
@@ -324,7 +341,13 @@
         justify-content: space-between;
         align-items: center;
         flex-direction: column;
-        font-size: 1.2rem;
+        font-size: 1rem;
+        height: auto;
+        width: 90%;
+        overflow: scroll;
+    }
+    .rdv::-webkit-scrollbar {
+        display: none;
     }
     .rdv:hover {
         background-color: #bfd7ef;

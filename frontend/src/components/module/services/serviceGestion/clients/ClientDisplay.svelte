@@ -120,7 +120,7 @@
     <div class="client-display" transition:fade>
         <div class="client-display-header">
             <h2>Client Information</h2>
-            <p>votre requete est : {$searchQuery}</p>
+            <p>votre requete est : <span class="search-query" style="color: red; font-weight: bold;font-size: 1.5rem;">{$searchQuery}</span></p>
         </div>
     </div>
 

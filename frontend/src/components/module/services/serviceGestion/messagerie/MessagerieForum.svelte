@@ -263,13 +263,14 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    background-color: #476788;
+    background-color: var(--color-admin);
     border-radius: 5px;
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid white;
     box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474);
     filter: drop-shadow(0 0 15px rgb(120, 118, 118));
+    color: white;
   }
   .tri {
     display: flex;
@@ -277,13 +278,14 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    background-color: #476788;
+    background-color: var(--color-admin);
     border-radius: 5px;
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid white;
     box-shadow: 5px 10px 10px rgba(144, 150, 168, 0.474);
     filter: drop-shadow(0 0 15px rgb(120, 118, 118));
+    color: white;
   }
   .contain-forum {
     display: flex;
@@ -299,12 +301,13 @@
     border-top: 2px;
     border-bottom: 8px;
     border-left: 1px;
-    border-right: 15px;
+    border-right: 3px;
     border-color: #476788;
     border-style: solid;
     border-radius: 20px;
-    box-shadow: 0 25px 25px rgba(72, 78, 98, 0.897) inset;
-    filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.7) inset);
+    box-shadow: 0 5px 5px rgba(72, 78, 98, 0.725) inset;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7) inset);
+    background-color: #7dc4db3a;
   }
   .contain-forum::-webkit-scrollbar {
     display: none;
@@ -317,7 +320,7 @@
     width: 90%;
     font-weight: bold;
     color: #ffffff;
-    background-color: #476788;
+    background-color: var(--color-admin);
     padding-inline: 10px;
     border-radius: 5px;
     margin-top: 10px;
@@ -339,12 +342,13 @@
     font-weight: bold;
     padding: 10px;
     border-radius: 5px;
+    background-color: var(--color-admin-secondary);
   }
   .message-checked {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #bfd7ef;
+    background-color: var(--color-admin-secondary);
     color: green;
     border-radius: 5px;
     padding-inline: 5px;
@@ -360,13 +364,18 @@
     color: rgb(207, 91, 91);
     border-radius: 5px;
     padding: 5px;
-    height: 25px;
+    height: 21px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .message-not-checked p {
+    transform:translateY(5px);
     all: unset;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: bold;
   }
+
   .content {
     width: 100%;
     height: auto;
@@ -389,7 +398,7 @@
     font-size: 12px;
     font-weight: bold;
     border-bottom: 1px solid rgb(16, 16, 16);
-    background-color: #476788;
+    background-color: var(--color-admin);
     color: white;
     border-radius: 3px 3px 0 0;
     padding: 5px;
@@ -412,7 +421,7 @@
     transition: transform 0.2s ease; /* Ajoutez cette ligne */
   }
   .read-button:hover {
-    background-color: #BFD7EF;
+    background-color: var(--color-admin-secondary);
     color: green;
   }
   .close {
@@ -430,7 +439,7 @@
     background-color: #885647;
   }
   .message-user {
-    background-color: #bfd7ef;
+    background-color: var(--color-admin-secondary);
     padding: 2px 2px 3px 2px;
     border-radius: 5px;
     height: 100%;
@@ -455,7 +464,7 @@
     font-weight: bold;
   }
   .date {
-    background-color: #476788;
+    background-color: var(--color-admin);
     font-size: 13px;
     font-weight: bold;
     color: white;

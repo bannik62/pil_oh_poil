@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const verifyEmailTokenForValidity = require('../../middleware/email/verifyemailTokenForValidity.cjs');
-const { User } = require('../../../models/user.cjs');
+const verifyEmailTokenForValidity = require('../../../middleware/email/verifyemailTokenForValidity.cjs');
+const { User } = require('../../../../models/user.cjs');
 console.log('🔑 verifyEmailTokenForvalidity :', verifyEmailTokenForValidity);
 console.log('🔑 User :', User);
 

@@ -169,7 +169,7 @@
         justify-content: center;
         align-items: center;
         margin: 20px;
-        background-color: #476788;
+        background-color: var(--color-admin);
         border-radius: 5px;
         font-size: 1rem;
         padding: 10px;
@@ -202,15 +202,23 @@
         width: 200px;
         border: 1px solid #ccc;
         border-radius: 4px;
+        background-color: var(--color-admin-secondary);
     }
 
     .radio-buttons {
         display: flex;
         justify-content: space-around;
         width: 100%;
+        flex-wrap: wrap;
     }
 
     label {
         margin: 0 10px;
+    }
+    @media (max-width: 375px) {
+        .search-container {
+            width: 100%;
+        }
+      
     }
 </style>

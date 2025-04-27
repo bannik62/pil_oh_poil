@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { UserProfile } = require('../../../models/userprofile.cjs');
-const { User } = require('../../../models/user.cjs');
-const { verifyCookieToken } = require('../../middleware/verifyCookieToken.cjs');
+const { UserProfile } = require('../../../../models/userprofile.cjs');
+const { User } = require('../../../../models/user.cjs');
+const { verifyCookieToken } = require('../../../middleware/verifyCookieToken.cjs');
 const { Op } = require('sequelize');
 // Route pour récupérer tous les utilisateurs
 router.get('/getAllUsers/infos',verifyCookieToken, async (req, res) => {
